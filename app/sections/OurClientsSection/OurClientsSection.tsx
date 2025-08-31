@@ -64,13 +64,76 @@ const clientLogos = [
   },
 ];
 
+const mobileClientLogos = [
+  {
+    src: "/img/mobile_comp_logos/Rectanglege_health_care.png",
+    alt: "GE Healthcare",
+    className: "w-[99px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/pepsico.png",
+    alt: "PepsiCo",
+    className: "w-[85px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/hp.png",
+    alt: "HP",
+    className: "w-[94px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/gsk.png",
+    alt: "GSK",
+    className: "w-[75px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/sn.png",
+    alt: "SN",
+    className: "w-[105px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/wrangler.png",
+    alt: "Wrangler",
+    className: "w-[64px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/dell.png",
+    alt: "Dell",
+    className: "w-[25px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/sun.png",
+    alt: "Sun",
+    className: "w-[30px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/levis.png",
+    alt: "Levis",
+    className: "w-[47px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/titan.png",
+    alt: "Titan",
+    className: "w-[76px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/lee.png",
+    alt: "Lee",
+    className: "w-[27px] h-auto",
+  },
+  {
+    src: "/img/mobile_comp_logos/myntra.png",
+    alt: "Myntra",
+    className: "w-[53px] h-auto",
+  },
+];
+
 export const OurClientsSection: React.FC = () => {
   return (
-    <section className="w-full py-16 max-w-[1280px] mx-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <GeorgiaHeading className="w-[894px] mb-16">Our clients</GeorgiaHeading>
 
-      {/* Client Logos - 3 rows with specific distribution */}
-      <div className="space-y-8 mb-8 ml-[-80px]">
+      {/* Desktop Client Logos - Hidden on mobile, visible on md and up */}
+      <div className="hidden md:block space-y-8 mb-8 ml-[-80px]">
         {/* 1st row: First 3 logos */}
         <div className="grid grid-cols-3 gap-8 items-center justify-items-center">
           {clientLogos.slice(0, 3).map((logo, index) => (
@@ -100,6 +163,45 @@ export const OurClientsSection: React.FC = () => {
           {clientLogos.slice(7, 12).map((logo, index) => (
             <img
               key={`client-logo-row3-${index}`}
+              className={logo.className}
+              alt={logo.alt}
+              src={logo.src}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Client Logos - Visible on mobile, hidden on md and up */}
+      <div className="md:hidden space-y-6 mb-8">
+        {/* 1st row: First 3 logos */}
+        <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
+          {mobileClientLogos.slice(0, 3).map((logo, index) => (
+            <img
+              key={`mobile-client-logo-row1-${index}`}
+              className={logo.className}
+              alt={logo.alt}
+              src={logo.src}
+            />
+          ))}
+        </div>
+
+        {/* 2nd row: Next 4 logos */}
+        <div className="grid grid-cols-4 gap-4 items-center justify-items-center">
+          {mobileClientLogos.slice(3, 7).map((logo, index) => (
+            <img
+              key={`mobile-client-logo-row2-${index}`}
+              className={logo.className}
+              alt={logo.alt}
+              src={logo.src}
+            />
+          ))}
+        </div>
+
+        {/* 3rd row: Remaining 5 logos */}
+        <div className="grid grid-cols-5 gap-4 items-center justify-items-center">
+          {mobileClientLogos.slice(7, 12).map((logo, index) => (
+            <img
+              key={`mobile-client-logo-row3-${index}`}
               className={logo.className}
               alt={logo.alt}
               src={logo.src}

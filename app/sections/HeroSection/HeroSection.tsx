@@ -2,7 +2,7 @@ import React from "react";
 
 export const HeroSection: React.FC = () => {
   return (
-    <section className="relative w-full py-[70px] max-w-[1280px] mx-auto">
+    <section className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 py-[70px] max-w-[1280px] mx-auto">
       <div className="grid grid-cols-2 gap-8">
         <div className="flex flex-col items-start justify-between">
           <img

@@ -3,7 +3,7 @@ import { Heading1, BodySofia } from "@/components/ui/typography";
 
 export const ExperienceSection = (): React.JSX.Element => {
   return (
-    <section className="w-full max-w-[1280px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="w-full">
         <Heading1 className="w-full mb-8">What shifts</Heading1>
 

@@ -35,7 +35,7 @@ const methodologyData = [
 
 export const MethodologySection = (): React.JSX.Element => {
   return (
-    <section className="w-full relative max-w-[1280px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 relative max-w-[1280px] mx-auto">
       <div className="w-full mx-auto relative">
         {/* Title */}
         <Heading1 className="absolute top-0 left-0 right-[16.66%] mb-[124px]">

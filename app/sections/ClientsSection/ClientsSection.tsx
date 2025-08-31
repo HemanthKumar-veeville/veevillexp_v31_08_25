@@ -29,7 +29,7 @@ const testimonialsData = [
 
 export const ClientsSection = (): React.JSX.Element => {
   return (
-    <section className="w-full relative py-16 max-w-[1280px] mx-auto">
+    <section className="w-full relative py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="max-w-[1344px] mx-auto">
         <Heading1 className="mb-16">Testimonials</Heading1>
 

@@ -3,7 +3,7 @@ import { Heading1, BodyHelvetica } from "@/components/ui/typography";
 
 export const HighFiveSection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-20 max-w-[1280px] mx-auto">
+    <section className="w-full py-20 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="max-w-7xl mx-auto px-4">
         <header className="mb-16">
           <Heading1 className="text-left">The high-five methodology</Heading1>

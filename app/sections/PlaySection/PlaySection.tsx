@@ -3,7 +3,7 @@ import { Heading2, BodyMedium, BrandBold } from "@/components/ui/typography";
 
 export const PlaySection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-16 px-4 max-w-[1280px] mx-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="space-y-8">

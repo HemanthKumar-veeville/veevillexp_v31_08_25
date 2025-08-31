@@ -18,7 +18,7 @@ export const IntroductionSection = (): React.JSX.Element => {
   ];
 
   return (
-    <section className="w-full max-w-[1280px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 lg:gap-16">
         <div className="flex-1">
           <Heading1 className="mb-8">
