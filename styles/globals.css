@@ -24,6 +24,47 @@
   font-display: swap;
 }
 
+/* Sofia Pro Font Family */
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/Sofia Pro Regular Az.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/Sofia Pro Light Az.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/Sofia Pro Bold Az.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/Sofia Pro Medium Az.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('/fonts/Sofia Pro Semi Bold Az.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Custom animations */
@@ -155,6 +196,39 @@
 @utility font-casual-human {
   font-family: 'Casual Human', cursive;
   font-weight: 700;
+}
+
+@utility font-casual-human-bold {
+  font-family: 'Casual Human', cursive;
+  font-weight: 700;
+}
+
+@utility font-sofia {
+  font-family: 'Sofia Pro', sans-serif;
+}
+
+@utility font-sofia-light {
+  font-family: 'Sofia Pro', sans-serif;
+  font-weight: 300;
+}
+
+@utility font-sofia-regular {
+  font-family: 'Sofia Pro', sans-serif;
+  font-weight: 400;
+}
+
+@utility font-sofia-bold {
+  font-family: 'Sofia Pro', sans-serif;
+  font-weight: 700;
+}
+
+@utility font-helvetica-neue {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+
+@utility font-helvetica-neue-light {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 300;
 }
 
 /* Helvetica font weights */

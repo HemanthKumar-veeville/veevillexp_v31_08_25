@@ -62,7 +62,7 @@ export const LargeNumber: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-['Georgia:Regular',_sans-serif] font-normal text-[95px] tracking-[-3.8px] leading-none text-[#2d2d2d]",
+      "font-georgia font-normal text-[95px] tracking-[-3.8px] leading-none text-[#2d2d2d]",
       className
     )}
   >
@@ -154,7 +154,7 @@ export const MethodologyDescription: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-['Helvetica_Neue:Light',_sans-serif] font-light text-[25px] leading-[normal] text-[#888888]",
+      "font-helvetica-neue-light font-light text-[25px] leading-[normal] text-[#888888]",
       className
     )}
   >
@@ -170,7 +170,7 @@ export const BrandLabel: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-casual-human-bold font-bold text-[34px] tracking-[0] leading-[normal] text-[#2d2d2d]",
+      "font-casual-human font-bold text-[34px] tracking-[0] leading-[normal] text-[#2d2d2d]",
       className
     )}
   >
@@ -211,7 +211,7 @@ export const AuthorName: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-casual-human-bold font-bold text-black text-xl tracking-[0] leading-5",
+      "font-casual-human font-bold text-black text-xl tracking-[0] leading-5",
       className
     )}
   >
@@ -226,7 +226,7 @@ export const CompanyInfo: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-casual-human-bold font-bold text-black text-[17px] tracking-[0] leading-[17px]",
+      "font-casual-human font-bold text-black text-[17px] tracking-[0] leading-[17px]",
       className
     )}
   >
@@ -242,7 +242,7 @@ export const ContactInfo: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "[font-family:'Sofia_Pro-Light',Helvetica] font-light text-black text-2xl tracking-[0] leading-[normal]",
+      "font-sofia-light font-light text-black text-2xl tracking-[0] leading-[normal]",
       className
     )}
   >
@@ -257,7 +257,7 @@ export const FormLabel: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "[font-family:'Helvetica-Light',Helvetica] font-light text-white text-xl tracking-[0] leading-5",
+      "font-helvetica-light font-light text-white text-xl tracking-[0] leading-5",
       className
     )}
   >
@@ -270,12 +270,7 @@ export const FormButton: React.FC<TypographyProps> = ({
   className,
   as: Component = "span",
 }) => (
-  <Component
-    className={cn(
-      "[font-family:'Helvetica-Bold',Helvetica] font-bold text-xl",
-      className
-    )}
-  >
+  <Component className={cn("font-helvetica-bold font-bold text-xl", className)}>
     {children}
   </Component>
 );
@@ -288,7 +283,7 @@ export const FooterText: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "[font-family:'Helvetica-Regular',Helvetica] font-normal text-[#465666] text-base tracking-[-0.48px] leading-[17.6px]",
+      "font-helvetica-regular font-normal text-[#465666] text-base tracking-[-0.48px] leading-[17.6px]",
       className
     )}
   >
@@ -304,7 +299,7 @@ export const GeorgiaHeading: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "[font-family:'Georgia-Regular',Helvetica] font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px]",
+      "font-georgia font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px]",
       className
     )}
   >
@@ -319,7 +314,7 @@ export const HelveticaRegular: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "[font-family:'Helvetica-Regular',Helvetica] font-normal text-black text-[25px] tracking-[0] leading-[normal]",
+      "font-helvetica-regular font-normal text-black text-[25px] tracking-[0] leading-[normal]",
       className
     )}
   >
