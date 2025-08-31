@@ -1,6 +1,7 @@
 import React from "react";
+import { Heading1, BodyLight, BrandLabel } from "@/components/ui/typography";
 
-export const IntroductionSection = (): JSX.Element => {
+export const IntroductionSection = (): React.JSX.Element => {
   const categories = [
     {
       label: "Leadership",
@@ -20,15 +21,15 @@ export const IntroductionSection = (): JSX.Element => {
     <section className="w-full max-w-[1280px] mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 lg:gap-16">
         <div className="flex-1">
-          <h2 className="font-georgia font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px] mb-8">
+          <Heading1 className="mb-8">
             Crafted for the minds that matter
-          </h2>
+          </Heading1>
 
           <div className="space-y-8">
-            <p className="font-helvetica-light font-light text-black text-3xl tracking-[0] leading-[normal] max-w-4xl">
+            <BodyLight className="max-w-4xl">
               We've got different tools in our box for all levels of the
               organization. Play should be for everyone.
-            </p>
+            </BodyLight>
 
             <div className="flex gap-64 ">
               {categories.map((category, index) => (
@@ -38,17 +39,17 @@ export const IntroductionSection = (): JSX.Element => {
                     alt="Vector"
                     src={category.icon}
                   />
-                  <span className="font-casual-human-bold font-bold text-[#2d2d2d] text-[34px] tracking-[0] leading-[normal] whitespace-nowrap">
+                  <BrandLabel className="whitespace-nowrap">
                     {category.label}
-                  </span>
+                  </BrandLabel>
                 </div>
               ))}
             </div>
 
-            <p className="font-helvetica-light font-light text-black text-3xl tracking-[0] leading-[normal]">
+            <BodyLight>
               Demonstrated success for companies of all sizes across industry
               verticals.
-            </p>
+            </BodyLight>
           </div>
         </div>
 

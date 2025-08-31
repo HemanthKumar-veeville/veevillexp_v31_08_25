@@ -1,6 +1,11 @@
 import React from "react";
+import {
+  GeorgiaHeading,
+  HelveticaRegular,
+  ContactInfo,
+} from "@/components/ui/typography";
 
-export const TestimonialsSection = (): JSX.Element => {
+export const TestimonialsSection = (): React.JSX.Element => {
   const companyLogos = [
     {
       src: "/img/group-5.png",
@@ -36,14 +41,14 @@ export const TestimonialsSection = (): JSX.Element => {
     <section className="w-full relative pt-16 max-w-[1280px] mx-auto">
       <div className="">
         <div className="text-left mb-8">
-          <h2 className="[font-family:'Georgia-Regular',Helvetica] font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px] mb-4">
+          <GeorgiaHeading className="mb-4">
             Ready to rediscover wonder?
-          </h2>
+          </GeorgiaHeading>
 
-          <p className="[font-family:'Helvetica-Regular',Helvetica] font-normal text-black text-[25px] tracking-[0] leading-[normal] ">
+          <HelveticaRegular>
             Let&apos;s explore how your team can achieve extraordinary results
             through extraordinary experiences
-          </p>
+          </HelveticaRegular>
         </div>
 
         <div className="flex flex-col items-start gap-4 mb-12">
@@ -70,9 +75,7 @@ export const TestimonialsSection = (): JSX.Element => {
                 src="/img/vector-16.svg"
               />
             </div>
-            <span className="[font-family:'Sofia_Pro-Light',Helvetica] font-light text-black text-2xl tracking-[0] leading-[normal]">
-              experiences@veeville.com
-            </span>
+            <ContactInfo>experiences@veeville.com</ContactInfo>
           </div>
 
           <div className="flex items-center gap-3">
@@ -81,9 +84,7 @@ export const TestimonialsSection = (): JSX.Element => {
               alt="Website icon"
               src="/img/group-1000001863.png"
             />
-            <span className="[font-family:'Sofia_Pro-Light',Helvetica] font-light text-black text-2xl tracking-[0] leading-[normal]">
-              veevillexp.com
-            </span>
+            <ContactInfo>veevillexp.com</ContactInfo>
           </div>
         </div>
 

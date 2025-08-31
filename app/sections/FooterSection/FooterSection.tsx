@@ -1,9 +1,10 @@
 import React from "react";
+import { FooterText } from "@/components/ui/typography";
 
 export const FooterSection: React.FC = () => {
   return (
     <footer className="w-full px-14 py-8 flex justify-between items-center max-h-[43px]">
-      <div className="[font-family:'Helvetica-Regular',Helvetica] font-normal text-[#465666] text-base tracking-[-0.48px] leading-[17.6px]">
+      <FooterText>
         <span className="tracking-[-0.08px]">
           Contact Information: experiences/veeville |{" "}
         </span>
@@ -24,7 +25,7 @@ export const FooterSection: React.FC = () => {
         >
           veevillexp.com
         </a>
-      </div>
+      </FooterText>
 
       <img
         className="w-[66px] h-auto object-contain"

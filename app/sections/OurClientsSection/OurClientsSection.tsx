@@ -1,4 +1,5 @@
 import React from "react";
+import { GeorgiaHeading } from "@/components/ui/typography";
 
 const clientLogos = [
   {
@@ -66,9 +67,7 @@ const clientLogos = [
 export const OurClientsSection: React.FC = () => {
   return (
     <section className="w-full py-16 max-w-[1280px] mx-auto">
-      <h2 className="w-[894px] mb-16 [font-family:'Georgia-Regular',Helvetica] font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px]">
-        Our clients
-      </h2>
+      <GeorgiaHeading className="w-[894px] mb-16">Our clients</GeorgiaHeading>
 
       {/* Client Logos - 3 rows with specific distribution */}
       <div className="space-y-8 mb-8 ml-[-80px]">

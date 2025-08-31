@@ -1,23 +1,18 @@
 import React from "react";
+import { Heading2, BodyMedium, BrandBold } from "@/components/ui/typography";
 
-export const PlaySection = (): JSX.Element => {
+export const PlaySection = (): React.JSX.Element => {
   return (
     <section className="w-full py-16 px-4 max-w-[1280px] mx-auto">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="space-y-8">
-            <h2 className="font-georgia font-normal text-[#1c1c1c] text-4xl lg:text-6xl tracking-[0] leading-normal">
-              Where grown-ups remember how to play
-            </h2>
+            <Heading2>Where grown-ups remember how to play</Heading2>
 
-            <div className="font-helvetica font-normal text-[#1c1c1c] text-xl lg:text-[25px] tracking-[0] leading-normal">
-              <span className="font-helvetica font-normal text-[#1c1c1c] text-xl lg:text-[25px] tracking-[0]">
-                At{" "}
-              </span>
-              <span className="font-helvetica-bold font-bold">
-                Experiences by Veeville
-              </span>
-              <span className="font-helvetica font-normal text-[#1c1c1c] text-xl lg:text-[25px] tracking-[0]">
+            <BodyMedium>
+              <span>At </span>
+              <BrandBold>Experiences by Veeville</BrandBold>
+              <span>
                 , we craft experiential learning programs for leaders and teams
                 to solve real business problems.
                 <br />
@@ -27,7 +22,7 @@ export const PlaySection = (): JSX.Element => {
                 your challenges with fresh eyes and attack them with fresh
                 energy.
               </span>
-            </div>
+            </BodyMedium>
           </div>
 
           <div className="flex justify-center lg:justify-end">

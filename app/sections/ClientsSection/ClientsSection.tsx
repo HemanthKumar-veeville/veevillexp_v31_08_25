@@ -1,5 +1,11 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Heading1,
+  QuoteText,
+  AuthorName,
+  CompanyInfo,
+} from "@/components/ui/typography";
 
 const testimonialsData = [
   {
@@ -21,13 +27,11 @@ const testimonialsData = [
   },
 ];
 
-export const ClientsSection = (): JSX.Element => {
+export const ClientsSection = (): React.JSX.Element => {
   return (
     <section className="w-full relative py-16 max-w-[1280px] mx-auto">
       <div className="max-w-[1344px] mx-auto">
-        <h2 className="font-georgia font-normal text-[#1c1c1c] text-6xl tracking-[0] leading-[59.4px] mb-16">
-          Testimonials
-        </h2>
+        <Heading1 className="mb-16">Testimonials</Heading1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="space-y-12">
@@ -37,12 +41,10 @@ export const ClientsSection = (): JSX.Element => {
                 className="border-none shadow-none bg-transparent"
               >
                 <CardContent className="p-0 space-y-6">
-                  <blockquote className="font-helvetica font-normal text-black text-[25px] tracking-[0] leading-[normal]">
-                    {testimonial.quote}
-                  </blockquote>
+                  <QuoteText>{testimonial.quote}</QuoteText>
 
                   <div className="space-y-2">
-                    <div className="font-casual-human-bold font-bold text-black text-xl tracking-[0] leading-5">
+                    <AuthorName>
                       {testimonial.title}
                       {testimonial.subtitle && (
                         <>
@@ -50,15 +52,13 @@ export const ClientsSection = (): JSX.Element => {
                           {testimonial.subtitle}
                         </>
                       )}
-                    </div>
+                    </AuthorName>
 
-                    <div className="font-casual-human-bold font-bold text-black text-[17px] tracking-[0] leading-[17px]">
-                      <span className="font-casual-human-bold font-bold text-black text-[17px] tracking-[0] leading-[17px]">
-                        {testimonial.company}
-                        <br />
-                        {testimonial.companyNote}
-                      </span>
-                    </div>
+                    <CompanyInfo>
+                      {testimonial.company}
+                      <br />
+                      {testimonial.companyNote}
+                    </CompanyInfo>
                   </div>
                 </CardContent>
               </Card>

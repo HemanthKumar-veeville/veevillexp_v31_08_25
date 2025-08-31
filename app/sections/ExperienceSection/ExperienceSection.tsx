@@ -1,28 +1,27 @@
 import React from "react";
+import { Heading1, BodySofia } from "@/components/ui/typography";
 
-export const ExperienceSection = (): JSX.Element => {
+export const ExperienceSection = (): React.JSX.Element => {
   return (
     <section className="w-full max-w-[1280px] mx-auto">
       <div className="w-full">
-        <h2 className="w-full mb-8 font-normal text-[#1c1c1c] text-6xl leading-[59.4px] font-georgia">
-          What shifts
-        </h2>
+        <Heading1 className="w-full mb-8">What shifts</Heading1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-[15px]">
-          <div className="font-light text-black text-[25px] leading-normal font-sofia">
+          <BodySofia>
             You already have the tools. We help you sharpen them and make the
             process fun and enjoyable. Reframe complex challenges with
             simplicity and humour, build without instructions and listen without
             bias. Go back more aware, present and curious.
-          </div>
+          </BodySofia>
 
-          <div className="font-light text-black text-[25px] leading-normal font-sofia">
+          <BodySofia>
             Solve business problems faster, strengthen trust, enhance creative
             confidence and storytelling, make better decisions under
             ambiguity... and there could be more!
             <br />
             Think like a 5 year-old. Lead like a grown up!
-          </div>
+          </BodySofia>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
