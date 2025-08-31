@@ -1,0 +1,302 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Helvetica Font Family - System Font */
+/* Helvetica is available on most systems, no need for external font files */
+
+/* Import Google Fonts for Georgia (keeping as fallback) */
+@import url('https://fonts.googleapis.com/css2?family=Georgia:wght@400;700&display=swap');
+
+/* Local Casual Human Fonts */
+@font-face {
+  font-family: 'Casual Human';
+  src: url('/fonts/CasualHuman-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Casual Human';
+  src: url('/fonts/CasualHuman-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+/* Custom animations */
+@keyframes slide-in-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 1s ease-out forwards;
+}
+
+/* Veeville Brand Colors - Exact from Figma */
+:root {
+  --background: #ffffff;
+  --foreground: #1c1c1c;
+  --card: #ffffff;
+  --card-foreground: #1c1c1c;
+  --popover: #ffffff;
+  --popover-foreground: #1c1c1c;
+  --primary: #1c1c1c;
+  --primary-foreground: #ffffff;
+  --secondary: #d9d9d9;
+  --secondary-foreground: #1c1c1c;
+  --muted: #d9d9d9;
+  --muted-foreground: #2d2d2d;
+  --accent: #565656;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #1c1c1c;
+  --radius: 0.5rem;
+  
+  /* Veeville specific colors */
+  --veeville-primary-text: #1c1c1c;
+  --veeville-secondary-text: #2d2d2d;
+  --veeville-background-light: #d9d9d9;
+  --veeville-background-dark: #565656;
+  --veeville-accent-pink: #e91e63;
+  --veeville-accent-yellow: #ffc107;
+  --veeville-accent-blue: #2196f3;
+  --veeville-accent-green: #4caf50;
+  --veeville-accent-purple: #9c27b0;
+  --veeville-accent-orange: #ff5722;
+}
+
+.dark {
+  --background: #1c1c1c;
+  --foreground: #ffffff;
+  --card: #2d2d2d;
+  --card-foreground: #ffffff;
+  --popover: #2d2d2d;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #1c1c1c;
+  --secondary: #565656;
+  --secondary-foreground: #ffffff;
+  --muted: #565656;
+  --muted-foreground: #d9d9d9;
+  --accent: #d9d9d9;
+  --accent-foreground: #1c1c1c;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #565656;
+  --input: #565656;
+  --ring: #d9d9d9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Veeville brand colors */
+  --color-veeville-primary-text: var(--veeville-primary-text);
+  --color-veeville-secondary-text: var(--veeville-secondary-text);
+  --color-veeville-background-light: var(--veeville-background-light);
+  --color-veeville-background-dark: var(--veeville-background-dark);
+  --color-veeville-accent-pink: var(--veeville-accent-pink);
+  --color-veeville-accent-yellow: var(--veeville-accent-yellow);
+  --color-veeville-accent-blue: var(--veeville-accent-blue);
+  --color-veeville-accent-green: var(--veeville-accent-green);
+  --color-veeville-accent-purple: var(--veeville-accent-purple);
+  --color-veeville-accent-orange: var(--veeville-accent-orange);
+}
+
+/* Typography utilities updated for Helvetica */
+@utility font-georgia {
+  font-family: 'Georgia', serif;
+}
+
+@utility font-helvetica {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  color: #000;
+  font-size: 25px;
+  font-style: normal;
+  /* font-weight: 300; */
+  line-height: normal;
+}
+
+@utility font-casual-human {
+  font-family: 'Casual Human', cursive;
+  font-weight: 700;
+}
+
+/* Helvetica font weights */
+@utility font-helvetica-light {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 300;
+}
+
+@utility font-helvetica-regular {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 400;
+}
+
+@utility font-helvetica-medium {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 500;
+}
+
+@utility font-helvetica-semibold {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 600;
+}
+
+@utility font-helvetica-bold {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  font-weight: 700;
+}
+
+/* Additional font weight utilities for Tailwind compatibility */
+@utility font-light {
+  font-weight: 300;
+}
+
+@utility font-normal {
+  font-weight: 400;
+}
+
+@utility font-medium {
+  font-weight: 500;
+}
+
+@utility font-semibold {
+  font-weight: 600;
+}
+
+@utility font-bold {
+  font-weight: 700;
+}
+
+/* Exact line heights from Figma */
+@utility leading-099 {
+  line-height: 0.99;
+}
+
+@utility leading-normal-figma {
+  line-height: normal;
+}
+
+/* Responsive breakpoints matching Figma designs */
+@utility mobile-width {
+  width: 393px;
+}
+
+@utility desktop-width {
+  width: 1440px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-helvetica;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Hide scrollbar completely */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  /* Hide scrollbar for all elements */
+  html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  /* Ensure images render properly */
+  img {
+    max-width: none;
+    height: auto;
+  }
+}
+
+/* Hide scrollbar completely */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  display: none;
+}
+
+/* Firefox scrollbar hiding */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Additional global scrollbar hiding for all browsers */
+html, body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  display: none !important;
+}

@@ -1,0 +1,36 @@
+import React from "react";
+
+export const FooterSection: React.FC = () => {
+  return (
+    <footer className="w-full px-14 py-8 flex justify-between items-center max-h-[43px]">
+      <div className="[font-family:'Helvetica-Regular',Helvetica] font-normal text-[#465666] text-base tracking-[-0.48px] leading-[17.6px]">
+        <span className="tracking-[-0.08px]">
+          Contact Information: experiences/veeville |{" "}
+        </span>
+        <a
+          href="mailto:getpersonal@veeville.com"
+          rel="noopener noreferrer"
+          target="_blank"
+          className="tracking-[-0.08px] underline"
+        >
+          getpersonal@veeville.com
+        </a>
+        <span className="tracking-[-0.08px]"> | </span>
+        <a
+          href="http://veevillexp.com"
+          rel="noopener noreferrer"
+          target="_blank"
+          className="tracking-[-0.08px] underline"
+        >
+          veevillexp.com
+        </a>
+      </div>
+
+      <img
+        className="w-[66px] h-auto object-contain"
+        alt="Group"
+        src="/img/group-1000001822.png"
+      />
+    </footer>
+  );
+};
