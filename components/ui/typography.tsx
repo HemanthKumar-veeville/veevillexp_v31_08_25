@@ -154,7 +154,7 @@ export const MethodologyDescription: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-helvetica-neue-light font-light text-[25px] leading-[normal] text-[#888888]",
+      "font-helvetica-light font-light text-[25px] leading-[normal] text-[#888888]",
       className
     )}
   >

@@ -17,18 +17,20 @@ export default function Veevillexp(): React.ReactNode {
       className="bg-white flex flex-col w-full min-h-screen mx-auto"
       data-model-id="1010:4098"
     >
-      <div className="bg-white w-full  flex flex-col">
-        <HeroSection />
+      <div className="bg-white w-full  flex flex-col gap-y-16">
+        <div className="hidden md:block">
+          <HeroSection />
 
-        <PlaySection />
+          <PlaySection />
 
-        <MethodologySection />
+          <MethodologySection />
 
-        <IntroductionSection />
+          <IntroductionSection />
 
-        <ExperienceSection />
+          <ExperienceSection />
 
-        <HighFiveSection />
+          <HighFiveSection />
+        </div>
 
         <OurClientsSection />
 
@@ -37,9 +39,9 @@ export default function Veevillexp(): React.ReactNode {
         <TestimonialsSection />
 
         <ContactFormSection />
-
-        <FooterSection />
       </div>
+
+      <FooterSection />
     </div>
   );
 }
