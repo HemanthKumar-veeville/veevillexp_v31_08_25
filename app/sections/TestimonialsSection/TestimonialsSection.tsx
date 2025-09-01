@@ -3,6 +3,9 @@ import {
   GeorgiaHeading,
   HelveticaRegular,
   ContactInfo,
+  MobileHeading,
+  MobileDescription,
+  MobileCategoryLabel,
 } from "@/components/ui/typography";
 
 export const TestimonialsSection = (): React.JSX.Element => {
@@ -41,14 +44,35 @@ export const TestimonialsSection = (): React.JSX.Element => {
     <section className="w-full relative pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="">
         <div className="text-left mb-6 sm:mb-8">
-          <GeorgiaHeading className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight sm:leading-normal">
-            Ready to rediscover wonder?
-          </GeorgiaHeading>
+          {/* Mobile Heading */}
+          <div className="block lg:hidden mb-4 sm:mb-6">
+            <MobileHeading className="mb-3 sm:mb-4">
+              Ready to rediscover wonder?
+            </MobileHeading>
+          </div>
 
-          <HelveticaRegular className="text-lg sm:text-xl md:text-2xl lg:text-[25px] leading-relaxed">
-            Let&apos;s explore how your team can achieve extraordinary results
-            through extraordinary experiences
-          </HelveticaRegular>
+          {/* Desktop Heading */}
+          <div className="hidden lg:block">
+            <GeorgiaHeading className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight sm:leading-normal">
+              Ready to rediscover wonder?
+            </GeorgiaHeading>
+          </div>
+
+          {/* Mobile Description */}
+          <div className="block lg:hidden mb-4 sm:mb-6">
+            <MobileDescription className="leading-relaxed">
+              Let&apos;s explore how your team can achieve extraordinary results
+              through extraordinary experiences
+            </MobileDescription>
+          </div>
+
+          {/* Desktop Description */}
+          <div className="hidden lg:block">
+            <HelveticaRegular className="text-lg sm:text-xl md:text-2xl lg:text-[25px] leading-relaxed">
+              Let&apos;s explore how your team can achieve extraordinary results
+              through extraordinary experiences
+            </HelveticaRegular>
+          </div>
         </div>
 
         <div className="flex flex-col items-start gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12">
@@ -75,9 +99,16 @@ export const TestimonialsSection = (): React.JSX.Element => {
                 src="/img/vector-16.svg"
               />
             </div>
-            <ContactInfo className="text-sm sm:text-base md:text-lg">
-              experiences@veeville.com
-            </ContactInfo>
+            {/* Mobile Contact Info */}
+            <div className="block lg:hidden">
+              <MobileDescription>experiences@veeville.com</MobileDescription>
+            </div>
+            {/* Desktop Contact Info */}
+            <div className="hidden lg:block">
+              <ContactInfo className="text-sm sm:text-base md:text-lg">
+                experiences@veeville.com
+              </ContactInfo>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
@@ -86,9 +117,16 @@ export const TestimonialsSection = (): React.JSX.Element => {
               alt="Website icon"
               src="/img/group-1000001863.png"
             />
-            <ContactInfo className="text-sm sm:text-base md:text-lg">
-              veevillexp.com
-            </ContactInfo>
+            {/* Mobile Contact Info */}
+            <div className="block lg:hidden">
+              <MobileDescription>veevillexp.com</MobileDescription>
+            </div>
+            {/* Desktop Contact Info */}
+            <div className="hidden lg:block">
+              <ContactInfo className="text-sm sm:text-base md:text-lg">
+                veevillexp.com
+              </ContactInfo>
+            </div>
           </div>
         </div>
 

@@ -18,15 +18,12 @@ export default function Veevillexp(): React.ReactNode {
       data-model-id="1010:4098"
     >
       <div className="bg-white w-full  flex flex-col gap-y-16">
+        <HeroSection />
+        <PlaySection />
+        <MethodologySection />
+        <IntroductionSection />
+
         <div className="hidden md:flex md:flex-col md:gap-y-16">
-          <HeroSection />
-
-          <PlaySection />
-
-          <MethodologySection />
-
-          <IntroductionSection />
-
           <ExperienceSection />
 
           <HighFiveSection />

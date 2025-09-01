@@ -1,5 +1,5 @@
 import React from "react";
-import { Heading1, QuoteText } from "@/components/ui/typography";
+import { BrandLabel, Heading1, QuoteText } from "@/components/ui/typography";
 
 export const ExperienceSection = (): React.JSX.Element => {
   return (
@@ -24,7 +24,7 @@ export const ExperienceSection = (): React.JSX.Element => {
           </QuoteText>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="flex justify-start">
             <img
               className="w-[400px] h-[486px] object-contain"
@@ -33,12 +33,13 @@ export const ExperienceSection = (): React.JSX.Element => {
             />
           </div>
 
-          <div className="flex justify-center">
-            <img
-              className="w-[545px] h-[350px] object-contain"
-              alt="Image"
-              src="/img/image-24.png"
-            />
+          <div className="flex flex-col justify-center items-end">
+            <BrandLabel className="w-[500px]">
+              GIVE ME SIX HOURS To CHOP A TREE AND I WILL SPEND THE FIRST FOUR
+              HOURS SHARPENING THE AXE
+            </BrandLabel>
+            <br />
+            <BrandLabel>-ABRAHAM LINCOLN</BrandLabel>
           </div>
         </div>
       </div>

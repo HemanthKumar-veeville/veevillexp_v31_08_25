@@ -1,5 +1,5 @@
 import React from "react";
-import { GeorgiaHeading } from "@/components/ui/typography";
+import { GeorgiaHeading, MobileHeading } from "@/components/ui/typography";
 
 const clientLogos = [
   {
@@ -130,7 +130,15 @@ const mobileClientLogos = [
 export const OurClientsSection: React.FC = () => {
   return (
     <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
-      <GeorgiaHeading className="w-[894px] mb-16">Our clients</GeorgiaHeading>
+      {/* Mobile Heading */}
+      <div className="block lg:hidden mb-8 sm:mb-12">
+        <MobileHeading>Our clients</MobileHeading>
+      </div>
+
+      {/* Desktop Heading */}
+      <div className="hidden lg:block">
+        <GeorgiaHeading className="w-[894px] mb-16">Our clients</GeorgiaHeading>
+      </div>
 
       {/* Desktop Client Logos - Hidden on mobile, visible on md and up */}
       <div className="hidden md:block space-y-8 mb-8 ml-[-80px]">

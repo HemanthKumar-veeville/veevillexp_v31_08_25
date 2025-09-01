@@ -1,5 +1,14 @@
 import React from "react";
-import { Heading1, BodyLight, BrandLabel } from "@/components/ui/typography";
+import {
+  Heading1,
+  BodyLight,
+  BrandLabel,
+  MethodologyDescription,
+  MobileHeading,
+  MobileDescription,
+  MobileCategoryLabel,
+  MobileBrandLabel,
+} from "@/components/ui/typography";
 
 export const IntroductionSection = (): React.JSX.Element => {
   const categories = [
@@ -19,17 +28,69 @@ export const IntroductionSection = (): React.JSX.Element => {
 
   return (
     <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-1 gap-8 lg:gap-16">
+      {/* Mobile Layout (default) */}
+      <div className="block lg:hidden">
+        <div className="space-y-6 sm:space-y-8">
+          {/* Main Heading - Mobile */}
+          <div className="mb-6 sm:mb-8">
+            <MobileHeading>Crafted for the minds that matter</MobileHeading>
+          </div>
+
+          {/* Description - Mobile */}
+          <div className="mb-6 sm:mb-8">
+            <MobileDescription>
+              We've got different tools in our box for all levels of the
+              organization. Play should be for everyone.
+            </MobileDescription>
+          </div>
+
+          {/* Categories - Mobile Horizontal Layout */}
+          <div className="flex justify-start gap-12 items-center mb-6 sm:mb-8">
+            {categories.map((category, index) => (
+              <div key={index} className="flex items-center gap-1 sm:gap-3">
+                <img
+                  className="w-[16px] h-[18px] sm:w-[19px] sm:h-[21px] md:w-[22px] md:h-[24px]"
+                  alt="Vector"
+                  src={category.icon}
+                />
+                <MobileBrandLabel className="whitespace-nowrap">
+                  {category.label}
+                </MobileBrandLabel>
+              </div>
+            ))}
+          </div>
+
+          {/* Final Description - Mobile */}
+          <div className="mb-8 sm:mb-10">
+            <MobileDescription>
+              Demonstrated success for companies of all sizes across industry
+              verticals.
+            </MobileDescription>
+          </div>
+
+          {/* Image - Mobile Centered */}
+          <div className="flex justify-center">
+            <img
+              className="w-full max-w-[400px] sm:max-w-[500px] md:max-w-[600px] h-auto object-contain"
+              alt="Layer"
+              src="/img/layer-1.png"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout - Preserved */}
+      <div className="hidden lg:grid lg:grid-cols-1 gap-8 lg:gap-16">
         <div className="flex-1">
           <Heading1 className="mb-8">
             Crafted for the minds that matter
           </Heading1>
 
           <div className="space-y-8">
-            <BodyLight className="max-w-4xl">
+            <MethodologyDescription className="max-w-4xl ">
               We've got different tools in our box for all levels of the
               organization. Play should be for everyone.
-            </BodyLight>
+            </MethodologyDescription>
 
             <div className="flex gap-64 ">
               {categories.map((category, index) => (
@@ -46,10 +107,10 @@ export const IntroductionSection = (): React.JSX.Element => {
               ))}
             </div>
 
-            <BodyLight>
+            <MethodologyDescription>
               Demonstrated success for companies of all sizes across industry
               verticals.
-            </BodyLight>
+            </MethodologyDescription>
           </div>
         </div>
 

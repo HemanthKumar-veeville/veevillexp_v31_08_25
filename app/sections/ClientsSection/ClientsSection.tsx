@@ -5,6 +5,10 @@ import {
   QuoteText,
   AuthorName,
   CompanyInfo,
+  MobileHeading,
+  MobileDescription,
+  MobileCategoryLabel,
+  MobileBrandLabel,
 } from "@/components/ui/typography";
 
 const testimonialsData = [
@@ -20,7 +24,7 @@ const testimonialsData = [
   {
     quote:
       "No Classroom training. No models. No theory. No jargon. The people bonded, did interesting and new things together. They have taken learnings that are immediately applicable to their work. All our objectives from this intervention were met. Actually, they were exceeded beyond expectation.",
-    title: "HR head",
+    title: "HR Buisness Partner",
     subtitle: "",
     company: "at an 85 year old global organization",
     companyNote: "(which has seen it all over many, many years)",
@@ -31,7 +35,15 @@ export const ClientsSection = (): React.JSX.Element => {
   return (
     <section className="w-full relative py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="max-w-[1344px] mx-auto">
-        <Heading1 className="mb-16">Testimonials</Heading1>
+        {/* Mobile Heading */}
+        <div className="block lg:hidden mb-8 sm:mb-12">
+          <MobileHeading>Testimonials</MobileHeading>
+        </div>
+
+        {/* Desktop Heading */}
+        <div className="hidden lg:block">
+          <Heading1 className="mb-16">Testimonials</Heading1>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <div className="space-y-12">
@@ -41,24 +53,57 @@ export const ClientsSection = (): React.JSX.Element => {
                 className="border-none shadow-none bg-transparent"
               >
                 <CardContent className="p-0 space-y-6">
-                  <QuoteText>{testimonial.quote}</QuoteText>
+                  {/* Mobile Quote Text */}
+                  <div className="block lg:hidden">
+                    <MobileDescription className="leading-relaxed">
+                      {testimonial.quote}
+                    </MobileDescription>
+                  </div>
+
+                  {/* Desktop Quote Text */}
+                  <div className="hidden lg:block">
+                    <QuoteText>{testimonial.quote}</QuoteText>
+                  </div>
 
                   <div className="space-y-2">
-                    <AuthorName>
-                      {testimonial.title}
-                      {testimonial.subtitle && (
-                        <>
-                          <br />
-                          {testimonial.subtitle}
-                        </>
-                      )}
-                    </AuthorName>
+                    {/* Mobile Author Info */}
+                    <div className="block lg:hidden">
+                      <MobileBrandLabel className="font-bold">
+                        {testimonial.title}
+                        {testimonial.subtitle && <>, {testimonial.subtitle}</>}
+                      </MobileBrandLabel>
+                    </div>
 
-                    <CompanyInfo>
-                      {testimonial.company}
-                      <br />
-                      {testimonial.companyNote}
-                    </CompanyInfo>
+                    {/* Desktop Author Info */}
+                    <div className="hidden lg:block">
+                      <AuthorName>
+                        {testimonial.title}
+                        {testimonial.subtitle && (
+                          <>
+                            <br />
+                            {testimonial.subtitle}
+                          </>
+                        )}
+                      </AuthorName>
+                    </div>
+
+                    {/* Mobile Company Info */}
+                    <div className="block lg:hidden">
+                      <MobileDescription>
+                        {testimonial.company}
+                        <br />
+                        {testimonial.companyNote}
+                      </MobileDescription>
+                    </div>
+
+                    {/* Desktop Company Info */}
+                    <div className="hidden lg:block">
+                      <CompanyInfo>
+                        {testimonial.company}
+                        <br />
+                        {testimonial.companyNote}
+                      </CompanyInfo>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
