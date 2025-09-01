@@ -1,5 +1,10 @@
 import React from "react";
-import { Heading2, BodyMedium, BrandBold } from "@/components/ui/typography";
+import {
+  Heading2,
+  BodyMedium,
+  BrandBold,
+  QuoteText,
+} from "@/components/ui/typography";
 
 export const PlaySection = (): React.JSX.Element => {
   return (
@@ -7,9 +12,14 @@ export const PlaySection = (): React.JSX.Element => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div className="space-y-8">
-            <Heading2>Where grown-ups remember how to play</Heading2>
+            <Heading2
+              style={{ lineHeight: "normal" }}
+              className="line-height-normal leading-normal w-[45rem]"
+            >
+              Where grown-ups remember how to play
+            </Heading2>
 
-            <BodyMedium>
+            <QuoteText>
               <span>At </span>
               <BrandBold>Experiences by Veeville</BrandBold>
               <span>
@@ -22,7 +32,7 @@ export const PlaySection = (): React.JSX.Element => {
                 your challenges with fresh eyes and attack them with fresh
                 energy.
               </span>
-            </BodyMedium>
+            </QuoteText>
           </div>
 
           <div className="flex justify-center lg:justify-end">

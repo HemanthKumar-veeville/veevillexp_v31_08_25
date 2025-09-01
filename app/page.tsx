@@ -18,7 +18,7 @@ export default function Veevillexp(): React.ReactNode {
       data-model-id="1010:4098"
     >
       <div className="bg-white w-full  flex flex-col gap-y-16">
-        <div className="hidden md:block">
+        <div className="hidden md:flex md:flex-col md:gap-y-16">
           <HeroSection />
 
           <PlaySection />

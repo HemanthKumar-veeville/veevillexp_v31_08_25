@@ -6,6 +6,7 @@ interface TypographyProps {
   children: React.ReactNode;
   className?: string;
   as?: React.ElementType;
+  style?: React.CSSProperties;
 }
 
 // Heading variants
@@ -28,12 +29,14 @@ export const Heading2: React.FC<TypographyProps> = ({
   children,
   className,
   as: Component = "h2",
+  style,
 }) => (
   <Component
     className={cn(
       "font-georgia font-normal text-4xl lg:text-6xl tracking-[0] leading-normal text-[#1c1c1c]",
       className
     )}
+    style={style}
   >
     {children}
   </Component>
@@ -183,7 +186,7 @@ export const BrandBold: React.FC<TypographyProps> = ({
   className,
   as: Component = "span",
 }) => (
-  <Component className={cn("font-helvetica-bold font-bold", className)}>
+  <Component className={cn("font-helvetica-bold font-bold italic", className)}>
     {children}
   </Component>
 );

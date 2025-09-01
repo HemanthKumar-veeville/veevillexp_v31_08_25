@@ -363,7 +363,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
 
         <div className="flex justify-center">
           <img
-            className="w-full max-w-[1280px] h-auto mb-[-20px] sm:mb-[-20px] md:mb-[-20px] lg:mb-[-70px]"
+            className="w-full max-w-[1280px] h-auto mb-[-85px] sm:mb-[-95px] md:mb-[-110px] lg:mb-[-140px]"
             alt="Testimonials showcase"
             src="/img/group-1000001887.png"
           />

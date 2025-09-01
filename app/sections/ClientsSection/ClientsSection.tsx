@@ -67,7 +67,7 @@ export const ClientsSection = (): React.JSX.Element => {
 
           <div className="flex-shrink-0 flex items-end h-full">
             <img
-              className="w-full h-auto max-w-[724px] object-contain"
+              className="w-full h-auto max-w-[40rem] min-w-[39rem] object-contain md:mb-[-80px] lg:mb-[-100px]"
               alt="Group"
               src="/img/group-1000001858.png"
             />

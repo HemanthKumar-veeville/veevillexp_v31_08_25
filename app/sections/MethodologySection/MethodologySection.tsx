@@ -38,7 +38,7 @@ export const MethodologySection = (): React.JSX.Element => {
     <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 relative max-w-[1280px] mx-auto">
       <div className="w-full mx-auto relative">
         {/* Title */}
-        <Heading1 className="absolute top-0 left-0 right-[16.66%] mb-[124px]">
+        <Heading1 className="absolute top-0 left-0 right-[16.66%]">
           The premise of play
         </Heading1>
 
@@ -46,8 +46,8 @@ export const MethodologySection = (): React.JSX.Element => {
         <div className="relative w-full h-[800px]">
           {/* Item 1 - Zero Slide-decks */}
           <div className="absolute inset-[19.2%_69%_66.21%_0.26%]">
-            <LargeNumber className="mb-8">01</LargeNumber>
-            <Heading3 className="mb-[79px]">Zero Slide-decks</Heading3>
+            <LargeNumber className="mb-2">01</LargeNumber>
+            <Heading3 className="mb-8">Zero Slide-decks</Heading3>
             <MethodologyDescription className="max-w-[255px]">
               Seriously, haven't you seen them all already?
               <br />
@@ -58,8 +58,8 @@ export const MethodologySection = (): React.JSX.Element => {
 
           {/* Item 2 - Zero Jargon */}
           <div className="absolute inset-[19.2%_34.1%_66.21%_35.16%]">
-            <LargeNumber className="mb-8">02</LargeNumber>
-            <Heading3 className="mb-[79px]">Zero Jargon</Heading3>
+            <LargeNumber className="mb-2">02</LargeNumber>
+            <Heading3 className="mb-8">Zero Jargon</Heading3>
             <MethodologyDescription className="max-w-[236px]">
               "We must synergize holistic paradigms to leverage scalable
               ecosystems."
@@ -71,8 +71,8 @@ export const MethodologySection = (): React.JSX.Element => {
 
           {/* Item 3 - 100% Surprises */}
           <div className="absolute inset-[19.2%_1.86%_66.21%_67.4%]">
-            <LargeNumber className="mb-8">03</LargeNumber>
-            <Heading3 className="mb-[79px]">100% Surprises</Heading3>
+            <LargeNumber className="mb-2">03</LargeNumber>
+            <Heading3 className="mb-8">100% Surprises</Heading3>
             <MethodologyDescription className="max-w-[236px]">
               When did you last leave a workshop talking about it for weeks? We
               design moments that delight and memories that matter.

@@ -3,7 +3,7 @@ import { FooterText } from "@/components/ui/typography";
 
 export const FooterSection: React.FC = () => {
   return (
-    <footer className="w-full px-4 sm:px-6 md:px-10 lg:px-14 py-4 sm:py-6 md:py-8 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 md:gap-0 min-h-[43px]">
+    <footer className="w-full px-4 sm:px-6 md:px-10 lg:px-14 py-2 sm:py-3 md:py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 md:gap-0 min-h-[43px]">
       <FooterText className="text-center sm:text-left text-xs sm:text-sm md:text-base leading-tight sm:leading-normal">
         {/* Mobile layout - stacked vertically */}
         <div className="flex flex-col sm:hidden gap-1">
