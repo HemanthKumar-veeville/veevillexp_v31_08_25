@@ -3,7 +3,7 @@ import React from "react";
 
 export const HeroSection: React.FC = () => {
   return (
-    <section className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 md:pt-[90px] pt-[30px] max-w-[1280px] mx-auto">
+    <section className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 md:pt-[90px] pt-[30px] max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
       {/* Mobile Layout */}
       <div className="block md:hidden">
         <div className="flex flex-col items-center space-y-8 h-[30rem]">

@@ -129,7 +129,7 @@ const mobileClientLogos = [
 
 export const OurClientsSection: React.FC = () => {
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto md:py-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
       {/* Mobile Heading */}
       <div className="block lg:hidden mb-8 sm:mb-12">
         <MobileHeading>Our clients</MobileHeading>

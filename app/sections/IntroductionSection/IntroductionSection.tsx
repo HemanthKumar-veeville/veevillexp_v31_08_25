@@ -29,7 +29,7 @@ export const IntroductionSection = (): React.JSX.Element => {
   ];
 
   return (
-    <section className="w-full max-w-[1280px] mx-auto ">
+    <section className="w-full max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
       {/* Mobile Layout (default) */}
       <div className="block lg:hidden">
         <div className="space-y-6 sm:space-y-8">

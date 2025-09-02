@@ -10,7 +10,7 @@ import {
 
 export const PlaySection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto  md:py-[90px]">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto  md:py-[90px] md:py-auto md:flex md:flex-col md:items-start md:justify-center">
       <div className="max-w-7xl mx-auto">
         {/* Mobile Layout (default) */}
         <div className="block h-[30rem] lg:hidden">

@@ -3,8 +3,8 @@ import { Heading1, BodyHelvetica } from "@/components/ui/typography";
 
 export const HighFiveSection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-[90px] px-[52px] max-w-[1280px] mx-auto ">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full py-[90px] px-[52px] max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
+      <div className="max-w-7xl">
         <div className="mb-8 font-italic text-[#1c1c1c] text-6xl leading-[59.4px] font-[Georgia-Italic]">
           The high-five methodology
         </div>

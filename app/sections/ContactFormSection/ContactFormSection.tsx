@@ -186,8 +186,8 @@ export const ContactFormSection: React.FC = () => {
   };
 
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-[52px] lg:px-14 max-w-[1280px] mx-auto md:py-auto">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-[52px] lg:px-14 max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
+      <div className="w-full">
         {/* Section Heading */}
         <div className="mb-8 sm:mb-12">
           <UpdatedHeading>Get in Touch</UpdatedHeading>
