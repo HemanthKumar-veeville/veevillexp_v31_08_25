@@ -386,3 +386,110 @@ body::-webkit-scrollbar-thumb,
 *::-webkit-scrollbar-thumb {
   display: none !important;
 }
+
+/* Snap scroll enhancements */
+.snap-y {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+.snap-end {
+  scroll-snap-align: end;
+}
+
+/* Enhanced snap scroll experience */
+.snap-mandatory {
+  scroll-snap-type: y mandatory;
+}
+
+/* Ensure proper section heights for snap scrolling */
+.snap-start > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* Special handling for combined sections
+.snap-start .flex-col {
+  height: 100%;
+}
+
+.snap-start .flex-1 {
+  flex: 1;
+  min-height: 0;
+}
+
+.snap-start .flex-shrink-0 {
+  flex-shrink: 0;
+} */
+
+/* Mobile-specific snap scroll adjustments */
+@media (max-width: 768px) {
+  .snap-start {
+    height: 100vh;
+    min-height: 100vh;
+    padding: 1rem 0;
+  }
+  
+  .snap-start > * {
+    height: 100%;
+    min-height: 100%;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .snap-y {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory;
+  }
+  
+  .snap-start {
+    scroll-snap-align: start;
+    height: 100vh;
+    min-height: 100vh;
+  }
+}
+
+/* Ensure proper spacing between sections */
+.snap-start + .snap-start {
+  margin-top: 0;
+}
+
+/* Smooth transitions for snap scrolling */
+.snap-start {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+.snap-start:focus-within {
+  outline: 2px solid var(--veeville-accent-blue);
+  outline-offset: 2px;
+}
+
+/* Override any conflicting styles */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Ensure the main container takes full height */
+.snap-y {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

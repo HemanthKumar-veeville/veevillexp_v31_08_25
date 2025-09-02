@@ -43,7 +43,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
   ];
 
   return (
-    <section className="w-full relative pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto ">
+    <section className="w-full relative pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden">
       <div className="">
         <div className="text-left mb-6 sm:mb-8">
           {/* Mobile Heading */}
