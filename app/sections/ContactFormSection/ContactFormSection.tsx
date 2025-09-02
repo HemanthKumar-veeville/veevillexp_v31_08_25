@@ -167,22 +167,13 @@ export const ContactFormSection: React.FC = () => {
 
   // Get all error messages to display above submit button
   const getErrorMessages = () => {
-    const errorMessages: string[] = [];
-    Object.keys(errors).forEach((key) => {
-      const fieldName = key as keyof FormData;
-      if (errors[fieldName] && touched[fieldName]) {
-        const fieldLabel = {
-          firstName: "First Name",
-          lastName: "Last Name",
-          email: "Email",
-          organization: "Organization",
-          teamSize: "Team Size",
-          message: "Message",
-        }[fieldName];
-        errorMessages.push(`${fieldLabel}: ${errors[fieldName]}`);
-      }
-    });
-    return errorMessages;
+    // Show a single, common error message if there are any errors on touched fields
+    const hasAnyError = Object.keys(errors).some(
+      (key) => errors[key as keyof FormData] && touched[key as keyof FormData]
+    );
+    return hasAnyError
+      ? ["Please fill out all required fields correctly before submitting."]
+      : [];
   };
 
   return (
@@ -296,40 +287,41 @@ export const ContactFormSection: React.FC = () => {
                 className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none px-0 py-3 text-base font-sofia resize-none min-h-[80px] transition-colors"
               />
             </div>
-
-            {/* Error Messages */}
-            {getErrorMessages().length > 0 && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <ul className="list-disc list-inside space-y-1">
-                  {getErrorMessages().map((error, index) => (
-                    <li key={index} className="text-red-700 text-sm font-sofia">
-                      {error}
-                    </li>
-                  ))}
-                </ul>
+            <div className="flex justify-start items-center gap-4">
+              <div className="">
+                <Button
+                  type="submit"
+                  disabled={!isFormValid() || isSubmitting}
+                  className={`bg-[#1c1c1c] text-white rounded-lg px-8 py-4 font-helvetica font-semibold text-[20px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
+                    !isFormValid() || isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-3">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Sending...</span>
+                    </div>
+                  ) : (
+                    "Send Message"
+                  )}
+                </Button>
               </div>
-            )}
-
-            {/* Submit Button */}
-            <div className="pt-4">
-              <Button
-                type="submit"
-                disabled={!isFormValid() || isSubmitting}
-                className={`bg-[#1c1c1c] text-white rounded-lg px-8 py-4 font-helvetica font-semibold text-[20px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
-                  !isFormValid() || isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Sending...</span>
-                  </div>
-                ) : (
-                  "Send Message"
-                )}
-              </Button>
+              {getErrorMessages().length > 0 && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <ul className="list-disc list-inside space-y-1">
+                    {getErrorMessages().map((error, index) => (
+                      <li
+                        key={index}
+                        className="text-red-700 text-sm font-sofia"
+                      >
+                        {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </form>
