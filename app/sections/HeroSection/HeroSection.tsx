@@ -39,21 +39,27 @@ export const HeroSection: React.FC = () => {
 
       {/* Desktop Layout */}
       <div className="hidden md:grid md:grid-cols-2 md:gap-8">
-        <div className="flex flex-col items-start justify-between">
+        <div className="flex flex-col items-start justify-between gap-y-10">
           <img
             className="w-[672px] h-[190px] mb-8"
             alt="Group"
             src="/img/group-1000001868.png"
           />
-          <img
-            className="w-[504px] h-[306px] object-contain mb-8"
-            alt="Image"
-            src="/img/image-19.png"
-          />
+          <div>
+            <BrandLabel className="w-[360px]">
+              it took me four years to paint like raphael,
+              <br /> but a lifetime to
+              <br /> paint like a child.
+            </BrandLabel>
+            <br />
+            <BrandLabel className="w-[360px] text-right">
+              -PABLO PICASSO
+            </BrandLabel>
+          </div>
         </div>
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-end justify-center">
           <img
-            className="w-[403px] h-[682px]"
+            className="max-w-[40vw] w-auto h-[95dvh] object-contain absolute top-0 right-0"
             alt="Group"
             src="/img/group-1000001860.png"
           />
