@@ -41,7 +41,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
     <section className="w-full relative pt-16 px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden py-auto flex flex-col items-start justify-start">
       <div className="">
         <div className="text-left mb-2">
-          <UpdatedHeading className="mb-2">
+          <UpdatedHeading className="mb-8">
             Ready to rediscover wonder?
           </UpdatedHeading>
 
@@ -217,7 +217,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
           </div>
         </div>
 
-        <div className="w-full max-w-[80rem] h-auto absolute bottom-[-3rem] left-1/2 -translate-x-1/2">
+        <div className="w-full max-w-[80rem] h-auto absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2">
           <img
             className="w-full h-auto"
             alt="Testimonials"
