@@ -58,6 +58,18 @@
 }
 
 @font-face {
+  font-family: "Helvetica-Light";
+  src: url("https://anima-uploads.s3.amazonaws.com/5c4a8fa3ba3d79000962263a/Helvetica Light.ttf")
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Georgia-Italic";
+  src: url("https://anima-uploads.s3.amazonaws.com/projects/60a4e27754ed7caeb29d86c5/fonts/georgia-italic.ttf")
+    format("truetype");
+}
+
+@font-face {
   font-family: 'Sofia Pro';
   src: url('/fonts/Sofia Pro Semi Bold Az.otf') format('opentype');
   font-weight: 600;

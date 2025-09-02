@@ -3,15 +3,18 @@ import { Heading1, BodyHelvetica } from "@/components/ui/typography";
 
 export const HighFiveSection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-20 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
-      <div className="max-w-7xl mx-auto px-4">
-        <header className="mb-16">
-          <Heading1 className="text-left">The high-five methodology</Heading1>
-        </header>
+    <section className="w-full py-[90px] px-[52px] max-w-[1280px] mx-auto ">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8 font-italic text-[#1c1c1c] text-6xl leading-[59.4px] font-[Georgia-Italic]">
+          The high-five methodology
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="lg:col-span-2 space-y-8">
-            <BodyHelvetica>
+            <div
+              style={{ lineHeight: "normal" }}
+              className="text-black text-justify font-helvetica text-[20px] font-light not-italic leading-normal w-[524px]"
+            >
               <p className="leading-[27.5px] mb-4">
                 When you consciously unwrap
                 <br />
@@ -21,7 +24,6 @@ export const HighFiveSection = (): React.JSX.Element => {
                 <br />
                 become clear as day.
               </p>
-
               <p className="leading-[27.3px]">
                 You can enter Kolb&apos;s learning cycle,
                 <br />
@@ -35,13 +37,17 @@ export const HighFiveSection = (): React.JSX.Element => {
                 <br />
                 When learning becomes fun, you will not feel the strain.
               </p>
-            </BodyHelvetica>
-
-            <BodyHelvetica className="leading-[27.3px]">
-              Curious to know what this means? Don&#39;t google.
-              <br />
-              Talk to us. We never rhyme without reason!
-            </BodyHelvetica>
+            </div>
+            <div
+              style={{ lineHeight: "normal" }}
+              className="text-black text-justify font-helvetica text-[20px] font-light not-italic leading-normal w-[524px]"
+            >
+              <span className="leading-[27.3px]">
+                Curious to know what this means? Don&#39;t google.
+                <br />
+                Talk to us. We never rhyme without reason!
+              </span>
+            </div>
           </div>
 
           <div className="lg:col-span-1 flex justify-center lg:justify-end">

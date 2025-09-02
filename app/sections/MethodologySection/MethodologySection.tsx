@@ -9,6 +9,8 @@ import {
   MobileCategoryLabel,
   MobileMethodologyDescription,
   MobileMethodologyTitle,
+  UpdatedHeading,
+  UpdatedMethodologyDescription,
 } from "@/components/ui/typography";
 
 const methodologyData = [
@@ -40,7 +42,7 @@ const methodologyData = [
 
 export const MethodologySection = (): React.JSX.Element => {
   return (
-    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 relative max-w-[1280px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 relative max-w-[1280px] mx-auto  md:pt-[90px]">
       <div className="w-full mx-auto relative">
         {/* Mobile Layout (default) */}
         <div className="block lg:hidden">
@@ -131,50 +133,51 @@ export const MethodologySection = (): React.JSX.Element => {
         {/* Desktop Layout - Preserved */}
         <div className="hidden lg:block">
           {/* Title */}
-          <Heading1 className="absolute top-0 left-0 right-[16.66%]">
+          <UpdatedHeading className="mb-[-64px]">
             The premise of play
-          </Heading1>
+          </UpdatedHeading>
 
           {/* Methodology Items */}
           <div className="relative w-full h-[700px]">
             {/* Item 1 - Zero Slide-decks */}
             <div className="absolute inset-[12%_69%_66.21%_0.26%]">
               <LargeNumber className="mb-2">01</LargeNumber>
-              <Heading3 className="mb-8">Zero Slide-decks</Heading3>
-              <MethodologyDescription className="max-w-[255px]">
+              <Heading3 className="mb-8">Zero slide-decks</Heading3>
+              <UpdatedMethodologyDescription className="max-w-[255px]">
                 Seriously, haven't you seen them all already?
                 <br />
                 <br />
-                We believe in experiences that stick, not slides that slip away.
-              </MethodologyDescription>
+                We believe in experiences that stick, not slides that <br />
+                slip away.
+              </UpdatedMethodologyDescription>
             </div>
 
             {/* Item 2 - Zero Jargon */}
             <div className="absolute inset-[12%_34.1%_66.21%_35.16%]">
               <LargeNumber className="mb-2">02</LargeNumber>
-              <Heading3 className="mb-8">Zero Jargon</Heading3>
-              <MethodologyDescription className="max-w-[236px]">
+              <Heading3 className="mb-8">Zero jargon</Heading3>
+              <UpdatedMethodologyDescription className="max-w-[236px]">
                 "We must synergize holistic paradigms to leverage scalable
                 ecosystems."
                 <br />
                 <br />
                 Yeah. That made no sense to us either.
-              </MethodologyDescription>
+              </UpdatedMethodologyDescription>
             </div>
 
             {/* Item 3 - 100% Surprises */}
             <div className="absolute inset-[12%_1.86%_66.21%_67.4%]">
               <LargeNumber className="mb-2">03</LargeNumber>
-              <Heading3 className="mb-8">100% Surprises</Heading3>
-              <MethodologyDescription className="max-w-[236px]">
+              <Heading3 className="mb-8">100% surprises</Heading3>
+              <UpdatedMethodologyDescription className="max-w-[236px]">
                 When did you last leave a workshop talking about it for weeks?
                 We design moments that delight and memories that matter.
-              </MethodologyDescription>
+              </UpdatedMethodologyDescription>
             </div>
 
             {/* Images */}
             {/* Image for Item 1 - Zero Slide-decks */}
-            <div className="absolute left-[8rem] bottom-[6rem] w-[255px] h-[180px]">
+            <div className="absolute left-[8rem] bottom-[6rem] w-[250px] h-[237px]">
               <img
                 className="block w-full h-full object-contain"
                 alt="Methodology illustration 1"
@@ -182,7 +185,7 @@ export const MethodologySection = (): React.JSX.Element => {
               />
             </div>
             {/* Image for Item 2 - Zero Jargon */}
-            <div className="absolute left-[35rem] bottom-[6rem] w-[236px] h-[180px]">
+            <div className="absolute left-[32rem] bottom-[6rem] w-[253px] h-[213px]">
               <img
                 className="block w-full h-full object-contain"
                 alt="Methodology illustration 2"
@@ -190,9 +193,9 @@ export const MethodologySection = (): React.JSX.Element => {
               />
             </div>
             {/* Image for Item 3 - 100% Surprises */}
-            <div className="absolute left-[58rem] bottom-[6rem] w-[236px] h-[180px]">
+            <div className="absolute left-[58rem] bottom-[6rem] w-[247px] h-[273px]">
               <img
-                className="block w-full h-full object-contain"
+                className="block w-full h-full object-contain mt-[32px]"
                 alt="Methodology illustration 3"
                 src="/img/group-1000001875.png"
               />

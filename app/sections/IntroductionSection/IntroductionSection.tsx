@@ -8,6 +8,8 @@ import {
   MobileDescription,
   MobileCategoryLabel,
   MobileBrandLabel,
+  UpdatedHeading,
+  UpdatedDescription,
 } from "@/components/ui/typography";
 
 export const IntroductionSection = (): React.JSX.Element => {
@@ -27,7 +29,7 @@ export const IntroductionSection = (): React.JSX.Element => {
   ];
 
   return (
-    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
+    <section className="w-full max-w-[1280px] mx-auto ">
       {/* Mobile Layout (default) */}
       <div className="block lg:hidden">
         <div className="space-y-6 sm:space-y-8">
@@ -80,17 +82,17 @@ export const IntroductionSection = (): React.JSX.Element => {
       </div>
 
       {/* Desktop Layout - Preserved */}
-      <div className="hidden lg:grid lg:grid-cols-1 gap-8 lg:gap-16">
+      <div className="hidden lg:grid lg:grid-cols-1 md:px-[52px] md:py-[90px]">
         <div className="flex-1">
-          <Heading1 className="mb-8">
+          <UpdatedHeading className="mb-8">
             Crafted for the minds that matter
-          </Heading1>
+          </UpdatedHeading>
 
-          <div className="space-y-8">
-            <MethodologyDescription className="max-w-4xl ">
+          <div className="space-y-4">
+            <UpdatedDescription className="">
               We've got different tools in our box for all levels of the
               organization. Play should be for everyone.
-            </MethodologyDescription>
+            </UpdatedDescription>
 
             <div className="flex gap-64 ">
               {categories.map((category, index) => (
@@ -107,10 +109,10 @@ export const IntroductionSection = (): React.JSX.Element => {
               ))}
             </div>
 
-            <MethodologyDescription>
+            <UpdatedDescription>
               Demonstrated success for companies of all sizes across industry
               verticals.
-            </MethodologyDescription>
+            </UpdatedDescription>
           </div>
         </div>
 

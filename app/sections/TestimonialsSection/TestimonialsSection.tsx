@@ -6,6 +6,8 @@ import {
   MobileHeading,
   MobileDescription,
   MobileCategoryLabel,
+  UpdatedHeading,
+  UpdatedDescription,
 } from "@/components/ui/typography";
 
 export const TestimonialsSection = (): React.JSX.Element => {
@@ -41,7 +43,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
   ];
 
   return (
-    <section className="w-full relative pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
+    <section className="w-full relative pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto ">
       <div className="">
         <div className="text-left mb-6 sm:mb-8">
           {/* Mobile Heading */}
@@ -53,9 +55,9 @@ export const TestimonialsSection = (): React.JSX.Element => {
 
           {/* Desktop Heading */}
           <div className="hidden lg:block">
-            <GeorgiaHeading className="mb-3 sm:mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight sm:leading-normal">
+            <UpdatedHeading className="mb-8">
               Ready to rediscover wonder?
-            </GeorgiaHeading>
+            </UpdatedHeading>
           </div>
 
           {/* Mobile Description */}
@@ -68,10 +70,10 @@ export const TestimonialsSection = (): React.JSX.Element => {
 
           {/* Desktop Description */}
           <div className="hidden lg:block">
-            <HelveticaRegular className="text-lg sm:text-xl md:text-2xl lg:text-[25px] leading-relaxed">
+            <UpdatedDescription className="leading-relaxed">
               Let&apos;s explore how your team can achieve extraordinary results
               through extraordinary experiences
-            </HelveticaRegular>
+            </UpdatedDescription>
           </div>
         </div>
 

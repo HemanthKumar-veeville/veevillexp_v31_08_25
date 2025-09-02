@@ -4,11 +4,13 @@ import {
   BodyMedium,
   BrandBold,
   QuoteText,
+  UpdatedHeading,
+  UpdatedDescription,
 } from "@/components/ui/typography";
 
 export const PlaySection = (): React.JSX.Element => {
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto  md:py-[90px]">
       <div className="max-w-7xl mx-auto">
         {/* Mobile Layout (default) */}
         <div className="block h-[30rem] lg:hidden">
@@ -59,14 +61,14 @@ export const PlaySection = (): React.JSX.Element => {
         {/* Desktop Layout */}
         <div className="hidden lg:grid lg:grid-cols-2 gap-8 items-center">
           <div className="space-y-8">
-            <Heading2
+            <UpdatedHeading
               style={{ lineHeight: "normal" }}
-              className="line-height-normal leading-normal w-[45rem]"
+              className="leading-tight w-[45rem]"
             >
               Where grown-ups remember how to play
-            </Heading2>
+            </UpdatedHeading>
 
-            <QuoteText>
+            <UpdatedDescription className="w-[38rem]">
               <span>At </span>
               <BrandBold>Experiences by Veeville</BrandBold>
               <span>
@@ -79,12 +81,12 @@ export const PlaySection = (): React.JSX.Element => {
                 your challenges with fresh eyes and attack them with fresh
                 energy.
               </span>
-            </QuoteText>
+            </UpdatedDescription>
           </div>
 
           <div className="flex justify-center lg:justify-end">
             <img
-              className="w-full max-w-[418px] h-auto object-contain"
+              className="w-full max-w-[398px] h-auto  object-contain"
               alt="Group"
               src="/img/group-1000001849.png"
             />

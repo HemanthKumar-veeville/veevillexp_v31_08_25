@@ -10,6 +10,7 @@ import { MethodologySection } from "./sections/MethodologySection/MethodologySec
 import { OurClientsSection } from "./sections/OurClientsSection/OurClientsSection";
 import { PlaySection } from "./sections/PlaySection/PlaySection";
 import { TestimonialsSection } from "./sections/TestimonialsSection/TestimonialsSection";
+import { WhatShifts } from "./sections/WhatShifts/WhatShifts";
 
 export default function Veevillexp(): React.ReactNode {
   return (
@@ -22,9 +23,8 @@ export default function Veevillexp(): React.ReactNode {
         <PlaySection />
         <MethodologySection />
         <IntroductionSection />
-
         <div className="hidden md:flex md:flex-col md:gap-y-16">
-          <ExperienceSection />
+          <WhatShifts />
 
           <HighFiveSection />
         </div>

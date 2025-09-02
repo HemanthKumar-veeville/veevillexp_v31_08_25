@@ -416,6 +416,54 @@ export const MobileMethodologyTitle: React.FC<TypographyProps> = ({
   </Component>
 );
 
+// Updated typography variants for WhatShifts section
+export const UpdatedHeading: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    className={cn(
+      "font-italic text-[#1c1c1c] text-6xl leading-[59.4px] font-[Georgia-Italic]",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedDescription: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-black text-justify font-helvetica text-[20px] font-light not-italic leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedMethodologyDescription: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-[#606060] font-helvetica text-[20px] not-italic font-light leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
 // Export all variants for easy importing
 export const Typography = {
   Heading1,
@@ -445,4 +493,6 @@ export const Typography = {
   MobileBrandLabel,
   MobileMethodologyDescription,
   MobileMethodologyTitle,
+  UpdatedHeading,
+  UpdatedDescription,
 };

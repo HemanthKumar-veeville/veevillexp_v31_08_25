@@ -129,7 +129,7 @@ const mobileClientLogos = [
 
 export const OurClientsSection: React.FC = () => {
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto ">
       {/* Mobile Heading */}
       <div className="block lg:hidden mb-8 sm:mb-12">
         <MobileHeading>Our clients</MobileHeading>
@@ -137,7 +137,9 @@ export const OurClientsSection: React.FC = () => {
 
       {/* Desktop Heading */}
       <div className="hidden lg:block">
-        <GeorgiaHeading className="w-[894px] mb-16">Our clients</GeorgiaHeading>
+        <div className="mb-8 font-italic text-[#1c1c1c] text-6xl leading-[59.4px] font-[Georgia-Italic]">
+          Our clients
+        </div>
       </div>
 
       {/* Desktop Client Logos - Hidden on mobile, visible on md and up */}
