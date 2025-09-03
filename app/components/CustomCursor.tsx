@@ -172,13 +172,14 @@ export default function CustomCursor() {
 
     const updateCursorType = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const isClickable =
+      const isClickable = !!(
         target.tagName.toLowerCase() === "button" ||
         target.tagName.toLowerCase() === "a" ||
         target.closest("button") ||
         target.closest("a") ||
         target.getAttribute("role") === "button" ||
-        target.classList.contains("clickable");
+        target.classList.contains("clickable")
+      );
 
       setIsPointer(isClickable);
 
