@@ -8,19 +8,19 @@ import {
 export const WhatShifts = (): React.JSX.Element => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-screen-xl mx-auto px-[52px] py-[90px] ">
-      <div className="flex flex-col justify-between">
-        <UpdatedHeading className="mb-4">What shifts</UpdatedHeading>
+      <div className="flex flex-col justify-start w-[47rem]">
+        <UpdatedHeading className="mb-4">
+          The change becomes visible
+        </UpdatedHeading>
 
         <UpdatedDescription className="w-[524px]">
-          You already have the tools. We help you sharpen them and make the
-          process fun and enjoyable. Reframe complex challenges with simplicity
-          and humour, build without instructions and listen without bias. Go
-          back more aware, present and curious.
+          Our interventions will teach you to re-frame complex challenges.
+          listen without bias, strengthen the trust in the team, enhance
+          creative confidence and make better decisions in ambiguity
           <br />
           <br />
-          Solve business problems faster, strengthen trust, enhance creative
-          confidence and storytelling, make better decisions under ambiguity...
-          and there could be more!
+          You will find ways to build effective solutions from within. You will
+          go back more aware, present and curious.
           <br />
           Think like a 5 year-old. Lead like a grown up!
         </UpdatedDescription>

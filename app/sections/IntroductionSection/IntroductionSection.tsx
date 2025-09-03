@@ -84,7 +84,11 @@ export const IntroductionSection = (): React.JSX.Element => {
       {/* Desktop Layout - Preserved */}
       <div className="hidden lg:grid lg:grid-cols-1 md:px-[52px] md:py-[90px]">
         <div className="flex-1">
-          <UpdatedHeading className="mb-8">
+          <UpdatedHeading
+            style={{ lineHeight: "normal" }}
+            className="leading-tight mb-8"
+          >
+            Experiences by Veeville <br />
             Crafted for the minds that matter
           </UpdatedHeading>
 
@@ -110,8 +114,8 @@ export const IntroductionSection = (): React.JSX.Element => {
             </div>
 
             <UpdatedDescription>
-              Demonstrated success for companies of all sizes across industry
-              verticals.
+              Impactful implementations across companies of all sizes and
+              industry verticals
             </UpdatedDescription>
           </div>
         </div>
