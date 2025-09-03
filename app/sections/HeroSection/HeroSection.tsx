@@ -5,32 +5,33 @@ export const HeroSection: React.FC = () => {
   return (
     <section className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 md:pt-[90px] pt-[30px] max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
       {/* Mobile Layout */}
-      <div className="block md:hidden">
-        <div className="flex flex-col items-center space-y-8 h-[30rem]">
-          <div className="flex flex-col items-start">
+      <div className="block lg:hidden">
+        <div className="flex flex-col items-center space-y-4 sm:space-y-6 md:space-y-8 min-h-[25rem] sm:min-h-[28rem] md:min-h-[30rem] px-4">
+          <div className="absolute flex flex-col items-start w-full max-w-sm sm:max-w-md md:max-w-lg z-10  top-4 sm:top-6 md:top-8 left-4 sm:left-6 md:left-8">
             {/* Exp By Logo */}
             <img
-              className="w-[327px] h-auto object-contain"
+              className="w-[60dvw] sm:w-[70dvw] h-auto object-contain"
               alt="Exp By Logo"
               src="/img/mobile_comp_logos/exp_by_logo.png"
             />
             {/* Veeville Logo */}
             <img
-              className="w-[121px] h-auto object-contain"
+              className="w-[30dvw] sm:w-[35dvw] h-auto object-contain mt-2"
               alt="Veeville Logo"
               src="/img/mobile_comp_logos/veeville_logo.png"
             />
           </div>
+
           {/* Hero Mobile Image */}
           <img
-            className="w-[250px] max-w-sm h-auto object-contain absolute top-24 right-0"
+            className="h-[90dvh] w-auto object-contain absolute bottom-0 right-0"
             alt="Hero Mobile"
             src="/img/mobile_comp_logos/hero_mobile.png"
           />
 
           {/* Hero Quote Image */}
           <img
-            className="w-[203px] h-auto object-contain absolute top-[30rem] left-8"
+            className="w-[50dvw] h-auto object-contain absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8"
             alt="Hero Quote"
             src="/img/mobile_comp_logos/pablo_quote.png"
           />
@@ -38,7 +39,7 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden md:grid md:grid-cols-2 md:gap-8">
+      <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
         <div className="flex flex-col items-start justify-start gap-y-32">
           {/* Logo Images */}
           <div className="flex flex-col items-start space-y-4">
