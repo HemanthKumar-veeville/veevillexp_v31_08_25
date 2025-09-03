@@ -3,7 +3,7 @@ import { FooterText, MobileDescription } from "@/components/ui/typography";
 
 export const FooterSection: React.FC = () => {
   return (
-    <footer className="w-full px-4 sm:px-6 md:px-10 lg:px-14 py-2 sm:py-3 md:py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 md:gap-0 min-h-[43px]">
+    <footer className="w-full max-w-[1280px] mx-auto py-2 sm:py-3 md:py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 md:gap-0 min-h-[43px]">
       {/* Mobile Footer Text */}
       <div className="block sm:hidden">
         <div className="flex flex-col gap-1">

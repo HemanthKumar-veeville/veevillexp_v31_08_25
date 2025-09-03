@@ -13,6 +13,7 @@ import {
   UpdatedHeading,
   UpdatedDescription,
 } from "@/components/ui/typography";
+import { FooterSection } from "../FooterSection/FooterSection";
 
 interface FormData {
   firstName: string;
@@ -177,7 +178,7 @@ export const ContactFormSection: React.FC = () => {
   };
 
   return (
-    <section className="w-full py-16 px-4 sm:px-6 md:px-[52px] lg:px-14 max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
+    <section className="w-full py-16 px-4 sm:px-6 md:px-[52px] lg:px-14 max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-start md:h-full sm:gap-4 md:gap-8 lg:gap-16">
       <div className="w-full">
         {/* Section Heading */}
         <div className="mb-8 sm:mb-12">
@@ -326,6 +327,7 @@ export const ContactFormSection: React.FC = () => {
           </div>
         </form>
       </div>
+      <FooterSection />
     </section>
   );
 };
