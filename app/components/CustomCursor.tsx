@@ -25,7 +25,7 @@ export default function CustomCursor() {
   // Use refs instead of state for particles to prevent infinite re-renders
   const particlesRef = useRef<Particle[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const particleIdRef = useRef(0);
   const hasMovedRef = useRef(false);
 
@@ -146,32 +146,53 @@ export default function CustomCursor() {
   }, [updateParticles, renderParticles]);
 
   useEffect(() => {
-    const updateCursor = (e: MouseEvent) => {
-      // Set initial position if this is the first movement
+    // Universal cursor update function that works for both mouse and touch events
+    const updateCursorPosition = (
+      x: number,
+      y: number,
+      isTouch: boolean = false
+    ) => {
       if (!hasMovedRef.current) {
         hasMovedRef.current = true;
         setIsVisible(true);
       }
 
-      // Update position directly for smooth movement on MacBook
-      // ALWAYS update position regardless of isVisible state
-      setPosition({ x: e.clientX, y: e.clientY });
+      // Always update position for consistent behavior
+      setPosition({ x, y });
 
-      // Create trail particles only if visible
+      // Create particles if visible
       if (isVisible) {
-        createParticle(e.clientX, e.clientY, "trail");
-
-        // Occasionally create sparkles and bubbles
-        if (Math.random() < 0.1) {
-          createParticle(e.clientX, e.clientY, "sparkle");
-        }
-        if (Math.random() < 0.05) {
-          createParticle(e.clientX, e.clientY, "bubble");
+        createParticle(x, y, "trail");
+        if (!isTouch) {
+          // Only create special effects for mouse movement
+          if (Math.random() < 0.1) createParticle(x, y, "sparkle");
+          if (Math.random() < 0.05) createParticle(x, y, "bubble");
         }
       }
     };
 
-    const updateCursorType = (e: MouseEvent) => {
+    // Mouse event handlers
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      updateCursorPosition(e.clientX, e.clientY);
+    };
+
+    // Touch event handlers with proper touch position calculation
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        updateCursorPosition(touch.clientX, touch.clientY, true);
+      }
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        updateCursorPosition(touch.clientX, touch.clientY, true);
+      }
+    };
+
+    const updateCursorType = (e: MouseEvent | TouchEvent) => {
       const target = e.target as HTMLElement;
       const isClickable = !!(
         target.tagName.toLowerCase() === "button" ||
@@ -184,84 +205,59 @@ export default function CustomCursor() {
 
       setIsPointer(isClickable);
 
-      // Create extra particles on clickable elements
       if (isClickable && isVisible) {
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            createParticle(e.clientX, e.clientY, "sparkle");
-          }, i * 50);
+        const x =
+          e instanceof MouseEvent
+            ? e.clientX
+            : (e as TouchEvent).touches[0]?.clientX;
+        const y =
+          e instanceof MouseEvent
+            ? e.clientY
+            : (e as TouchEvent).touches[0]?.clientY;
+
+        if (typeof x === "number" && typeof y === "number") {
+          for (let i = 0; i < 3; i++) {
+            setTimeout(() => createParticle(x, y, "sparkle"), i * 50);
+          }
         }
       }
     };
 
-    const handleMouseEnter = () => {
+    // Set initial position to center of screen
+    const centerCursor = () => {
+      const x = window.innerWidth / 2;
+      const y = window.innerHeight / 2;
+      setPosition({ x, y });
       setIsVisible(true);
       hasMovedRef.current = true;
     };
 
-    const handleMouseLeave = () => {
-      // Keep cursor visible on all devices
-    };
+    centerCursor();
 
-    // Set initial position to center of screen
-    setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-
-    document.addEventListener("mousemove", updateCursor, { passive: true });
-    document.addEventListener("mouseover", updateCursorType, { passive: true });
-    document.addEventListener("mouseenter", handleMouseEnter, {
+    // Add event listeners with proper passive settings
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
+    document.addEventListener("touchstart", handleTouchStart, {
       passive: true,
     });
-    document.addEventListener("mouseleave", handleMouseLeave, {
+    document.addEventListener("mouseover", updateCursorType);
+    document.addEventListener("touchstart", updateCursorType as EventListener, {
       passive: true,
     });
 
-    // Additional event listeners for better cross-device compatibility
-    document.addEventListener(
-      "touchstart",
-      () => {
-        setIsVisible(true);
-        hasMovedRef.current = true;
-      },
-      { passive: true }
-    );
-
-    // Ensure cursor is visible after a short delay
-    const fallbackTimer = setTimeout(() => {
-      if (!hasMovedRef.current) {
-        setIsVisible(true);
-        hasMovedRef.current = true;
-      }
-    }, 100);
-
-    // Additional MacBook-specific cursor visibility fix
-    if (navigator.userAgent.toLowerCase().includes("mac")) {
-      const macBookTimer = setTimeout(() => {
-        setIsVisible(true);
-        hasMovedRef.current = true;
-        // Force cursor to center if it's not positioned
-        if (position.x === 0 && position.y === 0) {
-          setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-        }
-      }, 50);
-
-      return () => {
-        document.removeEventListener("mousemove", updateCursor);
-        document.removeEventListener("mouseover", updateCursorType);
-        document.removeEventListener("mouseenter", handleMouseEnter);
-        document.removeEventListener("mouseleave", handleMouseLeave);
-        document.removeEventListener("touchstart", () => {});
-        clearTimeout(fallbackTimer);
-        clearTimeout(macBookTimer);
-      };
-    }
+    // Ensure cursor is always visible and positioned
+    const visibilityTimer = setTimeout(centerCursor, 100);
 
     return () => {
-      document.removeEventListener("mousemove", updateCursor);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("mouseover", updateCursorType);
-      document.removeEventListener("mouseenter", handleMouseEnter);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-      document.removeEventListener("touchstart", () => {});
-      clearTimeout(fallbackTimer);
+      document.removeEventListener(
+        "touchstart",
+        updateCursorType as EventListener
+      );
+      clearTimeout(visibilityTimer);
     };
   }, [createParticle, isVisible]);
 
@@ -310,24 +306,39 @@ export default function CustomCursor() {
     const detectDevice = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       const isMac = /macintosh|mac os x/i.test(userAgent);
+      const isIOS = /iphone|ipad|ipod/.test(userAgent);
       const isHighDPI = window.devicePixelRatio > 1;
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
       setIsMacOS(isMac);
 
-      // Force cursor visibility on MacBooks and high-DPI displays
-      if (isMac || isHighDPI) {
+      // Force cursor visibility and position on all supported devices
+      if (isMac || isHighDPI || isIOS || isTouchDevice) {
         hasMovedRef.current = true;
         setIsVisible(true);
-        // Force initial position on MacBook to ensure cursor appears
+        // Center cursor initially
         setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
       }
     };
 
     detectDevice();
 
-    // Re-detect on resize
+    // Handle orientation changes for mobile devices
+    const handleOrientationChange = () => {
+      setTimeout(() => {
+        setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+      }, 100);
+    };
+
+    // Re-detect on resize and orientation change
     window.addEventListener("resize", detectDevice);
-    return () => window.removeEventListener("resize", detectDevice);
+    window.addEventListener("orientationchange", handleOrientationChange);
+
+    return () => {
+      window.removeEventListener("resize", detectDevice);
+      window.removeEventListener("orientationchange", handleOrientationChange);
+    };
   }, []);
 
   // Calculate cursor position with proper offset
