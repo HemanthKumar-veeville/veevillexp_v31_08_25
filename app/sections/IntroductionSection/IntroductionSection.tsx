@@ -88,7 +88,6 @@ export const IntroductionSection = (): React.JSX.Element => {
             style={{ lineHeight: "normal" }}
             className="leading-tight mb-8"
           >
-            Experiences by Veeville <br />
             Crafted for the minds that matter
           </UpdatedHeading>
 

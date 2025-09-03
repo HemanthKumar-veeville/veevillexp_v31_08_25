@@ -1,5 +1,11 @@
 import React from "react";
 import { FooterText, MobileDescription } from "@/components/ui/typography";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 export const FooterSection: React.FC = () => {
   return (
@@ -11,13 +17,13 @@ export const FooterSection: React.FC = () => {
             Contact Information: experiences/veeville
           </MobileDescription>
           <a
-            href="mailto:getpersonal@veeville.com"
+            href="mailto:experiences@veeville.com"
             rel="noopener noreferrer"
             target="_blank"
             className="text-center underline break-all hover:text-[#2d2d2d] transition-colors"
           >
             <MobileDescription className="text-[#465666]">
-              getpersonal@veeville.com
+              experiences@veeville.com
             </MobileDescription>
           </a>
           <a
@@ -40,12 +46,12 @@ export const FooterSection: React.FC = () => {
             Contact Information: experiences/veeville |{" "}
           </span>
           <a
-            href="mailto:getpersonal@veeville.com"
+            href="mailto:experiences@veeville.com"
             rel="noopener noreferrer"
             target="_blank"
             className="tracking-[-0.08px] underline break-all sm:break-words md:break-normal hover:text-[#2d2d2d] transition-colors"
           >
-            getpersonal@veeville.com
+            experiences@veeville.com
           </a>
           <span className="tracking-[-0.08px]"> | </span>
           <a
@@ -59,11 +65,25 @@ export const FooterSection: React.FC = () => {
         </FooterText>
       </div>
 
-      <img
-        className="w-[40px] sm:w-[50px] md:w-[58px] lg:w-[66px] h-auto object-contain flex-shrink-0"
-        alt="Group"
-        src="/img/group-1000001822.png"
-      />
+      <div className="flex items-center gap-2">
+        <span
+          onClick={() =>
+            window.open("https://www.instagram.com/veevillexp/", "_blank")
+          }
+        >
+          <FaInstagram className="text-[#465666] font-bold" />
+        </span>
+        <span
+          onClick={() =>
+            window.open(
+              "https://www.linkedin.com/company/experiences-by-veeville/about/?viewAsMember=true",
+              "_blank"
+            )
+          }
+        >
+          <FaLinkedinIn className="text-[#465666] font-bold" />
+        </span>
+      </div>
     </footer>
   );
 };

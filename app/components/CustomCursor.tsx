@@ -18,11 +18,16 @@ interface Particle {
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const [isVisible, setIsVisible] = useState(true); // Start as visible by default
+  const [isMacOS, setIsMacOS] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Use refs instead of state for particles to prevent infinite re-renders
+  const particlesRef = useRef<Particle[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const particleIdRef = useRef(0);
+  const hasMovedRef = useRef(false);
 
   // Create new particles
   const createParticle = useCallback(
@@ -50,25 +55,24 @@ export default function CustomCursor() {
         type,
       };
 
-      setParticles((prev) => [...prev, particle]);
+      // Add to ref instead of state
+      particlesRef.current.push(particle);
     },
     []
   );
 
   // Update particles animation
   const updateParticles = useCallback(() => {
-    setParticles((prev) =>
-      prev
-        .map((particle) => ({
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-          life: particle.life - 0.02,
-          vx: particle.vx * 0.98,
-          vy: particle.vy * 0.98,
-        }))
-        .filter((particle) => particle.life > 0)
-    );
+    particlesRef.current = particlesRef.current
+      .map((particle) => ({
+        ...particle,
+        x: particle.x + particle.vx,
+        y: particle.y + particle.vy,
+        life: particle.life - 0.02,
+        vx: particle.vx * 0.98,
+        vy: particle.vy * 0.98,
+      }))
+      .filter((particle) => particle.life > 0);
   }, []);
 
   // Render particles on canvas
@@ -82,8 +86,8 @@ export default function CustomCursor() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Render particles
-    particles.forEach((particle) => {
+    // Render particles from ref
+    particlesRef.current.forEach((particle) => {
       const alpha = particle.life / particle.maxLife;
       ctx.save();
       ctx.globalAlpha = alpha;
@@ -133,9 +137,9 @@ export default function CustomCursor() {
 
       ctx.restore();
     });
-  }, [particles]);
+  }, []);
 
-  // Animation loop
+  // Animation loop - now stable without dependencies that change
   const animate = useCallback(() => {
     updateParticles();
     renderParticles();
@@ -144,6 +148,12 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const updateCursor = (e: MouseEvent) => {
+      // Set initial position if this is the first movement
+      if (!hasMovedRef.current) {
+        hasMovedRef.current = true;
+        setIsVisible(true);
+      }
+
       setPosition({ x: e.clientX, y: e.clientY });
 
       // Create trail particles
@@ -182,23 +192,58 @@ export default function CustomCursor() {
       }
     };
 
-    const handleMouseEnter = () => setIsVisible(true);
-    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => {
+      setIsVisible(true);
+      hasMovedRef.current = true;
+    };
+
+    const handleMouseLeave = () => {
+      // Don't hide cursor on mouse leave, just keep it visible
+      // This ensures it stays visible on all devices
+    };
+
+    // Set initial position to center of screen
+    setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
     document.addEventListener("mousemove", updateCursor);
     document.addEventListener("mouseover", updateCursorType);
     document.addEventListener("mouseenter", handleMouseEnter);
     document.addEventListener("mouseleave", handleMouseLeave);
 
+    // Additional event listeners for better cross-device compatibility
+    document.addEventListener("touchstart", () => {
+      setIsVisible(true);
+      hasMovedRef.current = true;
+    });
+
+    // Ensure cursor is visible after a short delay (fallback for devices with delayed events)
+    const fallbackTimer = setTimeout(() => {
+      if (!hasMovedRef.current) {
+        setIsVisible(true);
+        hasMovedRef.current = true;
+      }
+    }, 100);
+
+    // Additional fallback for MacBooks and devices with delayed mouse events
+    const macBookFallbackTimer = setTimeout(() => {
+      if (isMacOS && !hasMovedRef.current) {
+        setIsVisible(true);
+        hasMovedRef.current = true;
+      }
+    }, 200);
+
     return () => {
       document.removeEventListener("mousemove", updateCursor);
       document.removeEventListener("mouseover", updateCursorType);
       document.removeEventListener("mouseenter", handleMouseEnter);
       document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("touchstart", () => {});
+      clearTimeout(fallbackTimer);
+      clearTimeout(macBookFallbackTimer);
     };
-  }, [isVisible, createParticle]);
+  }, [createParticle, isMacOS]);
 
-  // Start animation loop
+  // Start animation loop - now stable
   useEffect(() => {
     if (isVisible) {
       animate();
@@ -230,6 +275,41 @@ export default function CustomCursor() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Preload cursor image
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setImageLoaded(true);
+    img.onerror = () => setImageLoaded(true); // Fallback to default cursor
+    img.src = "/img/pencil_no_bg_v1.png";
+  }, []);
+
+  // Detect device type and OS
+  useEffect(() => {
+    const detectDevice = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMac = /macintosh|mac os x/i.test(userAgent);
+      const isHighDPI = window.devicePixelRatio > 1;
+
+      setIsMacOS(isMac);
+
+      // Force cursor visibility on MacBooks and high-DPI displays
+      if (isMac || isHighDPI) {
+        hasMovedRef.current = true;
+        // Use a callback to avoid dependency issues
+        setIsVisible((prev) => {
+          if (!prev) return true;
+          return prev;
+        });
+      }
+    };
+
+    detectDevice();
+
+    // Re-detect on resize (for device orientation changes)
+    window.addEventListener("resize", detectDevice);
+    return () => window.removeEventListener("resize", detectDevice);
+  }, []);
+
   return (
     <>
       {/* Particle canvas */}
@@ -246,20 +326,29 @@ export default function CustomCursor() {
 
       {/* Custom cursor */}
       <div
+        className="custom-cursor"
         style={{
-          width: "64px",
-          height: "64px",
+          width: imageLoaded ? "64px" : "20px",
+          height: imageLoaded ? "64px" : "20px",
           position: "fixed",
           pointerEvents: "none",
           zIndex: 9999,
-          backgroundImage: `url('/img/pencil_no_bg_v1.png')`,
+          backgroundImage: imageLoaded
+            ? `url('/img/pencil_no_bg_v1.png')`
+            : "none",
+          backgroundColor: imageLoaded ? "transparent" : "#FFD700",
+          borderRadius: imageLoaded ? "0" : "50%",
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           opacity: isVisible ? 1 : 0,
           transition: "transform 0.1s ease, opacity 0.2s ease",
           transform: isPointer
-            ? `translate(${position.x - 16}px, ${position.y - 16}px) scale(1.2)`
-            : `translate(${position.x - 16}px, ${position.y - 16}px)`,
+            ? `translate(${position.x - (imageLoaded ? 16 : 10)}px, ${
+                position.y - (imageLoaded ? 16 : 10)
+              }px) scale(1.2)`
+            : `translate(${position.x - (imageLoaded ? 16 : 10)}px, ${
+                position.y - (imageLoaded ? 16 : 10)
+              }px)`,
         }}
       />
     </>

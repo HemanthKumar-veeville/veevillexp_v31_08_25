@@ -9,7 +9,7 @@ export const WhatShifts = (): React.JSX.Element => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-screen-xl mx-auto px-[52px] py-[90px] ">
       <div className="flex flex-col justify-start w-[47rem]">
-        <UpdatedHeading className="mb-4">
+        <UpdatedHeading className="mb-8">
           The change becomes visible
         </UpdatedHeading>
 

@@ -70,7 +70,10 @@ export const PlaySection = (): React.JSX.Element => {
 
             <UpdatedDescription className="w-[38rem]">
               <span>At </span>
-              <BrandBold>Experiences by Veeville</BrandBold>
+              <BrandBold>Experiences by </BrandBold>
+              <span className="text-[#1c1c1c] font-bold italic text-2xl font-[Georgia-Italic]">
+                Veeville
+              </span>
               <span>
                 , we craft experiential learning programs for leaders and teams
                 to solve real business problems.

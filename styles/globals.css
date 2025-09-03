@@ -493,6 +493,45 @@ textarea,
   cursor: text !important;
 }
 
+/* Ensure custom cursor is visible on all devices */
+.custom-cursor {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
+}
+
+/* Device-specific cursor visibility */
+@media (pointer: fine) {
+  .custom-cursor {
+    display: block !important;
+  }
+}
+
+@media (pointer: coarse) {
+  .custom-cursor {
+    display: block !important;
+  }
+}
+
+/* MacBook and macOS specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+  .custom-cursor {
+    display: block !important;
+    visibility: visible !important;
+  }
+}
+
+/* Ensure cursor is visible on high-DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .custom-cursor {
+    display: block !important;
+  }
+}
+
 /* Override any conflicting styles */
 html, body {
   height: 100%;
