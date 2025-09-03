@@ -154,9 +154,10 @@ export default function CustomCursor() {
       }
 
       // Update position directly for smooth movement on MacBook
+      // ALWAYS update position regardless of isVisible state
       setPosition({ x: e.clientX, y: e.clientY });
 
-      // Create trail particles
+      // Create trail particles only if visible
       if (isVisible) {
         createParticle(e.clientX, e.clientY, "trail");
 
@@ -232,6 +233,28 @@ export default function CustomCursor() {
       }
     }, 100);
 
+    // Additional MacBook-specific cursor visibility fix
+    if (navigator.userAgent.toLowerCase().includes("mac")) {
+      const macBookTimer = setTimeout(() => {
+        setIsVisible(true);
+        hasMovedRef.current = true;
+        // Force cursor to center if it's not positioned
+        if (position.x === 0 && position.y === 0) {
+          setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+        }
+      }, 50);
+
+      return () => {
+        document.removeEventListener("mousemove", updateCursor);
+        document.removeEventListener("mouseover", updateCursorType);
+        document.removeEventListener("mouseenter", handleMouseEnter);
+        document.removeEventListener("mouseleave", handleMouseLeave);
+        document.removeEventListener("touchstart", () => {});
+        clearTimeout(fallbackTimer);
+        clearTimeout(macBookTimer);
+      };
+    }
+
     return () => {
       document.removeEventListener("mousemove", updateCursor);
       document.removeEventListener("mouseover", updateCursorType);
@@ -295,6 +318,8 @@ export default function CustomCursor() {
       if (isMac || isHighDPI) {
         hasMovedRef.current = true;
         setIsVisible(true);
+        // Force initial position on MacBook to ensure cursor appears
+        setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
       }
     };
 
