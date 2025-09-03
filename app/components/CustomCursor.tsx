@@ -171,10 +171,13 @@ export default function CustomCursor() {
       }
     };
 
-    // Mouse event handlers
+    // Mouse event handlers with RAF for smoother updates
     const handleMouseMove = (e: MouseEvent) => {
       e.preventDefault();
-      updateCursorPosition(e.clientX, e.clientY);
+      // Use requestAnimationFrame for smoother updates, especially on MacOS
+      requestAnimationFrame(() => {
+        updateCursorPosition(e.clientX, e.clientY);
+      });
     };
 
     // Touch event handlers with proper touch position calculation
@@ -317,18 +320,49 @@ export default function CustomCursor() {
       if (isMac || isHighDPI || isIOS || isTouchDevice) {
         hasMovedRef.current = true;
         setIsVisible(true);
-        // Center cursor initially
-        setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+
+        // Get current mouse position if available, otherwise center
+        if (typeof window !== "undefined") {
+          const mouseX =
+            window.event instanceof MouseEvent
+              ? (window.event as MouseEvent).clientX
+              : window.innerWidth / 2;
+          const mouseY =
+            window.event instanceof MouseEvent
+              ? (window.event as MouseEvent).clientY
+              : window.innerHeight / 2;
+          setPosition({ x: mouseX, y: mouseY });
+        }
+      }
+
+      // Add specific styles for cursor on MacOS
+      if (isMac) {
+        document.documentElement.style.cursor = "none";
+        const style = document.createElement("style");
+        style.textContent = `
+          * { cursor: none !important; }
+          a, button, [role="button"], .clickable { cursor: none !important; }
+        `;
+        document.head.appendChild(style);
+        return () => style.remove();
       }
     };
 
-    detectDevice();
+    const cleanup = detectDevice();
 
     // Handle orientation changes for mobile devices
     const handleOrientationChange = () => {
-      setTimeout(() => {
-        setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-      }, 100);
+      if (typeof window !== "undefined") {
+        const mouseX =
+          window.event instanceof MouseEvent
+            ? (window.event as MouseEvent).clientX
+            : window.innerWidth / 2;
+        const mouseY =
+          window.event instanceof MouseEvent
+            ? (window.event as MouseEvent).clientY
+            : window.innerHeight / 2;
+        setPosition({ x: mouseX, y: mouseY });
+      }
     };
 
     // Re-detect on resize and orientation change
@@ -336,6 +370,7 @@ export default function CustomCursor() {
     window.addEventListener("orientationchange", handleOrientationChange);
 
     return () => {
+      if (cleanup) cleanup();
       window.removeEventListener("resize", detectDevice);
       window.removeEventListener("orientationchange", handleOrientationChange);
     };
@@ -384,10 +419,13 @@ export default function CustomCursor() {
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           opacity: isVisible ? 1 : 0,
-          // Remove transition for immediate response on MacBook
           transform: `${getCursorTransform()} ${getCursorScale()}`,
-          // Use will-change for better performance on MacBook
-          willChange: "transform",
+          willChange: "transform, opacity",
+          // Improved performance for MacOS
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
+          perspective: "1000px",
+          WebkitPerspective: "1000px",
         }}
       />
     </>

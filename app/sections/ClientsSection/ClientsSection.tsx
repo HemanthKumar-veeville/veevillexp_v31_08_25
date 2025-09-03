@@ -26,7 +26,7 @@ const testimonialsData = [
   {
     quote:
       "No Classroom training. No models. No theory. No jargon. The people bonded, did interesting and new things together. They have taken learnings that are immediately applicable to their work. All our objectives from this intervention were met. Actually, they were exceeded beyond expectation.",
-    title: "HR Buisness Partner",
+    title: "HR Business Partner",
     subtitle: "",
     company: "at an 85 year old global organization",
     companyNote: "(which has seen it all over many, many years)",
