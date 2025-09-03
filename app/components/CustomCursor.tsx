@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+
+type ParticleType = "trail" | "sparkle" | "bubble";
 
 interface Particle {
   id: number;
@@ -8,37 +10,104 @@ interface Particle {
   y: number;
   vx: number;
   vy: number;
-  life: number;
-  maxLife: number;
+  life: number; // 0..1
+  maxLife: number; // lifespan scale
   size: number;
   color: string;
-  type: "trail" | "sparkle" | "bubble";
+  type: ParticleType;
 }
 
+const CURSOR_IMG = "/img/pencil_no_bg_v1.png";
+const MAX_PARTICLES = 600;
+const LIFE_STEP = 0.02;
+const DPR_MAX = 2;
+
 export default function CustomCursor() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isPointer, setIsPointer] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [isMacOS, setIsMacOS] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // visibility is still stateful (for quick show/hide), but position updates are imperative
+  const [visible, setVisible] = useState(true);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
-  // Use refs for smooth position updates
-  const positionRef = useRef({ x: 0, y: 0 });
-  const rafRef = useRef<number | undefined>(undefined);
-  const isMovingRef = useRef(false);
+  const imgLoadedRef = useRef(false);
+  const overClickableRef = useRef(false);
 
-  // Use refs instead of state for particles to prevent infinite re-renders
-  const particlesRef = useRef<Particle[]>([]);
+  const posRef = useRef({ x: 0, y: 0 });
+  const rafCursorRef = useRef<number>();
+  const rafAnimRef = useRef<number>();
+
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const particleIdRef = useRef(0);
-  const hasMovedRef = useRef(false);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const dprRef = useRef(1);
 
-  // Create new particles
+  const particlesRef = useRef<Particle[]>([]);
+  const pidRef = useRef(0);
+
+  // Toggle html.has-custom-cursor (only on fine pointers & if motion allowed)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mqPointer = window.matchMedia?.("(pointer: fine)");
+    const mqMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+
+    const update = () => {
+      const enable =
+        (mqPointer?.matches ?? false) && !(mqMotion?.matches ?? false);
+      document.documentElement.classList.toggle("has-custom-cursor", enable);
+    };
+
+    update();
+    mqPointer?.addEventListener?.("change", update);
+    mqMotion?.addEventListener?.("change", update);
+
+    return () => {
+      mqPointer?.removeEventListener?.("change", update);
+      mqMotion?.removeEventListener?.("change", update);
+      document.documentElement.classList.remove("has-custom-cursor");
+    };
+  }, []);
+
+  // Canvas sizing with DPR scaling
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, DPR_MAX);
+    dprRef.current = dpr;
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctxRef.current = ctx;
+  }, []);
+
+  // Imperative cursor transform updater (no React re-render needed)
+  const updateCursorVisual = useCallback((x: number, y: number) => {
+    const el = cursorRef.current;
+    if (!el) return;
+
+    // offset depends on whether image is loaded
+    const offset = imgLoadedRef.current ? 32 : 10; // half of 64px/20px
+    const scale = overClickableRef.current ? 1.2 : 1;
+
+    el.style.transform = `translate3d(${x - offset}px, ${
+      y - offset
+    }px, 0) scale(${scale})`;
+  }, []);
+
+  // Particle creation (keeps original feel)
   const createParticle = useCallback(
-    (x: number, y: number, type: Particle["type"] = "trail") => {
-      const particle: Particle = {
-        id: particleIdRef.current++,
+    (x: number, y: number, type: ParticleType = "trail") => {
+      const p: Particle = {
+        id: pidRef.current++,
         x: x + (Math.random() - 0.5) * 20,
         y: y + (Math.random() - 0.5) * 20,
         vx: (Math.random() - 0.5) * 2,
@@ -60,446 +129,232 @@ export default function CustomCursor() {
         type,
       };
 
-      particlesRef.current.push(particle);
+      const arr = particlesRef.current;
+      arr.push(p);
+      if (arr.length > MAX_PARTICLES) arr.splice(0, arr.length - MAX_PARTICLES);
     },
     []
   );
 
-  // Update particles animation
   const updateParticles = useCallback(() => {
-    particlesRef.current = particlesRef.current
-      .map((particle) => ({
-        ...particle,
-        x: particle.x + particle.vx,
-        y: particle.y + particle.vy,
-        life: particle.life - 0.02,
-        vx: particle.vx * 0.98,
-        vy: particle.vy * 0.98,
-      }))
-      .filter((particle) => particle.life > 0);
+    const arr = particlesRef.current;
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const p = arr[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.98;
+      p.vy *= 0.98;
+      p.life -= LIFE_STEP;
+      if (p.life <= 0) arr.splice(i, 1);
+    }
   }, []);
 
-  // Render particles on canvas
   const renderParticles = useCallback(() => {
+    const ctx = ctxRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!ctx || !canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width / dprRef.current,
+      canvas.height / dprRef.current
+    );
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const arr = particlesRef.current;
+    for (let i = 0; i < arr.length; i++) {
+      const p = arr[i];
+      const alpha = Math.max(0, Math.min(1, p.life / p.maxLife)); // clamp
 
-    // Render particles from ref
-    particlesRef.current.forEach((particle) => {
-      const alpha = particle.life / particle.maxLife;
       ctx.save();
       ctx.globalAlpha = alpha;
 
-      if (particle.type === "sparkle") {
-        // Draw sparkle
-        ctx.fillStyle = particle.color;
+      if (p.type === "sparkle") {
+        ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Add cross lines for sparkle effect
-        ctx.strokeStyle = particle.color;
+        ctx.strokeStyle = p.color;
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(particle.x - particle.size, particle.y);
-        ctx.lineTo(particle.x + particle.size, particle.y);
-        ctx.moveTo(particle.x, particle.y - particle.size);
-        ctx.lineTo(particle.x, particle.y + particle.size);
+        ctx.moveTo(p.x - p.size, p.y);
+        ctx.lineTo(p.x + p.size, p.y);
+        ctx.moveTo(p.x, p.y - p.size);
+        ctx.lineTo(p.x, p.y + p.size);
         ctx.stroke();
-      } else if (particle.type === "bubble") {
-        // Draw bubble
-        ctx.strokeStyle = particle.color;
+      } else if (p.type === "bubble") {
+        ctx.strokeStyle = p.color;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Add highlight
-        ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
         ctx.beginPath();
         ctx.arc(
-          particle.x - particle.size * 0.3,
-          particle.y - particle.size * 0.3,
-          particle.size * 0.3,
+          p.x - p.size * 0.3,
+          p.y - p.size * 0.3,
+          p.size * 0.3,
           0,
           Math.PI * 2
         );
         ctx.fill();
       } else {
-        // Draw trail particle
-        ctx.fillStyle = particle.color;
+        ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
-
       ctx.restore();
-    });
+    }
   }, []);
 
-  // Animation loop
   const animate = useCallback(() => {
     updateParticles();
     renderParticles();
-    animationRef.current = requestAnimationFrame(animate);
-  }, [updateParticles, renderParticles]);
+    rafAnimRef.current = requestAnimationFrame(animate);
+  }, [renderParticles, updateParticles]);
 
+  // Pointer movement (unified + imperative updates)
   useEffect(() => {
-    // Smooth cursor update function with RAF
-    const updateCursorPosition = (
-      x: number,
-      y: number,
-      isTouch: boolean = false
-    ) => {
-      if (!hasMovedRef.current) {
-        hasMovedRef.current = true;
-        setIsVisible(true);
-      }
+    if (typeof window === "undefined") return;
 
-      // Update position ref immediately
-      positionRef.current = { x, y };
-      isMovingRef.current = true;
+    const onPointerMove = (e: PointerEvent) => {
+      const { clientX: x, clientY: y, pointerType } = e;
+      posRef.current = { x, y };
+      setVisible(true);
 
-      // Cancel existing RAF if any
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+      // Imperative transform update (no re-render)
+      if (rafCursorRef.current) cancelAnimationFrame(rafCursorRef.current);
+      rafCursorRef.current = requestAnimationFrame(() => {
+        updateCursorVisual(x, y);
 
-      // Schedule RAF for smooth updates
-      rafRef.current = requestAnimationFrame(() => {
-        if (isMovingRef.current) {
-          setPosition(positionRef.current);
-
-          // Create particles if visible
-          if (isVisible) {
-            createParticle(x, y, "trail");
-            if (!isTouch) {
-              if (Math.random() < 0.1) createParticle(x, y, "sparkle");
-              if (Math.random() < 0.05) createParticle(x, y, "bubble");
-            }
-          }
-
-          isMovingRef.current = false;
+        // Particles: keep creating on all pointers (mouse/touch), like your original
+        createParticle(x, y, "trail");
+        if (pointerType !== "touch") {
+          if (Math.random() < 0.1) createParticle(x, y, "sparkle");
+          if (Math.random() < 0.05) createParticle(x, y, "bubble");
         }
       });
     };
 
-    // Mouse event handlers with proper coordinate calculation
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      const rect = document.documentElement.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      requestAnimationFrame(() => {
-        updateCursorPosition(x, y);
-      });
-    };
-
-    // Touch event handlers with proper coordinate calculation
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        const rect = document.documentElement.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-
-        requestAnimationFrame(() => {
-          updateCursorPosition(x, y, true);
-        });
-      }
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        const rect = document.documentElement.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-
-        requestAnimationFrame(() => {
-          updateCursorPosition(x, y, true);
-        });
-      }
-    };
-
-    const updateCursorType = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as HTMLElement;
-      const isClickable = !!(
-        target.tagName.toLowerCase() === "button" ||
-        target.tagName.toLowerCase() === "a" ||
-        target.closest("button") ||
-        target.closest("a") ||
-        target.getAttribute("role") === "button" ||
-        target.classList.contains("clickable")
+    const onPointerOver = (e: PointerEvent) => {
+      const el = e.target as HTMLElement | null;
+      const clickable = !!(
+        el?.tagName.toLowerCase() === "button" ||
+        el?.tagName.toLowerCase() === "a" ||
+        el?.closest("button") ||
+        el?.closest("a") ||
+        el?.getAttribute("role") === "button" ||
+        el?.classList.contains("clickable")
       );
+      overClickableRef.current = clickable;
 
-      setIsPointer(isClickable);
+      // scale bump + sparkles
+      const { clientX: x, clientY: y } = e;
+      updateCursorVisual(x, y);
 
-      if (isClickable && isVisible) {
-        const x =
-          e instanceof MouseEvent
-            ? e.clientX
-            : (e as TouchEvent).touches[0]?.clientX;
-        const y =
-          e instanceof MouseEvent
-            ? e.clientY
-            : (e as TouchEvent).touches[0]?.clientY;
-
-        if (typeof x === "number" && typeof y === "number") {
-          for (let i = 0; i < 3; i++) {
-            setTimeout(() => createParticle(x, y, "sparkle"), i * 50);
-          }
+      if (clickable) {
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => createParticle(x, y, "sparkle"), i * 50);
         }
       }
     };
 
-    // Set initial position based on device
-    const initializeCursor = () => {
-      // Get the actual viewport dimensions
-      const rect = document.documentElement.getBoundingClientRect();
-      const x = rect.width / 2;
-      const y = rect.height / 2;
-
-      // Set initial position
-      setPosition({ x, y });
-      positionRef.current = { x, y };
-
-      // Make cursor visible
-      setIsVisible(true);
-      hasMovedRef.current = true;
-
-      // For Apple devices, ensure we're using the correct coordinate space
-      if (isMacOS || /iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        document.documentElement.style.cursor = "none";
-        const style = document.createElement("style");
-        style.textContent = `
-          * { cursor: none !important; }
-          a, button, [role="button"], .clickable { cursor: none !important; }
-        `;
-        document.head.appendChild(style);
-        return () => style.remove();
-      }
+    const onPointerDown = () => setVisible(true);
+    const onPointerLeave = () => {
+      // hide visual but keep particles animating
+      setVisible(false);
+    };
+    const onPointerEnter = (e: PointerEvent) => {
+      setVisible(true);
+      updateCursorVisual(e.clientX, e.clientY);
     };
 
-    initializeCursor();
-
-    // Add event listeners with proper passive settings
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("touchmove", handleTouchMove, { passive: true });
-    document.addEventListener("touchstart", handleTouchStart, {
+    document.addEventListener("pointermove", onPointerMove, { passive: true });
+    document.addEventListener("pointerover", onPointerOver, { passive: true });
+    document.addEventListener("pointerdown", onPointerDown, { passive: true });
+    document.addEventListener("pointerleave", onPointerLeave as any, {
       passive: true,
     });
-    document.addEventListener("mouseover", updateCursorType);
-    document.addEventListener("touchstart", updateCursorType as EventListener, {
+    document.addEventListener("pointerenter", onPointerEnter as any, {
       passive: true,
     });
 
-    // Ensure cursor is always visible and positioned
-    const visibilityTimer = setTimeout(initializeCursor, 100);
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    rafAnimRef.current = requestAnimationFrame(animate);
 
     return () => {
-      // Clean up all event listeners
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("mouseover", updateCursorType);
-      document.removeEventListener(
-        "touchstart",
-        updateCursorType as EventListener
-      );
-
-      // Cancel any pending animations
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      clearTimeout(visibilityTimer);
-
-      // Reset cursor styles
-      if (isMacOS) {
-        document.documentElement.style.cursor = "";
-      }
+      document.removeEventListener("pointermove", onPointerMove as any);
+      document.removeEventListener("pointerover", onPointerOver as any);
+      document.removeEventListener("pointerdown", onPointerDown as any);
+      document.removeEventListener("pointerleave", onPointerLeave as any);
+      document.removeEventListener("pointerenter", onPointerEnter as any);
+      window.removeEventListener("resize", resizeCanvas);
+      if (rafCursorRef.current) cancelAnimationFrame(rafCursorRef.current);
+      if (rafAnimRef.current) cancelAnimationFrame(rafAnimRef.current);
     };
-  }, [createParticle, isVisible]);
+  }, [animate, createParticle, resizeCanvas, updateCursorVisual]);
 
-  // Start animation loop
-  useEffect(() => {
-    if (isVisible) {
-      animate();
-    }
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isVisible, animate]);
-
-  // Set canvas size
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    const handleResize = () => {
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Preload cursor image
+  // Preload cursor image (keep ref in sync)
   useEffect(() => {
     const img = new Image();
-    img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageLoaded(true);
-    img.src = "/img/pencil_no_bg_v1.png";
+    img.onload = () => {
+      imgLoadedRef.current = true;
+      setImgLoaded(true);
+    };
+    img.onerror = () => {
+      imgLoadedRef.current = false;
+      setImgLoaded(false);
+    };
+    img.src = CURSOR_IMG;
   }, []);
 
-  // Detect device type and OS
-  useEffect(() => {
-    const detectDevice = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      const isMac = /macintosh|mac os x/i.test(userAgent);
-      const isIOS = /iphone|ipad|ipod/.test(userAgent);
-      const isHighDPI = window.devicePixelRatio > 1;
-      const isTouchDevice =
-        "ontouchstart" in window || navigator.maxTouchPoints > 0;
-
-      setIsMacOS(isMac);
-
-      // Force cursor visibility and position on all supported devices
-      if (isMac || isHighDPI || isIOS || isTouchDevice) {
-        hasMovedRef.current = true;
-        setIsVisible(true);
-
-        // Get current mouse position if available, otherwise center
-        if (typeof window !== "undefined") {
-          const mouseX =
-            window.event instanceof MouseEvent
-              ? (window.event as MouseEvent).clientX
-              : window.innerWidth / 2;
-          const mouseY =
-            window.event instanceof MouseEvent
-              ? (window.event as MouseEvent).clientY
-              : window.innerHeight / 2;
-          setPosition({ x: mouseX, y: mouseY });
-        }
-      }
-
-      // Add specific styles for cursor on MacOS
-      if (isMac) {
-        document.documentElement.style.cursor = "none";
-        const style = document.createElement("style");
-        style.textContent = `
-          * { cursor: none !important; }
-          a, button, [role="button"], .clickable { cursor: none !important; }
-        `;
-        document.head.appendChild(style);
-        return () => style.remove();
-      }
-    };
-
-    const cleanup = detectDevice();
-
-    // Handle orientation changes for mobile devices
-    const handleOrientationChange = () => {
-      if (typeof window !== "undefined") {
-        const mouseX =
-          window.event instanceof MouseEvent
-            ? (window.event as MouseEvent).clientX
-            : window.innerWidth / 2;
-        const mouseY =
-          window.event instanceof MouseEvent
-            ? (window.event as MouseEvent).clientY
-            : window.innerHeight / 2;
-        setPosition({ x: mouseX, y: mouseY });
-      }
-    };
-
-    // Re-detect on resize and orientation change
-    window.addEventListener("resize", detectDevice);
-    window.addEventListener("orientationchange", handleOrientationChange);
-
-    return () => {
-      if (cleanup) cleanup();
-      window.removeEventListener("resize", detectDevice);
-      window.removeEventListener("orientationchange", handleOrientationChange);
-    };
-  }, []);
-
-  // Calculate cursor position with proper offset and device-specific adjustments
-  const getCursorTransform = () => {
-    const offsetX = imageLoaded ? 32 : 10;
-    const offsetY = imageLoaded ? 32 : 10;
-
-    // Ensure we're using the correct position values
-    const x = typeof position.x === "number" ? position.x : 0;
-    const y = typeof position.y === "number" ? position.y : 0;
-
-    // Apply device-specific adjustments if needed
-    const adjustedX = isMacOS ? x : x - offsetX;
-    const adjustedY = isMacOS ? y : y - offsetY;
-
-    return `translate3d(${adjustedX}px, ${adjustedY}px, 0)`;
-  };
-
-  const getCursorScale = () => {
-    return isPointer ? "scale(1.2)" : "scale(1)";
-  };
+  // Opacity controlled via state and html.has-custom-cursor (CSS); keep element always mounted
+  const showVisual =
+    typeof document !== "undefined" &&
+    document.documentElement.classList.contains("has-custom-cursor") &&
+    visible;
 
   return (
     <>
-      {/* Particle canvas */}
+      {/* Particle canvas always mounted (so touch also gets particles) */}
       <canvas
         ref={canvasRef}
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
+          inset: 0,
           pointerEvents: "none",
           zIndex: 9998,
         }}
       />
 
-      {/* Custom cursor */}
+      {/* Custom cursor (visual hidden on coarse pointers via CSS) */}
       <div
+        ref={cursorRef}
         className="custom-cursor"
+        aria-hidden
         style={{
-          width: imageLoaded ? "64px" : "20px",
-          height: imageLoaded ? "64px" : "20px",
+          width: imgLoaded ? "64px" : "20px",
+          height: imgLoaded ? "64px" : "20px",
           position: "fixed",
+          left: 0,
+          top: 0,
           pointerEvents: "none",
           zIndex: 9999,
-          backgroundImage: imageLoaded
-            ? `url('/img/pencil_no_bg_v1.png')`
-            : "none",
-          backgroundColor: imageLoaded ? "transparent" : "#FFD700",
-          borderRadius: imageLoaded ? "0" : "50%",
+          backgroundImage: imgLoaded ? `url('${CURSOR_IMG}')` : "none",
+          backgroundColor: imgLoaded ? "transparent" : "#FFD700",
+          borderRadius: imgLoaded ? "0" : "50%",
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
-          opacity: isVisible ? 1 : 0,
-          transform: `${getCursorTransform()} ${getCursorScale()}`,
+          opacity: showVisual ? 1 : 0, // CSS media queries will also guard this
           willChange: "transform",
-          // Enhanced performance optimizations
           backfaceVisibility: "hidden",
           WebkitBackfaceVisibility: "hidden",
-          WebkitFontSmoothing: "antialiased",
-          WebkitTransform: `${getCursorTransform()} ${getCursorScale()}`,
-          // Force hardware acceleration
-          transform: `${getCursorTransform()} ${getCursorScale()}`,
+          transform: "translate3d(-9999px,-9999px,0)", // off-screen until first move
         }}
       />
     </>

@@ -117,7 +117,7 @@
   --input: #e5e5e5;
   --ring: #1c1c1c;
   --radius: 0.5rem;
-  
+
   /* Veeville specific colors */
   --veeville-primary-text: #1c1c1c;
   --veeville-secondary-text: #2d2d2d;
@@ -177,7 +177,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  
+
   /* Veeville brand colors */
   --color-veeville-primary-text: var(--veeville-primary-text);
   --color-veeville-secondary-text: var(--veeville-secondary-text);
@@ -312,7 +312,7 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   body {
     @apply bg-background text-foreground font-helvetica;
     margin: 0;
@@ -322,13 +322,13 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  
+
   /* Hide scrollbar for all elements */
   html {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  
+
   /* Ensure images render properly */
   img {
     max-width: none;
@@ -423,20 +423,6 @@ body::-webkit-scrollbar-thumb,
   height: 100%;
 }
 
-/* Special handling for combined sections
-.snap-start .flex-col {
-  height: 100%;
-}
-
-.snap-start .flex-1 {
-  flex: 1;
-  min-height: 0;
-}
-
-.snap-start .flex-shrink-0 {
-  flex-shrink: 0;
-} */
-
 /* Mobile-specific snap scroll adjustments */
 @media (max-width: 768px) {
   .snap-start {
@@ -444,7 +430,7 @@ body::-webkit-scrollbar-thumb,
     min-height: 100vh;
     padding: 1rem 0;
   }
-  
+
   .snap-start > * {
     height: 100%;
     min-height: 100%;
@@ -457,7 +443,7 @@ body::-webkit-scrollbar-thumb,
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: y mandatory;
   }
-  
+
   .snap-start {
     scroll-snap-align: start;
     height: 100vh;
@@ -481,68 +467,65 @@ body::-webkit-scrollbar-thumb,
   outline-offset: 2px;
 }
 
-/* Custom Cursor Styles */
-* {
+/* ---------------------------
+   Custom Cursor – Cross-Device Safe (REPLACED)
+   --------------------------- */
+
+/* 1) Scope the hidden system cursor to when JS has enabled the custom one. */
+html.has-custom-cursor,
+html.has-custom-cursor body {
   cursor: none !important;
 }
 
-/* Text input elements */
-input,
-textarea,
-[contenteditable="true"] {
+/* Keep text caret where appropriate */
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor [contenteditable="true"] {
   cursor: text !important;
 }
 
-/* Ensure custom cursor is visible on all devices */
+/* 2) The custom cursor element defaults to hidden; JS + media query reveals it. */
 .custom-cursor {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  will-change: transform !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-style: preserve-3d !important;
-  /* Remove any potential shadow effects */
-  filter: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  filter: none;
+  box-shadow: none;
+  text-shadow: none;
+  opacity: 0; /* shown only on fine pointers via media query */
 }
 
-/* Device-specific cursor visibility */
+/* Show the custom cursor ONLY on fine pointers (mouse/trackpad) */
 @media (pointer: fine) {
-  .custom-cursor {
-    display: block !important;
+  html.has-custom-cursor .custom-cursor {
+    opacity: 1;
   }
 }
 
+/* Hide cursor visuals on touch/coarse pointers */
 @media (pointer: coarse) {
   .custom-cursor {
-    display: block !important;
+    opacity: 0 !important;
   }
 }
 
-/* MacBook and macOS specific fixes */
-@media screen and (-webkit-min-device-pixel-ratio: 2) {
-  .custom-cursor {
-    display: block !important;
-    visibility: visible !important;
-    /* Ensure smooth rendering on MacBook */
-    -webkit-transform: translateZ(0) !important;
-    transform: translateZ(0) !important;
-  }
-}
-
-/* Ensure cursor is visible on high-DPI displays */
+/* High-DPI smoothness */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .custom-cursor {
-    display: block !important;
+  html.has-custom-cursor .custom-cursor {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
   }
 }
 
-/* Override any conflicting styles */
+/* Layout safety */
 html, body {
   height: 100%;
-  /* Remove overflow hidden that can cause cursor issues on MacBook */
   overflow-x: hidden;
 }
 
