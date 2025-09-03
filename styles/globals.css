@@ -481,6 +481,18 @@ body::-webkit-scrollbar-thumb,
   outline-offset: 2px;
 }
 
+/* Custom Cursor Styles */
+* {
+  cursor: none !important;
+}
+
+/* Text input elements */
+input,
+textarea,
+[contenteditable="true"] {
+  cursor: text !important;
+}
+
 /* Override any conflicting styles */
 html, body {
   height: 100%;

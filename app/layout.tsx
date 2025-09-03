@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
+import CustomCursor from "./components/CustomCursor";
 
 export const metadata: Metadata = {
   title: "Veeville - Where grown-ups remember how to play",
@@ -23,6 +24,7 @@ export default function RootLayout({
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body>
+        <CustomCursor />
         <main>{children}</main>
       </body>
     </html>
