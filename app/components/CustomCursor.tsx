@@ -18,7 +18,7 @@ interface Particle {
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
-  const [isVisible, setIsVisible] = useState(true); // Start as visible by default
+  const [isVisible, setIsVisible] = useState(true);
   const [isMacOS, setIsMacOS] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -55,7 +55,6 @@ export default function CustomCursor() {
         type,
       };
 
-      // Add to ref instead of state
       particlesRef.current.push(particle);
     },
     []
@@ -139,7 +138,7 @@ export default function CustomCursor() {
     });
   }, []);
 
-  // Animation loop - now stable without dependencies that change
+  // Animation loop
   const animate = useCallback(() => {
     updateParticles();
     renderParticles();
@@ -154,6 +153,7 @@ export default function CustomCursor() {
         setIsVisible(true);
       }
 
+      // Update position directly for smooth movement on MacBook
       setPosition({ x: e.clientX, y: e.clientY });
 
       // Create trail particles
@@ -198,39 +198,38 @@ export default function CustomCursor() {
     };
 
     const handleMouseLeave = () => {
-      // Don't hide cursor on mouse leave, just keep it visible
-      // This ensures it stays visible on all devices
+      // Keep cursor visible on all devices
     };
 
     // Set initial position to center of screen
     setPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
 
-    document.addEventListener("mousemove", updateCursor);
-    document.addEventListener("mouseover", updateCursorType);
-    document.addEventListener("mouseenter", handleMouseEnter);
-    document.addEventListener("mouseleave", handleMouseLeave);
-
-    // Additional event listeners for better cross-device compatibility
-    document.addEventListener("touchstart", () => {
-      setIsVisible(true);
-      hasMovedRef.current = true;
+    document.addEventListener("mousemove", updateCursor, { passive: true });
+    document.addEventListener("mouseover", updateCursorType, { passive: true });
+    document.addEventListener("mouseenter", handleMouseEnter, {
+      passive: true,
+    });
+    document.addEventListener("mouseleave", handleMouseLeave, {
+      passive: true,
     });
 
-    // Ensure cursor is visible after a short delay (fallback for devices with delayed events)
+    // Additional event listeners for better cross-device compatibility
+    document.addEventListener(
+      "touchstart",
+      () => {
+        setIsVisible(true);
+        hasMovedRef.current = true;
+      },
+      { passive: true }
+    );
+
+    // Ensure cursor is visible after a short delay
     const fallbackTimer = setTimeout(() => {
       if (!hasMovedRef.current) {
         setIsVisible(true);
         hasMovedRef.current = true;
       }
     }, 100);
-
-    // Additional fallback for MacBooks and devices with delayed mouse events
-    const macBookFallbackTimer = setTimeout(() => {
-      if (isMacOS && !hasMovedRef.current) {
-        setIsVisible(true);
-        hasMovedRef.current = true;
-      }
-    }, 200);
 
     return () => {
       document.removeEventListener("mousemove", updateCursor);
@@ -239,11 +238,10 @@ export default function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("touchstart", () => {});
       clearTimeout(fallbackTimer);
-      clearTimeout(macBookFallbackTimer);
     };
-  }, [createParticle, isMacOS]);
+  }, [createParticle, isVisible]);
 
-  // Start animation loop - now stable
+  // Start animation loop
   useEffect(() => {
     if (isVisible) {
       animate();
@@ -279,7 +277,7 @@ export default function CustomCursor() {
   useEffect(() => {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.onerror = () => setImageLoaded(true); // Fallback to default cursor
+    img.onerror = () => setImageLoaded(true);
     img.src = "/img/pencil_no_bg_v1.png";
   }, []);
 
@@ -295,20 +293,28 @@ export default function CustomCursor() {
       // Force cursor visibility on MacBooks and high-DPI displays
       if (isMac || isHighDPI) {
         hasMovedRef.current = true;
-        // Use a callback to avoid dependency issues
-        setIsVisible((prev) => {
-          if (!prev) return true;
-          return prev;
-        });
+        setIsVisible(true);
       }
     };
 
     detectDevice();
 
-    // Re-detect on resize (for device orientation changes)
+    // Re-detect on resize
     window.addEventListener("resize", detectDevice);
     return () => window.removeEventListener("resize", detectDevice);
   }, []);
+
+  // Calculate cursor position with proper offset
+  const getCursorTransform = () => {
+    const offsetX = imageLoaded ? 32 : 10; // Center the cursor properly
+    const offsetY = imageLoaded ? 32 : 10;
+
+    return `translate(${position.x - offsetX}px, ${position.y - offsetY}px)`;
+  };
+
+  const getCursorScale = () => {
+    return isPointer ? "scale(1.2)" : "scale(1)";
+  };
 
   return (
     <>
@@ -341,14 +347,10 @@ export default function CustomCursor() {
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           opacity: isVisible ? 1 : 0,
-          transition: "transform 0.1s ease, opacity 0.2s ease",
-          transform: isPointer
-            ? `translate(${position.x - (imageLoaded ? 16 : 10)}px, ${
-                position.y - (imageLoaded ? 16 : 10)
-              }px) scale(1.2)`
-            : `translate(${position.x - (imageLoaded ? 16 : 10)}px, ${
-                position.y - (imageLoaded ? 16 : 10)
-              }px)`,
+          // Remove transition for immediate response on MacBook
+          transform: `${getCursorTransform()} ${getCursorScale()}`,
+          // Use will-change for better performance on MacBook
+          willChange: "transform",
         }}
       />
     </>

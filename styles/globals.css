@@ -502,6 +502,10 @@ textarea,
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
   transform-style: preserve-3d !important;
+  /* Remove any potential shadow effects */
+  filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 /* Device-specific cursor visibility */
@@ -522,6 +526,9 @@ textarea,
   .custom-cursor {
     display: block !important;
     visibility: visible !important;
+    /* Ensure smooth rendering on MacBook */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
   }
 }
 
@@ -535,7 +542,8 @@ textarea,
 /* Override any conflicting styles */
 html, body {
   height: 100%;
-  overflow: hidden;
+  /* Remove overflow hidden that can cause cursor issues on MacBook */
+  overflow-x: hidden;
 }
 
 /* Ensure the main container takes full height */
