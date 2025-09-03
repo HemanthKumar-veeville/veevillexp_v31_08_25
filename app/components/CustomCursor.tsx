@@ -22,6 +22,11 @@ export default function CustomCursor() {
   const [isMacOS, setIsMacOS] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Use refs for smooth position updates
+  const positionRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | undefined>(undefined);
+  const isMovingRef = useRef(false);
+
   // Use refs instead of state for particles to prevent infinite re-renders
   const particlesRef = useRef<Particle[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -146,7 +151,7 @@ export default function CustomCursor() {
   }, [updateParticles, renderParticles]);
 
   useEffect(() => {
-    // Universal cursor update function that works for both mouse and touch events
+    // Smooth cursor update function with RAF
     const updateCursorPosition = (
       x: number,
       y: number,
@@ -157,41 +162,70 @@ export default function CustomCursor() {
         setIsVisible(true);
       }
 
-      // Always update position for consistent behavior
-      setPosition({ x, y });
+      // Update position ref immediately
+      positionRef.current = { x, y };
+      isMovingRef.current = true;
 
-      // Create particles if visible
-      if (isVisible) {
-        createParticle(x, y, "trail");
-        if (!isTouch) {
-          // Only create special effects for mouse movement
-          if (Math.random() < 0.1) createParticle(x, y, "sparkle");
-          if (Math.random() < 0.05) createParticle(x, y, "bubble");
-        }
+      // Cancel existing RAF if any
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
       }
-    };
 
-    // Mouse event handlers with RAF for smoother updates
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      // Use requestAnimationFrame for smoother updates, especially on MacOS
-      requestAnimationFrame(() => {
-        updateCursorPosition(e.clientX, e.clientY);
+      // Schedule RAF for smooth updates
+      rafRef.current = requestAnimationFrame(() => {
+        if (isMovingRef.current) {
+          setPosition(positionRef.current);
+
+          // Create particles if visible
+          if (isVisible) {
+            createParticle(x, y, "trail");
+            if (!isTouch) {
+              if (Math.random() < 0.1) createParticle(x, y, "sparkle");
+              if (Math.random() < 0.05) createParticle(x, y, "bubble");
+            }
+          }
+
+          isMovingRef.current = false;
+        }
       });
     };
 
-    // Touch event handlers with proper touch position calculation
+    // Mouse event handlers with proper coordinate calculation
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      const rect = document.documentElement.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      requestAnimationFrame(() => {
+        updateCursorPosition(x, y);
+      });
+    };
+
+    // Touch event handlers with proper coordinate calculation
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touch = e.touches[0];
-        updateCursorPosition(touch.clientX, touch.clientY, true);
+        const rect = document.documentElement.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        requestAnimationFrame(() => {
+          updateCursorPosition(x, y, true);
+        });
       }
     };
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length > 0) {
         const touch = e.touches[0];
-        updateCursorPosition(touch.clientX, touch.clientY, true);
+        const rect = document.documentElement.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        requestAnimationFrame(() => {
+          updateCursorPosition(x, y, true);
+        });
       }
     };
 
@@ -226,16 +260,35 @@ export default function CustomCursor() {
       }
     };
 
-    // Set initial position to center of screen
-    const centerCursor = () => {
-      const x = window.innerWidth / 2;
-      const y = window.innerHeight / 2;
+    // Set initial position based on device
+    const initializeCursor = () => {
+      // Get the actual viewport dimensions
+      const rect = document.documentElement.getBoundingClientRect();
+      const x = rect.width / 2;
+      const y = rect.height / 2;
+
+      // Set initial position
       setPosition({ x, y });
+      positionRef.current = { x, y };
+
+      // Make cursor visible
       setIsVisible(true);
       hasMovedRef.current = true;
+
+      // For Apple devices, ensure we're using the correct coordinate space
+      if (isMacOS || /iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        document.documentElement.style.cursor = "none";
+        const style = document.createElement("style");
+        style.textContent = `
+          * { cursor: none !important; }
+          a, button, [role="button"], .clickable { cursor: none !important; }
+        `;
+        document.head.appendChild(style);
+        return () => style.remove();
+      }
     };
 
-    centerCursor();
+    initializeCursor();
 
     // Add event listeners with proper passive settings
     document.addEventListener("mousemove", handleMouseMove);
@@ -249,9 +302,10 @@ export default function CustomCursor() {
     });
 
     // Ensure cursor is always visible and positioned
-    const visibilityTimer = setTimeout(centerCursor, 100);
+    const visibilityTimer = setTimeout(initializeCursor, 100);
 
     return () => {
+      // Clean up all event listeners
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchstart", handleTouchStart);
@@ -260,7 +314,17 @@ export default function CustomCursor() {
         "touchstart",
         updateCursorType as EventListener
       );
+
+      // Cancel any pending animations
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
       clearTimeout(visibilityTimer);
+
+      // Reset cursor styles
+      if (isMacOS) {
+        document.documentElement.style.cursor = "";
+      }
     };
   }, [createParticle, isVisible]);
 
@@ -376,12 +440,20 @@ export default function CustomCursor() {
     };
   }, []);
 
-  // Calculate cursor position with proper offset
+  // Calculate cursor position with proper offset and device-specific adjustments
   const getCursorTransform = () => {
-    const offsetX = imageLoaded ? 32 : 10; // Center the cursor properly
+    const offsetX = imageLoaded ? 32 : 10;
     const offsetY = imageLoaded ? 32 : 10;
 
-    return `translate(${position.x - offsetX}px, ${position.y - offsetY}px)`;
+    // Ensure we're using the correct position values
+    const x = typeof position.x === "number" ? position.x : 0;
+    const y = typeof position.y === "number" ? position.y : 0;
+
+    // Apply device-specific adjustments if needed
+    const adjustedX = isMacOS ? x : x - offsetX;
+    const adjustedY = isMacOS ? y : y - offsetY;
+
+    return `translate3d(${adjustedX}px, ${adjustedY}px, 0)`;
   };
 
   const getCursorScale = () => {
@@ -420,12 +492,14 @@ export default function CustomCursor() {
           backgroundRepeat: "no-repeat",
           opacity: isVisible ? 1 : 0,
           transform: `${getCursorTransform()} ${getCursorScale()}`,
-          willChange: "transform, opacity",
-          // Improved performance for MacOS
+          willChange: "transform",
+          // Enhanced performance optimizations
           backfaceVisibility: "hidden",
           WebkitBackfaceVisibility: "hidden",
-          perspective: "1000px",
-          WebkitPerspective: "1000px",
+          WebkitFontSmoothing: "antialiased",
+          WebkitTransform: `${getCursorTransform()} ${getCursorScale()}`,
+          // Force hardware acceleration
+          transform: `${getCursorTransform()} ${getCursorScale()}`,
         }}
       />
     </>
