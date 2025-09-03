@@ -49,7 +49,7 @@ export const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
             onClick={() => scrollToSection(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${
               index === currentSection
-                ? "bg-blue-500 scale-125"
+                ? "bg-[#f21e90] scale-125"
                 : "bg-gray-300 hover:bg-gray-400"
             }`}
             title={section}
