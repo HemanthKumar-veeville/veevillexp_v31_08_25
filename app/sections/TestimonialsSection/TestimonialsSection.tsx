@@ -1,230 +1,239 @@
 import React from "react";
+import Marquee from "react-fast-marquee";
 import {
   ContactInfo,
   UpdatedHeading,
   UpdatedDescription,
+  UpdatedHeadingTablet,
+  UpdatedDescriptionTablet,
 } from "@/components/ui/typography";
 
 export const TestimonialsSection = (): React.JSX.Element => {
-  const companyLogos = [
+  // All logos for marquee - duplicated for seamless loop
+  const allLogos = [
     {
       src: "/img/group-5.png",
       alt: "Company logo 1",
-      className: "w-[154px] h-auto",
+      className: "w-[120px] sm:w-[154px] h-auto",
     },
     {
       src: "/img/group-6.png",
       alt: "Company logo 2",
-      className: "w-[85px] h-auto",
+      className: "w-[70px] sm:w-[85px] h-auto",
     },
     {
       src: "/img/group-4.png",
       alt: "Company logo 3",
-      className: "w-[177px] h-auto",
+      className: "w-[140px] sm:w-[177px] h-auto",
     },
-  ];
-
-  const additionalLogos = [
     {
       src: "/img/vector-17.svg",
-      alt: "Vector logo 1",
-      className: "w-[75px] h-auto",
+      alt: "Vector logo",
+      className: "w-[60px] sm:w-[75px] h-auto",
     },
     {
       src: "/img/group-3.png",
-      alt: "Group logo 1",
-      className: "w-24 h-auto",
+      alt: "Group logo",
+      className: "w-[80px] sm:w-24 h-auto",
     },
   ];
 
+  // Duplicate logos for seamless marquee effect
+  const duplicatedLogos = [...allLogos, ...allLogos, ...allLogos];
+
   return (
-    <section className="w-full relative pt-16 px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden py-auto flex flex-col items-start justify-start">
-      <div className="">
-        <div className="text-left mb-2">
-          <UpdatedHeading className="mb-8">
-            Ready to rediscover wonder?
-          </UpdatedHeading>
+    <>
+      {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100dvh] min-h-[100dvh] overflow-hidden">
+        {/* 40% - Heading and Description Section */}
+        <div className="w-full h-[40dvh] flex flex-col justify-center space-y-4 sm:space-y-6">
+          <div className="text-left">
+            <UpdatedHeadingTablet className="mb-4 sm:mb-6">
+              Ready to rediscover wonder?
+            </UpdatedHeadingTablet>
 
-          <UpdatedDescription className="leading-relaxed">
-            Let&apos;s explore how your team can achieve extraordinary results
-            through extraordinary experiences
-          </UpdatedDescription>
-        </div>
-        <div className="flex flex-col items-start gap-1 mb-2">
-          <div className="flex items-center gap-3">
-            <div className="relative w-[26px] h-[21px]">
-              <img
-                className="absolute w-[26px] h-3 top-0 left-0"
-                alt="Vector"
-                src="/img/vector-13.svg"
-              />
-              <img
-                className="absolute w-6 h-[21px] top-0 left-px"
-                alt="Vector"
-                src="/img/vector-14.svg"
-              />
-              <img
-                className="absolute w-2.5 h-2.5 top-[11px] left-[3px]"
-                alt="Vector"
-                src="/img/vector-15.svg"
-              />
-              <img
-                className="absolute w-2.5 h-[11px] top-2.5 left-4"
-                alt="Vector"
-                src="/img/vector-16.svg"
-              />
-            </div>
-            <ContactInfo className="text-lg">
-              experiences@veeville.com
-            </ContactInfo>
+            <UpdatedDescriptionTablet className="leading-relaxed mb-4 sm:mb-6">
+              Let&apos;s explore how your team can achieve extraordinary results
+              through extraordinary experiences
+            </UpdatedDescriptionTablet>
           </div>
 
-          <div className="flex items-center gap-3">
-            <img
-              className="w-[25px] h-[25px]"
-              alt="Website icon"
-              src="/img/group-1000001863.png"
-            />
-            <ContactInfo className="text-lg">veevillexp.com</ContactInfo>
-          </div>
-        </div>
-        {/* Desktop Layout - All logos in single row */}
-        <div className="flex flex-row flex-wrap gap-16 mb-8 justify-start items-center">
-          {companyLogos.map((logo, index) => (
-            <img
-              key={`company-logo-desktop-${index}`}
-              className={logo.className}
-              alt={logo.alt}
-              src={logo.src}
-            />
-          ))}
-          <div className="relative w-[75px] h-[94px]">
-            <img
-              className="absolute w-[75px] h-[77px] top-0 left-0"
-              alt="Vector"
-              src="/img/vector-17.svg"
-            />
-            <img
-              className="absolute w-[73px] h-[9px] top-[79px] left-px"
-              alt="Vector"
-              src="/img/vector-18.svg"
-            />
-            <img
-              className="absolute w-[33px] h-[5px] top-[90px] left-[22px]"
-              alt="Vector"
-              src="/img/vector-19.svg"
-            />
-          </div>
-
-          <div className="relative w-[111px] h-[91px]">
-            <img
-              className="absolute w-[111px] h-3.5 top-[70px] left-0"
-              alt="Vector"
-              src="/img/vector-20.svg"
-            />
-            <img
-              className="absolute w-[82px] h-[3px] top-[88px] left-3.5"
-              alt="Vector"
-              src="/img/vector-21.svg"
-            />
-            <div className="absolute w-[82px] h-[68px] -top-px left-3.5">
-              <img
-                className="absolute w-6 h-[54px] top-0 left-[51px]"
-                alt="Vector"
-                src="/img/vector-22.svg"
-              />
-              <img
-                className="absolute w-6 h-[54px] top-[13px] left-[55px]"
-                alt="Vector"
-                src="/img/vector-23.svg"
-              />
-              <img
-                className="absolute w-[47px] h-[54px] top-3 left-1"
-                alt="Vector"
-                src="/img/vector-24.svg"
-              />
-              <img
-                className="absolute w-[47px] h-[54px] top-[3px] left-1"
-                alt="Vector"
-                src="/img/vector-25.svg"
-              />
-              <img
-                className="absolute w-6 h-[54px] top-0 left-[59px]"
-                alt="Vector"
-                src="/img/vector-26.svg"
-              />
-              <img
-                className="absolute w-[47px] h-[54px] top-3.5 left-0"
-                alt="Vector"
-                src="/img/vector-27.svg"
-              />
-            </div>
-          </div>
-
-          <img className="w-24 h-[93px]" alt="Group" src="/img/group-3.png" />
-
-          <div className="relative">
-            <div className="relative w-[50px] h-[77px] bg-[url(/img/vector-33.svg)] bg-[100%_100%]">
-              <img
-                className="absolute w-[9px] h-2.5 top-[55px] left-[21px]"
-                alt="Vector"
-                src="/img/vector-34.svg"
-              />
-              <img
-                className="absolute w-2.5 h-[9px] top-[42px] left-5"
-                alt="Vector"
-                src="/img/vector-35.svg"
-              />
-              <img
-                className="absolute w-[9px] h-[9px] top-3.5 left-5"
-                alt="Vector"
-                src="/img/vector-36.svg"
-              />
-              <img
-                className="absolute w-2.5 h-3 top-[26px] left-5"
-                alt="Vector"
-                src="/img/vector-37.svg"
-              />
+          {/* Contact Info */}
+          <div className="flex flex-col items-start gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="relative w-[20px] h-[16px] sm:w-[26px] sm:h-[21px]">
+                <img
+                  className="absolute w-[20px] h-2 sm:w-[26px] sm:h-3 top-0 left-0"
+                  alt="Vector"
+                  src="/img/vector-13.svg"
+                />
+                <img
+                  className="absolute w-5 h-[16px] sm:w-6 sm:h-[21px] top-0 left-px"
+                  alt="Vector"
+                  src="/img/vector-14.svg"
+                />
+                <img
+                  className="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 top-[8px] sm:top-[11px] left-[2px] sm:left-[3px]"
+                  alt="Vector"
+                  src="/img/vector-15.svg"
+                />
+                <img
+                  className="absolute w-2 h-[8px] sm:w-2.5 sm:h-[11px] top-2 sm:top-2.5 left-3 sm:left-4"
+                  alt="Vector"
+                  src="/img/vector-16.svg"
+                />
+              </div>
+              <ContactInfo className="text-sm sm:text-base md:text-lg">
+                experiences@veeville.com
+              </ContactInfo>
             </div>
 
-            <div className="absolute w-12 h-2 top-[79px] left-1">
+            <div className="flex items-center gap-2 sm:gap-3">
               <img
-                className="absolute w-2.5 h-2 top-0 left-0"
-                alt="Vector"
-                src="/img/vector-28.svg"
+                className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px]"
+                alt="Website icon"
+                src="/img/group-1000001863.png"
               />
-              <img
-                className="absolute w-2 h-2 top-0 left-2.5"
-                alt="Vector"
-                src="/img/vector-29.svg"
-              />
-              <img
-                className="absolute w-2.5 h-2 top-0 left-[19px]"
-                alt="Vector"
-                src="/img/vector-30.svg"
-              />
-              <img
-                className="absolute w-[9px] h-2 top-0 left-[30px]"
-                alt="Vector"
-                src="/img/vector-31.svg"
-              />
-              <img
-                className="absolute w-[9px] h-2 top-0 left-10"
-                alt="Vector"
-                src="/img/vector-32.svg"
-              />
+              <ContactInfo className="text-sm sm:text-base md:text-lg">
+                veevillexp.com
+              </ContactInfo>
             </div>
           </div>
         </div>
 
-        <div className="w-full max-w-[80rem] h-auto absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2">
+        {/* 20% - Dual Marquee Logos Section */}
+        <div className="w-full h-[20dvh] flex flex-col justify-center space-y-2 sm:space-y-4">
+          {/* First Row: Logos moving left to right */}
+          <div className="h-[45%] flex items-center">
+            <Marquee
+              direction="left"
+              speed={30}
+              pauseOnHover={true}
+              gradient={false}
+              className="h-full marquee-container"
+            >
+              {duplicatedLogos.map((logo, index) => (
+                <div
+                  key={`left-${index}`}
+                  className="flex items-center justify-center mx-4 sm:mx-6"
+                >
+                  <img
+                    className={`${logo.className} max-h-[50px] sm:max-h-[60px] object-contain filter grayscale hover:grayscale-0 transition-all duration-300`}
+                    alt={logo.alt}
+                    src={logo.src}
+                  />
+                </div>
+              ))}
+            </Marquee>
+          </div>
+
+          {/* Second Row: Logos moving right to left */}
+          <div className="h-[45%] flex items-center">
+            <Marquee
+              direction="right"
+              speed={35}
+              pauseOnHover={true}
+              gradient={false}
+              className="h-full marquee-container"
+            >
+              {duplicatedLogos.map((logo, index) => (
+                <div
+                  key={`right-${index}`}
+                  className="flex items-center justify-center mx-4 sm:mx-6"
+                >
+                  <img
+                    className={`${logo.className} max-h-[50px] sm:max-h-[60px] object-contain filter grayscale hover:grayscale-0 transition-all duration-300`}
+                    alt={logo.alt}
+                    src={logo.src}
+                  />
+                </div>
+              ))}
+            </Marquee>
+          </div>
+        </div>
+
+        {/* 40% - Image Section (positioned at bottom edge) */}
+        <div className="w-full h-fit flex items-end justify-center relative">
           <img
-            className="w-full h-auto"
+            className="w-auto h-[40dvh] max-w-[110%] object-contain"
             alt="Testimonials"
             src="/img/group-1000001887.png"
           />
         </div>
       </div>
-    </section>
+
+      {/* Desktop Layout (visible only on lg and up) - Completely unchanged */}
+      <section className="hidden lg:flex w-full relative pt-16 px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden py-auto flex-col items-start justify-start">
+        <div className="">
+          <div className="text-left mb-2">
+            <UpdatedHeading className="mb-8">
+              Ready to rediscover wonder?
+            </UpdatedHeading>
+
+            <UpdatedDescription className="leading-relaxed">
+              Let&apos;s explore how your team can achieve extraordinary results
+              through extraordinary experiences
+            </UpdatedDescription>
+          </div>
+          <div className="flex flex-col items-start gap-1 mb-2">
+            <div className="flex items-center gap-3">
+              <div className="relative w-[26px] h-[21px]">
+                <img
+                  className="absolute w-[26px] h-3 top-0 left-0"
+                  alt="Vector"
+                  src="/img/vector-13.svg"
+                />
+                <img
+                  className="absolute w-6 h-[21px] top-0 left-px"
+                  alt="Vector"
+                  src="/img/vector-14.svg"
+                />
+                <img
+                  className="absolute w-2.5 h-2.5 top-[11px] left-[3px]"
+                  alt="Vector"
+                  src="/img/vector-15.svg"
+                />
+                <img
+                  className="absolute w-2.5 h-[11px] top-2.5 left-4"
+                  alt="Vector"
+                  src="/img/vector-16.svg"
+                />
+              </div>
+              <ContactInfo className="text-lg">
+                experiences@veeville.com
+              </ContactInfo>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <img
+                className="w-[25px] h-[25px]"
+                alt="Website icon"
+                src="/img/group-1000001863.png"
+              />
+              <ContactInfo className="text-lg">veevillexp.com</ContactInfo>
+            </div>
+          </div>
+          {/* Desktop Layout - All logos in single row */}
+          <div className="flex flex-row flex-wrap gap-16 mb-8 justify-start items-center">
+            {allLogos.map((logo, index) => (
+              <img
+                key={`company-logo-desktop-${index}`}
+                className={logo.className}
+                alt={logo.alt}
+                src={logo.src}
+              />
+            ))}
+          </div>
+
+          <div className="w-full max-w-[80rem] h-auto absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2">
+            <img
+              className="w-full h-auto"
+              alt="Testimonials"
+              src="/img/group-1000001887.png"
+            />
+          </div>
+        </div>
+      </section>
+    </>
   );
 };

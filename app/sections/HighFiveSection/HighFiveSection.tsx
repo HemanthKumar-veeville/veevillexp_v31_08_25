@@ -60,7 +60,7 @@ export const HighFiveSection = (): React.JSX.Element => {
       </div>
 
       {/* Desktop Layout (visible only on lg and up) */}
-      <div className="hidden lg:block w-full py-[90px] px-[52px] max-w-[1280px] mx-auto">
+      <div className="hidden lg:flex lg:flex-col lg:items-start lg:justify-center w-full py-[90px] px-[52px] max-w-[1280px] mx-auto">
         <div className="max-w-7xl">
           <UpdatedHeading className="mb-8">
             The high-five methodology

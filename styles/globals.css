@@ -22,6 +22,20 @@
   scroll-snap-type: x mandatory;
 }
 
+/* Marquee Styles for smooth performance */
+.marquee-container {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.marquee-container img {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 /* Helvetica Font Family - System Font */
 /* Helvetica is available on most systems, no need for external font files */
 

@@ -93,7 +93,7 @@ export const ClientsSection = (): React.JSX.Element => {
                   key={index}
                   className="embla__slide flex-[0_0_90%] min-w-0 pl-4 w-[65dvw] sm:w-[70dvw] md:w-[80dvw]"
                 >
-                  <div className="relative flex flex-col items-start justify-center gap-4 sm:gap-6 bg-white rounded-lg p-4 shadow-sm h-[40dvh] border border-gray-200">
+                  <div className="relative flex flex-col items-start justify-center gap-4 sm:gap-6 bg-white rounded-lg p-4 shadow-sm h-[40dvh] sm:h-[35dvh] md:h-[30dvh] border border-gray-200">
                     {/* Quote Text */}
                     <div className="text-left flex-1 overflow-y-auto">
                       <UpdatedDescription className="text-sm sm:text-base">
@@ -128,7 +128,7 @@ export const ClientsSection = (): React.JSX.Element => {
           {/* Image in second half vertically */}
           <div className="mt-8 flex justify-center">
             <img
-              className="w-full h-auto max-w-[20rem] sm:max-w-[25rem] md:max-w-[30rem] object-contain"
+              className="w-auto h-[30dvh] sm:h-[35dvh] md:h-[40dvh]  object-contain"
               alt="Group"
               src="/img/group-1000001858.png"
             />
@@ -137,7 +137,7 @@ export const ClientsSection = (): React.JSX.Element => {
       </section>
 
       {/* Desktop Section - Completely Separate and Untouched */}
-      <section className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:pt-[90px] lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
+      <section className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
         <div className="max-w-[1344px] mx-auto">
           {/* Desktop Heading */}
           <div className="block">
