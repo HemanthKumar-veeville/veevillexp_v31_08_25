@@ -8,8 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   FormLabel,
   FormButton,
-  MobileCategoryLabel,
-  MobileDescription,
   UpdatedHeading,
   UpdatedDescription,
 } from "@/components/ui/typography";

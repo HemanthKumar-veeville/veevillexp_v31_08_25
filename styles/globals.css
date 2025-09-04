@@ -1,6 +1,27 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Embla Carousel Styles */
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  transition: transform 0.3s ease-out;
+}
+
+.embla__slide {
+  flex: 0 0 90%;
+  min-width: 0;
+  padding-left: 1rem;
+  scroll-snap-align: start;
+}
+
+.embla__container {
+  scroll-snap-type: x mandatory;
+}
+
 /* Helvetica Font Family - System Font */
 /* Helvetica is available on most systems, no need for external font files */
 
@@ -300,10 +321,6 @@
 }
 
 /* Responsive breakpoints matching Figma designs */
-@utility mobile-width {
-  width: 393px;
-}
-
 @utility desktop-width {
   width: 1440px;
 }
@@ -421,34 +438,6 @@ body::-webkit-scrollbar-thumb,
 .snap-start > * {
   width: 100%;
   height: 100%;
-}
-
-/* Mobile-specific snap scroll adjustments */
-@media (max-width: 768px) {
-  .snap-start {
-    height: 100vh;
-    min-height: 100vh;
-    padding: 1rem 0;
-  }
-
-  .snap-start > * {
-    height: 100%;
-    min-height: 100%;
-  }
-}
-
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
-  .snap-y {
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: y mandatory;
-  }
-
-  .snap-start {
-    scroll-snap-align: start;
-    height: 100vh;
-    min-height: 100vh;
-  }
 }
 
 /* Ensure proper spacing between sections */

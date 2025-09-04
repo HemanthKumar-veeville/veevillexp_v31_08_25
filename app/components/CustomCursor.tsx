@@ -47,22 +47,21 @@ export default function CustomCursor() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const mqPointer = window.matchMedia?.("(pointer: fine)");
-    const mqMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-
     const update = () => {
-      const enable =
-        (mqPointer?.matches ?? false) && !(mqMotion?.matches ?? false);
+      const mqPointer = window.matchMedia("(pointer: fine)");
+      const mqMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      const enable = mqPointer.matches && !mqMotion.matches;
       document.documentElement.classList.toggle("has-custom-cursor", enable);
     };
 
     update();
-    mqPointer?.addEventListener?.("change", update);
-    mqMotion?.addEventListener?.("change", update);
+
+    // Use window resize as a fallback to detect changes
+    window.addEventListener("resize", update);
 
     return () => {
-      mqPointer?.removeEventListener?.("change", update);
-      mqMotion?.removeEventListener?.("change", update);
+      window.removeEventListener("resize", update);
       document.documentElement.classList.remove("has-custom-cursor");
     };
   }, []);

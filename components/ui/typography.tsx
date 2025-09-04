@@ -126,7 +126,7 @@ export const BodySofia: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-sofia font-light text-[25px] leading-normal text-black",
+      "font-helvetica font-light text-[25px] leading-normal text-black",
       className
     )}
   >
@@ -174,21 +174,6 @@ export const BrandLabel: React.FC<TypographyProps> = ({
   <Component
     className={cn(
       "font-casual-human font-bold text-[34px] tracking-[0] leading-[normal] text-[#2d2d2d]",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
-export const MobileBrandLabel: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "span",
-}) => (
-  <Component
-    className={cn(
-      "font-casual-human font-bold text-[12px] tracking-[0] leading-[normal] text-[#2d2d2d]",
       className
     )}
   >
@@ -244,7 +229,7 @@ export const CompanyInfo: React.FC<TypographyProps> = ({
 }) => (
   <Component
     className={cn(
-      "font-casual-human font-bold text-black text-[17px] tracking-[0] leading-[17px]",
+      "font-casual-human font-bold text-black text-[17px] leading-[17px]",
       className
     )}
   >
@@ -340,82 +325,6 @@ export const HelveticaRegular: React.FC<TypographyProps> = ({
   </Component>
 );
 
-// Mobile typography variants
-export const MobileHeading: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "h1",
-}) => (
-  <Component
-    className={cn(
-      "font-georgia text-[22px] sm:text-[24px] md:text-[28px] leading-[normal] text-[#1c1c1c] font-normal",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
-export const MobileDescription: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "p",
-}) => (
-  <Component
-    className={cn(
-      "font-helvetica text-[12px] font-light text-black leading-[normal]",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
-export const MobileCategoryLabel: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "span",
-}) => (
-  <Component
-    className={cn(
-      "font-helvetica text-[10px] sm:text-[12px] md:text-[14px] font-bold text-[#1c1c1c] leading-tight",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
-export const MobileMethodologyDescription: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "p",
-}) => (
-  <Component
-    className={cn(
-      "font-helvetica text-[12px] font-light text-black leading-[normal]",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
-export const MobileMethodologyTitle: React.FC<TypographyProps> = ({
-  children,
-  className,
-  as: Component = "p",
-}) => (
-  <Component
-    className={cn(
-      "font-helvetica text-[12px] font-bold text-black leading-[normal]",
-      className
-    )}
-  >
-    {children}
-  </Component>
-);
-
 // Updated typography variants for WhatShifts section
 export const UpdatedHeading: React.FC<TypographyProps> = ({
   children,
@@ -448,6 +357,99 @@ export const UpdatedDescription: React.FC<TypographyProps> = ({
   </Component>
 );
 
+// Mobile and tablet responsive variants
+export const BrandBoldMobile: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "span",
+}) => (
+  <Component
+    className={cn(
+      "font-helvetica-bold font-bold italic text-sm sm:text-base md:text-lg",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const BrandBoldTablet: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "span",
+}) => (
+  <Component
+    className={cn(
+      "font-helvetica-bold font-bold italic text-base sm:text-lg md:text-xl",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedHeadingMobile: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    className={cn(
+      "font-italic text-[#1c1c1c] text-2xl sm:text-3xl md:text-4xl leading-tight font-[Georgia-Italic]",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedHeadingTablet: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    className={cn(
+      "font-italic text-[#1c1c1c] text-3xl sm:text-4xl md:text-5xl leading-tight font-[Georgia-Italic]",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedDescriptionMobile: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-black text-justify font-helvetica text-sm sm:text-base md:text-lg font-light not-italic leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const UpdatedDescriptionTablet: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-black text-left font-helvetica text-base sm:text-lg md:text-xl font-light not-italic leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
 export const UpdatedMethodologyDescription: React.FC<TypographyProps> = ({
   children,
   className,
@@ -457,6 +459,84 @@ export const UpdatedMethodologyDescription: React.FC<TypographyProps> = ({
     style={{ lineHeight: "normal" }}
     className={cn(
       "text-[#606060] font-helvetica text-[20px] not-italic font-light leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+// Mobile typography variants for Methodology section
+export const MobileHeading: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    className={cn(
+      "font-italic text-[#1c1c1c] text-2xl sm:text-3xl md:text-4xl leading-tight font-[Georgia-Italic]",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const MobileDescription: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-black text-left font-helvetica text-sm sm:text-base md:text-lg font-light not-italic leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const MobileCategoryLabel: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    className={cn(
+      "font-casual-human font-bold text-[#2d2d2d] text-sm sm:text-base md:text-lg tracking-[0] leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const MobileMethodologyDescription: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "div",
+}) => (
+  <Component
+    style={{ lineHeight: "normal" }}
+    className={cn(
+      "text-[#606060] font-helvetica text-sm sm:text-base md:text-lg not-italic font-light leading-normal",
+      className
+    )}
+  >
+    {children}
+  </Component>
+);
+
+export const MobileMethodologyTitle: React.FC<TypographyProps> = ({
+  children,
+  className,
+  as: Component = "h3",
+}) => (
+  <Component
+    className={cn(
+      "font-georgia font-normal text-[#2d2d2d] text-lg sm:text-xl md:text-2xl tracking-[-0.5px] leading-tight",
       className
     )}
   >
@@ -478,6 +558,8 @@ export const Typography = {
   MethodologyDescription,
   BrandLabel,
   BrandBold,
+  BrandBoldMobile,
+  BrandBoldTablet,
   QuoteText,
   AuthorName,
   CompanyInfo,
@@ -487,12 +569,16 @@ export const Typography = {
   FooterText,
   GeorgiaHeading,
   HelveticaRegular,
+  UpdatedHeading,
+  UpdatedHeadingMobile,
+  UpdatedHeadingTablet,
+  UpdatedDescription,
+  UpdatedDescriptionMobile,
+  UpdatedDescriptionTablet,
+  UpdatedMethodologyDescription,
   MobileHeading,
   MobileDescription,
   MobileCategoryLabel,
-  MobileBrandLabel,
   MobileMethodologyDescription,
   MobileMethodologyTitle,
-  UpdatedHeading,
-  UpdatedDescription,
 };

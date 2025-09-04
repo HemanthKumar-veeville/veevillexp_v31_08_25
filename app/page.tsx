@@ -79,9 +79,9 @@ export default function Veevillexp(): React.ReactNode {
 
   return (
     <div className="h-screen overflow-y-auto snap-y snap-mandatory">
-      {/* Scroll Instructions Overlay */}
+      {/* Scroll Instructions Overlay - Hidden on mobile */}
       {showInstructions && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block">
           <div className="flex items-center space-x-4">
             <span>Use ↑↓ arrows, spacebar, or scroll to navigate</span>
             <button
