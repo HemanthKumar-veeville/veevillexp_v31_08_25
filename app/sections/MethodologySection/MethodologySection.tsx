@@ -99,7 +99,7 @@ export const MethodologySection = (): React.JSX.Element => {
                   key={index}
                   className="embla__slide flex-[0_0_90%] min-w-0 pl-4 w-[65dvw] sm:w-[70dvw] md:w-[80dvw]"
                 >
-                  <div className="relative flex flex-col items-start justify-center gap-2 sm:gap-4 md:gap-6 bg-white rounded-lg p-4 shadow-sm h-[65dvh] sm:h-[70dvh] md:h-[75dvh]  border border-gray-200">
+                  <div className="relative flex flex-col items-start justify-center gap-2 sm:gap-4 md:gap-6 bg-white rounded-lg p-4 shadow-sm h-[64dvh] sm:h-[70dvh] md:h-[75dvh]  border border-gray-200">
                     <LargeNumber>{item.number}</LargeNumber>
 
                     <MobileMethodologyTitle className="text-left">
