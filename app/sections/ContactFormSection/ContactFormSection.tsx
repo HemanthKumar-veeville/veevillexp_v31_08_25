@@ -180,7 +180,7 @@ export const ContactFormSection: React.FC = () => {
   return (
     <>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100dvh] min-h-[100dvh] space-y-6 sm:space-y-8 md:space-y-10 overflow-y-auto">
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100vh] min-h-[100vh] space-y-6 sm:space-y-8 md:space-y-10 overflow-y-auto">
         {/* Section Heading */}
         <div className="w-full pt-8 sm:pt-12 md:pt-16">
           <UpdatedHeadingTablet>Get in Touch</UpdatedHeadingTablet>

@@ -24,7 +24,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Hero Mobile Image */}
           <img
-            className="h-[90dvh] w-auto object-contain absolute bottom-0 right-0"
+            className="h-[90vh] w-auto object-contain absolute bottom-0 right-0"
             alt="Hero Mobile"
             src="/img/mobile_comp_logos/hero_mobile.png"
           />
@@ -76,7 +76,7 @@ export const HeroSection: React.FC = () => {
         {/* Right Side - Full Hero Image */}
         <div className="flex flex-col items-center justify-center mt-[-4rem] mr-[-4rem]">
           <img
-            className="w-full h-auto max-h-[95dvh] object-contain"
+            className="w-full h-auto max-h-[95vh] object-contain"
             alt="Hero Image"
             src="/img/group-1000001860.png"
           />

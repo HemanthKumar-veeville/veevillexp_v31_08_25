@@ -14,7 +14,7 @@ export const PlaySection = (): React.JSX.Element => {
   return (
     <>
       {/* Mobile Layout (visible only on mobile and tablet up to md) */}
-      <div className="block lg:hidden relative h-[100dvh]">
+      <div className="block lg:hidden relative h-[100vh]">
         {/* Main Heading and Description - Mobile with absolute positioning */}
         <div className="absolute flex flex-col items-start w-full z-10 top-4 sm:top-6 md:top-8 left-4 sm:left-6 md:left-8">
           {/* Main Heading - Mobile with tablet typography */}
@@ -53,7 +53,7 @@ export const PlaySection = (): React.JSX.Element => {
         {/* Image positioned to overlap with last portion of text */}
         <div className="absolute right-2 bottom-2">
           <img
-            className="w-auto h-[55dvh] sm:h-[60dvh] md:h-[65dvh] object-contain"
+            className="w-auto h-[55vh] sm:h-[60vh] md:h-[65vh] object-contain"
             alt="Group"
             src="/img/group-1000001849.png"
           />

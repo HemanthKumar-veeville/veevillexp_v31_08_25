@@ -44,9 +44,9 @@ export const TestimonialsSection = (): React.JSX.Element => {
   return (
     <>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100dvh] min-h-[100dvh] overflow-hidden">
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100vh] min-h-[100vh] overflow-hidden">
         {/* 40% - Heading and Description Section */}
-        <div className="w-full h-[40dvh] flex flex-col justify-center space-y-4 sm:space-y-6">
+        <div className="w-full h-[40vh] flex flex-col justify-center space-y-4 sm:space-y-6">
           <div className="text-left">
             <UpdatedHeadingTablet className="mb-4 sm:mb-6">
               Ready to rediscover wonder?
@@ -102,7 +102,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
         </div>
 
         {/* 20% - Dual Marquee Logos Section */}
-        <div className="w-full h-[20dvh] flex flex-col justify-center space-y-2 sm:space-y-4">
+        <div className="w-full h-[20vh] flex flex-col justify-center space-y-2 sm:space-y-4">
           {/* First Row: Logos moving left to right */}
           <div className="h-[45%] flex items-center">
             <Marquee
@@ -155,7 +155,7 @@ export const TestimonialsSection = (): React.JSX.Element => {
         {/* 40% - Image Section (positioned at bottom edge) */}
         <div className="w-full h-fit flex items-end justify-center relative">
           <img
-            className="w-auto h-[40dvh] max-w-[110%] object-contain"
+            className="w-auto h-[40vh] max-w-[110%] object-contain"
             alt="Testimonials"
             src="/img/group-1000001887.png"
           />
