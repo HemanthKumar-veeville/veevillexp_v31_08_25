@@ -24,14 +24,14 @@ export const HeroSection: React.FC = () => {
 
           {/* Hero Mobile Image */}
           <img
-            className="h-[90dvh] w-auto object-contain absolute bottom-0 right-0"
+            className="h-[60dvh] w-auto object-contain absolute bottom-0 right-0"
             alt="Hero Mobile"
-            src="/img/mobile_comp_logos/hero_mobile.png"
+            src="/img/group-1000001860.png"
           />
 
           {/* Hero Quote Image */}
           <img
-            className="w-[50dvw] h-auto object-contain absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8"
+            className="w-[50dvw] h-auto object-contain absolute top-36 sm:top-56 md:top-60 left-4 sm:left-6 md:left-8"
             alt="Hero Quote"
             src="/img/mobile_comp_logos/pablo_quote.png"
           />

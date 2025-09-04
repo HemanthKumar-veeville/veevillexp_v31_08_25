@@ -15,7 +15,7 @@ export const WhatShifts = (): React.JSX.Element => {
         {/* Main Heading - Mobile with tablet typography */}
         <div className="text-left w-[300px] sm:w-[400px] md:w-full">
           <UpdatedHeadingTablet>
-            The change becomes visible
+            The change <br className="sm:hidden md:hidden" /> becomes visible
           </UpdatedHeadingTablet>
         </div>
 
@@ -36,25 +36,23 @@ export const WhatShifts = (): React.JSX.Element => {
             <p>Think like a 5 year-old. Lead like a grown up!</p>
           </UpdatedDescriptionTablet>
         </div>
-
+        {/* Image - Mobile */}
+        <img
+          className="w-auto max-w-[90%] h-[35dvh] sm:h-[40dvh] md:h-[45dvh] object-contain"
+          alt="Brochure inside"
+          src="/img/brochure-inside-layout-half-us-letter.png"
+        />
         {/* Quote Section - Mobile */}
-        <div className="w-full max-w-[90%] sm:max-w-[80%] md:max-w-[70%] flex flex-col justify-center">
+        <div className="w-full flex flex-col justify-center items-end">
           <BrandLabel className="text-sm sm:text-base">
             GIVE ME SIX HOURS To CHOP A TREE AND I WILL SPEND THE FIRST FOUR
             HOURS SHARPENING THE AXE
           </BrandLabel>
-          <br />
+
           <BrandLabel className="text-right text-sm sm:text-base">
             -ABRAHAM LINCOLN
           </BrandLabel>
         </div>
-
-        {/* Image - Mobile */}
-        <img
-          className="w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain"
-          alt="Brochure inside"
-          src="/img/brochure-inside-layout-half-us-letter.png"
-        />
       </div>
 
       {/* Desktop Layout (visible only on lg and up) */}

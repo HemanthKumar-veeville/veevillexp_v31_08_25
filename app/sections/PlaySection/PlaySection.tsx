@@ -13,23 +13,30 @@ import {
 export const PlaySection = (): React.JSX.Element => {
   return (
     <>
-      {/* Mobile Layout (visible only on mobile and tablet up to md) */}
-      <div className="block lg:hidden relative h-[100dvh]">
-        {/* Main Heading and Description - Mobile with absolute positioning */}
-        <div className="absolute flex flex-col items-start w-full z-10 top-4 sm:top-6 md:top-8 left-4 sm:left-6 md:left-8">
-          {/* Main Heading - Mobile with tablet typography */}
-          <div className="mb-6 sm:mb-8">
+      {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col justify-center gap-4 sm:gap-6 md:gap-8 h-[100dvh] max-h-[100dvh] py-4 sm:py-6 md:py-8">
+        {/* Main Heading - Mobile with tablet typography - Aligned to start */}
+        <div className="flex justify-start">
+          <div className="text-left w-full">
             <UpdatedHeadingTablet>
-              Where grown-ups
-              <br />
+              Where grown-ups <br className="sm:hidden md:hidden" />
               remember how to play
             </UpdatedHeadingTablet>
           </div>
+        </div>
 
-          {/* Body Text - Mobile with tablet typography */}
-          <div className="mb-8 sm:mb-10">
-            <UpdatedDescriptionTablet className="space-y-3 w-[90%] sm:w-[80%] md:w-[70%]">
-              <p className="mb-0">
+        {/* Image - Mobile - Aligned to center */}
+        <img
+          className="w-full h-auto max-h-[45dvh] sm:max-h-[45dvh] md:max-h-[50dvh] object-contain"
+          alt="Group"
+          src="/img/group-1000001849.png"
+        />
+
+        {/* Body Text - Mobile with tablet typography - Aligned to end */}
+        <div className="flex justify-end">
+          <div className="text-right max-w-[90%] sm:max-w-[80%] md:max-w-[70%]">
+            <UpdatedDescriptionTablet className="space-y-2 text-ellipsis overflow-hidden text-left">
+              <p className="mb-0 line-clamp-3">
                 <span>At </span>
                 <BrandBold>Experiences by </BrandBold>
                 <span className="text-[#1c1c1c] font-bold italic text-2xl font-[Georgia-Italic]">
@@ -41,7 +48,7 @@ export const PlaySection = (): React.JSX.Element => {
                 </span>
               </p>
               <p className="mb-0">&nbsp;</p>
-              <p>
+              <p className="line-clamp-4">
                 Through play, touch, experimentation, surprise and laughter, we
                 will help you to question without fear, unwind your biases, view
                 your challenges with fresh eyes and attack them with fresh
@@ -49,14 +56,6 @@ export const PlaySection = (): React.JSX.Element => {
               </p>
             </UpdatedDescriptionTablet>
           </div>
-        </div>
-        {/* Image positioned to overlap with last portion of text */}
-        <div className="absolute right-2 bottom-2">
-          <img
-            className="w-auto h-[55dvh] sm:h-[60dvh] md:h-[65dvh] object-contain"
-            alt="Group"
-            src="/img/group-1000001849.png"
-          />
         </div>
       </div>
 

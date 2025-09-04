@@ -39,6 +39,10 @@ const methodologyData = [
 ];
 
 export const MethodologySection = (): React.JSX.Element => {
+  const [showSlideBadge, setShowSlideBadge] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
@@ -66,6 +70,47 @@ export const MethodologySection = (): React.JSX.Element => {
     [scrollPrev, scrollNext]
   );
 
+  // Handle user interaction to hide badge
+  const handleUserInteraction = React.useCallback(() => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+      setShowSlideBadge(false);
+    }
+  }, [hasInteracted]);
+
+  // Intersection Observer to show badge when component comes into view
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasInteracted) {
+            setShowSlideBadge(true);
+            // Auto-hide after 3 seconds if no interaction
+            setTimeout(() => {
+              if (!hasInteracted) {
+                setShowSlideBadge(false);
+              }
+            }, 3000);
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: "0px 0px -10% 0px",
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [hasInteracted]);
+
   React.useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -76,7 +121,10 @@ export const MethodologySection = (): React.JSX.Element => {
   return (
     <>
       {/* Mobile Section - Completely Separate */}
-      <section className="w-full px-4 sm:px-6 relative max-w-[1280px] mx-auto py-4 sm:py-6 flex flex-col items-start justify-center lg:hidden">
+      <section
+        ref={sectionRef}
+        className="w-full px-4 sm:px-6 relative max-w-[1280px] mx-auto py-4 sm:py-6 flex flex-col items-start justify-center lg:hidden"
+      >
         <div className="w-full mx-auto relative">
           {/* Title - Mobile */}
           <div className="mb-6 sm:mb-8">
@@ -85,6 +133,41 @@ export const MethodologySection = (): React.JSX.Element => {
             </UpdatedHeadingTablet>
           </div>
 
+          {/* Slide Me Badge */}
+          {showSlideBadge && (
+            <div className="absolute top-20 right-4 z-50 animate-bounce">
+              <div className="bg-[#1c1c1c] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-helvetica font-medium border border-[#e5e5e5]">
+                <svg
+                  className="w-4 h-4 animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16l-4-4m0 0l4-4m-4 4h18"
+                  />
+                </svg>
+                Slide Me
+                <svg
+                  className="w-4 h-4 animate-pulse"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </div>
+            </div>
+          )}
+
           {/* Embla Carousel Container */}
           <div
             className="embla overflow-hidden focus:outline-none"
@@ -92,6 +175,9 @@ export const MethodologySection = (): React.JSX.Element => {
             tabIndex={0}
             role="region"
             aria-label="Methodology carousel"
+            onTouchStart={handleUserInteraction}
+            onMouseDown={handleUserInteraction}
+            onKeyDown={handleUserInteraction}
           >
             <div className="embla__container flex">
               {methodologyData.map((item, index) => (
