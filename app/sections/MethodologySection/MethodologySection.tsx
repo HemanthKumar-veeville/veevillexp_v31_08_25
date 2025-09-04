@@ -1,16 +1,14 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import {
-  Heading1,
   LargeNumber,
   Heading3,
-  MethodologyDescription,
-  MobileHeading,
-  MobileDescription,
-  MobileCategoryLabel,
   MobileMethodologyDescription,
   MobileMethodologyTitle,
   UpdatedHeading,
   UpdatedMethodologyDescription,
+  UpdatedHeadingMobile,
+  UpdatedHeadingTablet,
 } from "@/components/ui/typography";
 
 const methodologyData = [
@@ -41,97 +39,108 @@ const methodologyData = [
 ];
 
 export const MethodologySection = (): React.JSX.Element => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    dragFree: false,
+    skipSnaps: false,
+    inViewThreshold: 0.7,
+  });
+
+  const scrollPrev = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const handleKeyDown = React.useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        scrollPrev();
+      } else if (event.key === "ArrowRight") {
+        scrollNext();
+      }
+    },
+    [scrollPrev, scrollNext]
+  );
+
+  React.useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
-    <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 relative max-w-[1280px] mx-auto  md:pt-[90px] md:py-auto md:flex md:flex-col md:items-start md:justify-center">
-      <div className="w-full mx-auto relative">
-        {/* Mobile Layout (default) */}
-        <div className="block lg:hidden">
-          <div className="relative w-full min-h-[600px] sm:min-h-[700px]">
-            {/* Title - Mobile */}
-            <div className="mb-6 sm:mb-8">
-              <MobileHeading className="max-w-[72%]">
-                The premise of play
-              </MobileHeading>
-            </div>
+    <>
+      {/* Mobile Section - Completely Separate */}
+      <section className="w-full px-4 sm:px-6 relative max-w-[1280px] mx-auto py-4 sm:py-6 flex flex-col items-start justify-center lg:hidden">
+        <div className="w-full mx-auto relative">
+          {/* Title - Mobile */}
+          <div className="mb-6 sm:mb-8">
+            <UpdatedHeadingTablet className="text-left">
+              The premise of play
+            </UpdatedHeadingTablet>
+          </div>
 
-            {/* Methodology Items - Mobile Stacked Layout */}
-            <div className="space-y-8 sm:space-y-10">
-              {/* Item 1 - Zero Slide-decks */}
-              <div className="relative">
-                <h3 className="mb-4">
-                  <MobileMethodologyTitle>
-                    Zero Slide-decks
-                  </MobileMethodologyTitle>
-                </h3>
-                <div className="mb-4">
-                  <img
-                    className="w-full max-w-[200px] h-auto object-contain"
-                    alt="Zero Slide-decks illustration"
-                    src="/img/group-1000001873.png"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <MobileMethodologyDescription>
-                    Seriously, haven't you seen them all already?
-                  </MobileMethodologyDescription>
-                  <MobileMethodologyDescription>
-                    We believe in experiences that stick, not slides that slip
-                    away.
-                  </MobileMethodologyDescription>
-                </div>
-              </div>
+          {/* Embla Carousel Container */}
+          <div
+            className="embla overflow-hidden focus:outline-none"
+            ref={emblaRef}
+            tabIndex={0}
+            role="region"
+            aria-label="Methodology carousel"
+          >
+            <div className="embla__container flex">
+              {methodologyData.map((item, index) => (
+                <div
+                  key={index}
+                  className="embla__slide flex-[0_0_90%] min-w-0 pl-4 w-[65dvw] sm:w-[70dvw] md:w-[80dvw]"
+                >
+                  <div className="relative flex flex-col items-start justify-center gap-2 sm:gap-4 md:gap-6 bg-white rounded-lg p-4 shadow-sm h-[65dvh] sm:h-[70dvh] md:h-[75dvh]  border border-gray-200">
+                    <LargeNumber>{item.number}</LargeNumber>
 
-              {/* Item 2 - Zero Jargon */}
-              <div className="relative">
-                <h3 className="mb-4">
-                  <MobileMethodologyTitle>Zero Jargon</MobileMethodologyTitle>
-                </h3>
-                <div className="mb-4">
-                  <img
-                    className="w-full max-w-[200px] h-auto object-contain"
-                    alt="Zero Jargon illustration"
-                    src="/img/group-1000001874.png"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <MobileMethodologyDescription>
-                    "We must synergize holistic paradigms to leverage scalable
-                    ecosystems."
-                  </MobileMethodologyDescription>
-                  <MobileMethodologyDescription>
-                    Yeah. That made no sense to us either.
-                  </MobileMethodologyDescription>
-                </div>
-              </div>
+                    <MobileMethodologyTitle className="text-left">
+                      {item.title}
+                    </MobileMethodologyTitle>
 
-              {/* Item 3 - 100% Surprises */}
-              <div className="relative">
-                <h3 className="mb-4">
-                  <MobileMethodologyTitle>
-                    100% Surprises
-                  </MobileMethodologyTitle>
-                </h3>
-                <div className="mb-4">
-                  <img
-                    className="w-full max-w-[200px] h-auto object-contain"
-                    alt="100% Surprises illustration"
-                    src="/img/group-1000001875.png"
-                  />
+                    <img
+                      className="w-auto h-[50%] object-contain"
+                      alt={item.imageAlt}
+                      src={item.image}
+                    />
+
+                    <div className="text-left mb-4">
+                      <MobileMethodologyDescription className="max-w-[280px] sm:max-w-[320px] md:max-w-[380px]">
+                        {item.description
+                          .split("\n\n")
+                          .map((paragraph, pIndex) => (
+                            <React.Fragment key={pIndex}>
+                              {paragraph}
+                              {pIndex <
+                                item.description.split("\n\n").length - 1 && (
+                                <>
+                                  <br />
+                                  <br />
+                                </>
+                              )}
+                            </React.Fragment>
+                          ))}
+                      </MobileMethodologyDescription>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <MobileMethodologyDescription>
-                    When did you last leave a workshop talking about it for
-                    weeks? We design moments that delight and memories that
-                    matter.
-                  </MobileMethodologyDescription>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Desktop Layout - Preserved */}
-        <div className="hidden lg:block">
+      {/* Desktop Section - Completely Separate and Untouched */}
+      <section className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:pt-[90px] lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
+        <div className="w-full mx-auto relative">
           {/* Title */}
           <UpdatedHeading className="mb-[-64px]">
             The premise of play
@@ -202,7 +211,7 @@ export const MethodologySection = (): React.JSX.Element => {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
