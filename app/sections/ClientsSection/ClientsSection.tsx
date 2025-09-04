@@ -93,7 +93,7 @@ export const ClientsSection = (): React.JSX.Element => {
                   key={index}
                   className="embla__slide flex-[0_0_90%] min-w-0 pl-4 w-[65dvw] sm:w-[70dvw] md:w-[80dvw]"
                 >
-                  <div className="relative flex flex-col items-start justify-center gap-4 sm:gap-6 bg-white rounded-lg p-4 shadow-sm h-[40vh] sm:h-[35vh] md:h-[30vh] border border-gray-200">
+                  <div className="relative flex flex-col items-start justify-center gap-4 sm:gap-6 bg-white rounded-lg p-4 shadow-sm h-[40dvh] sm:h-[35dvh] md:h-[30dvh] border border-gray-200">
                     {/* Quote Text */}
                     <div className="text-left flex-1 overflow-y-auto">
                       <UpdatedDescription className="text-sm sm:text-base">
@@ -128,7 +128,7 @@ export const ClientsSection = (): React.JSX.Element => {
           {/* Image in second half vertically */}
           <div className="mt-8 flex justify-center">
             <img
-              className="w-auto h-[30vh] sm:h-[35vh] md:h-[40vh]  object-contain"
+              className="w-auto h-[30dvh] sm:h-[35dvh] md:h-[40dvh]  object-contain"
               alt="Group"
               src="/img/group-1000001858.png"
             />

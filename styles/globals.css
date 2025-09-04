@@ -427,8 +427,8 @@ body::-webkit-scrollbar-thumb,
 
 .snap-start {
   scroll-snap-align: start;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -534,7 +534,7 @@ html, body {
 
 /* Ensure the main container takes full height */
 .snap-y {
-  height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
 }

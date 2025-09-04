@@ -29,7 +29,7 @@ export const IntroductionSection = (): React.JSX.Element => {
   return (
     <>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100vh] min-h-[100vh] space-y-8 sm:space-y-10 md:space-y-12">
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] min-h-[100dvh] space-y-8 sm:space-y-10 md:space-y-12">
         {/* Main Heading - Mobile with tablet typography */}
         <div className="text-left w-[300px] sm:w-[400px] md:w-[500px]">
           <UpdatedHeadingTablet>

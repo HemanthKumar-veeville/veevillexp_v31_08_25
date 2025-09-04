@@ -11,7 +11,7 @@ export const WhatShifts = (): React.JSX.Element => {
   return (
     <>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100vh] overflow-y-auto space-y-4 sm:space-y-6 md:space-y-8 py-6 sm:py-8 md:py-10">
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] overflow-y-auto space-y-4 sm:space-y-6 md:space-y-8 py-6 sm:py-8 md:py-10">
         {/* Main Heading - Mobile with tablet typography */}
         <div className="text-left w-[300px] sm:w-[400px] md:w-full">
           <UpdatedHeadingTablet>
@@ -51,7 +51,7 @@ export const WhatShifts = (): React.JSX.Element => {
 
         {/* Image - Mobile */}
         <img
-          className="w-auto max-w-[90%] h-[30vh] sm:h-[35vh] md:h-[40vh] object-contain"
+          className="w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain"
           alt="Brochure inside"
           src="/img/brochure-inside-layout-half-us-letter.png"
         />
