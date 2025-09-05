@@ -7,18 +7,24 @@ export const HeroSection: React.FC = () => {
       {/* Mobile Layout */}
       <div className="block lg:hidden">
         <div className="flex flex-col items-center space-y-4 sm:space-y-6 md:space-y-8 min-h-[25rem] sm:min-h-[28rem] md:min-h-[30rem] px-4">
-          <div className="absolute flex flex-col items-start w-full max-w-sm sm:max-w-md md:max-w-lg z-10  top-4 sm:top-6 md:top-8 left-4 sm:left-6 md:left-8">
+          <div className="flex flex-col items-start justify-start">
             {/* Exp By Logo */}
             <img
-              className="w-[60dvw] sm:w-[70dvw] h-auto object-contain"
+              className="w-[90dvw] sm:w-[70dvw] h-auto object-contain"
               alt="Exp By Logo"
               src="/img/mobile_comp_logos/exp_by_logo.png"
             />
             {/* Veeville Logo */}
             <img
-              className="w-[30dvw] sm:w-[35dvw] h-auto object-contain mt-2"
+              className="w-[45dvw] sm:w-[35dvw] h-auto object-contain mt-2"
               alt="Veeville Logo"
               src="/img/mobile_comp_logos/veeville_logo.png"
+            />
+            {/* Hero Quote Image */}
+            <img
+              className="w-[50dvw] h-auto object-contain mt-12"
+              alt="Hero Quote"
+              src="/img/mobile_comp_logos/pablo_quote.png"
             />
           </div>
 
@@ -27,13 +33,6 @@ export const HeroSection: React.FC = () => {
             className="h-[60dvh] w-auto object-contain absolute bottom-0 right-0"
             alt="Hero Mobile"
             src="/img/group-1000001860.png"
-          />
-
-          {/* Hero Quote Image */}
-          <img
-            className="w-[50dvw] h-auto object-contain absolute top-36 sm:top-56 md:top-60 left-4 sm:left-6 md:left-8"
-            alt="Hero Quote"
-            src="/img/mobile_comp_logos/pablo_quote.png"
           />
         </div>
       </div>

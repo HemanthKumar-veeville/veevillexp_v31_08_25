@@ -186,7 +186,7 @@ export const BrandBold: React.FC<TypographyProps> = ({
   className,
   as: Component = "span",
 }) => (
-  <Component className={cn("font-helvetica-bold font-bold italic", className)}>
+  <Component className={cn("font-helvetica-bold font-bold", className)}>
     {children}
   </Component>
 );

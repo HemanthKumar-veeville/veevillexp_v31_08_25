@@ -36,22 +36,23 @@ export const WhatShifts = (): React.JSX.Element => {
             <p>Think like a 5 year-old. Lead like a grown up!</p>
           </UpdatedDescriptionTablet>
         </div>
-        {/* Image - Mobile */}
-        <img
-          className="w-auto max-w-[90%] h-[35dvh] sm:h-[40dvh] md:h-[45dvh] object-contain"
-          alt="Brochure inside"
-          src="/img/brochure-inside-layout-half-us-letter.png"
-        />
-        {/* Quote Section - Mobile */}
-        <div className="w-full flex flex-col justify-center items-end">
-          <BrandLabel className="text-sm sm:text-base">
-            GIVE ME SIX HOURS To CHOP A TREE AND I WILL SPEND THE FIRST FOUR
-            HOURS SHARPENING THE AXE
-          </BrandLabel>
+        <div className="flex flex-row justify-center items-center gap-4 w-full">
+          <img
+            className="w-auto max-w-[60vw] h-[35dvh] sm:h-[40dvh] md:h-[45dvh] object-contain"
+            alt="Brochure inside"
+            src="/img/brochure-inside-layout-half-us-letter.png"
+          />
 
-          <BrandLabel className="text-right text-sm sm:text-base">
-            -ABRAHAM LINCOLN
-          </BrandLabel>
+          {/* Quote Section - Mobile */}
+          <div className="flex flex-col justify-center items-end min-w-[200px] max-w-[55vw] w-full ml-[-62px]">
+            <BrandLabel className="text-sm sm:text-base">
+              GIVE ME SIX HOURS To CHOP A TREE AND I WILL SPEND THE FIRST FOUR
+              HOURS SHARPENING THE AXE
+            </BrandLabel>
+            <BrandLabel className="text-right text-sm sm:text-base">
+              -ABRAHAM LINCOLN
+            </BrandLabel>
+          </div>
         </div>
       </div>
 
