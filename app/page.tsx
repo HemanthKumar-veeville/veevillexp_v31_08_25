@@ -36,7 +36,6 @@ export default function Veevillexp(): React.ReactNode {
 
       switch (event.key) {
         case "ArrowDown":
-        case " ":
           event.preventDefault();
           container.scrollBy({
             top: window.innerHeight,
@@ -83,7 +82,7 @@ export default function Veevillexp(): React.ReactNode {
       {showInstructions && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block">
           <div className="flex items-center space-x-4">
-            <span>Use ↑↓ arrows, spacebar, or scroll to navigate</span>
+            <span>Use ↑↓ arrows or scroll to navigate</span>
             <button
               onClick={() => setShowInstructions(false)}
               className="text-white hover:text-gray-300"
