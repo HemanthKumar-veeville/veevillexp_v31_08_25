@@ -9,6 +9,7 @@ import {
   UpdatedMethodologyDescription,
   UpdatedHeadingMobile,
   UpdatedHeadingTablet,
+  UpdatedDescriptionTablet,
 } from "@/components/ui/typography";
 
 const methodologyData = [
@@ -199,7 +200,7 @@ export const MethodologySection = (): React.JSX.Element => {
                     />
 
                     <div className="text-left mb-4">
-                      <MobileMethodologyDescription className="max-w-[280px] sm:max-w-[320px] md:max-w-[380px]">
+                      <UpdatedDescriptionTablet className="max-w-[280px] sm:max-w-[320px] md:max-w-[380px]">
                         {item.description
                           .split("\n\n")
                           .map((paragraph, pIndex) => (
@@ -214,7 +215,7 @@ export const MethodologySection = (): React.JSX.Element => {
                               )}
                             </React.Fragment>
                           ))}
-                      </MobileMethodologyDescription>
+                      </UpdatedDescriptionTablet>
                     </div>
                   </div>
                 </div>
