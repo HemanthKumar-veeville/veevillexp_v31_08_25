@@ -24,15 +24,6 @@ export const FooterSection: React.FC = () => {
           >
             experiences@veeville.com
           </a>
-          <span className="tracking-[-0.08px]"> | </span>
-          <a
-            href="http://veevillexp.com"
-            rel="noopener noreferrer"
-            target="_blank"
-            className="tracking-[-0.08px] underline inline-block hover:text-[#2d2d2d] transition-colors duration-200 break-all xs:break-normal"
-          >
-            veevillexp.com
-          </a>
         </FooterText>
       </div>
 
