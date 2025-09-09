@@ -204,44 +204,6 @@ const MobileLayout: React.FC = () => {
         <UpdatedHeadingTablet>Our clients</UpdatedHeadingTablet>
       </div>
 
-      {/* Mobile Client Logos */}
-      <div className="space-y-6 mb-8">
-        {/* 1st row: First 3 logos */}
-        <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
-          {mobileClientLogos.slice(0, 3).map((logo, index) => (
-            <img
-              key={`mobile-client-logo-row1-${index}`}
-              className={logo.className}
-              alt={logo.alt}
-              src={logo.src}
-            />
-          ))}
-        </div>
-
-        {/* 2nd row: Next 4 logos */}
-        <div className="grid grid-cols-4 gap-4 items-center justify-items-center">
-          {mobileClientLogos.slice(3, 7).map((logo, index) => (
-            <img
-              key={`mobile-client-logo-row2-${index}`}
-              className={logo.className}
-              alt={logo.alt}
-              src={logo.src}
-            />
-          ))}
-        </div>
-
-        {/* 3rd row: Remaining 5 logos */}
-        <div className="grid grid-cols-5 gap-4 items-center justify-items-center">
-          {mobileClientLogos.slice(7, 12).map((logo, index) => (
-            <img
-              key={`mobile-client-logo-row3-${index}`}
-              className={logo.className}
-              alt={logo.alt}
-              src={logo.src}
-            />
-          ))}
-        </div>
-      </div>
       <div className="space-y-6 mb-8">
         {/* 1st row: First 3 logos */}
         <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
