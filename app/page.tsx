@@ -34,33 +34,52 @@ export default function Veevillexp(): React.ReactNode {
     target: number,
     duration: number = 800
   ) => {
-    // Use shorter duration on mobile
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 600 : duration;
+    const actualDuration = isMobile ? 450 : duration; // Faster on mobile for responsiveness
 
     const start = element.scrollTop;
     const distance = target - start;
     const startTime = performance.now();
 
-    // Mobile-optimized easing function
-    const easeInOutQuad = (t: number) => {
+    // Enhanced mobile easing with momentum
+    const easeOutExpo = (t: number) => {
       return isMobile
-        ? t < 0.5
-          ? 4 * t * t * t
-          : 1 - Math.pow(-2 * t + 2, 3) / 2 // More responsive for touch
+        ? t === 1
+          ? 1
+          : 1 - Math.pow(2, -10 * t) // Exponential ease out for mobile
         : t < 0.5
         ? 2 * t * t
         : -1 + (4 - 2 * t) * t; // Original desktop easing
     };
 
+    let lastTimestamp = startTime;
+    let lastScrollTop = start;
+    let velocity = 0;
+
     const animation = (currentTime: number) => {
       const timeElapsed = currentTime - startTime;
+      const deltaTime = currentTime - lastTimestamp;
       const progress = Math.min(timeElapsed / actualDuration, 1);
-      const easeProgress = easeInOutQuad(progress);
+      const easeProgress = easeOutExpo(progress);
 
-      element.scrollTop = start + distance * easeProgress;
+      const newScrollTop = start + distance * easeProgress;
+
+      // Calculate and apply velocity for momentum
+      if (deltaTime > 0) {
+        velocity = (newScrollTop - lastScrollTop) / deltaTime;
+        lastScrollTop = newScrollTop;
+        lastTimestamp = currentTime;
+      }
+
+      element.scrollTop = newScrollTop;
 
       if (timeElapsed < actualDuration) {
+        requestAnimationFrame(animation);
+      } else if (isMobile && Math.abs(velocity) > 0.1) {
+        // Apply momentum deceleration
+        const deceleration = 0.95;
+        velocity *= deceleration;
+        element.scrollTop += velocity;
         requestAnimationFrame(animation);
       }
     };
@@ -97,33 +116,60 @@ export default function Veevillexp(): React.ReactNode {
     let touchEndY = 0;
     let lastScrollTime = 0;
 
+    let touchStartTime = 0;
+    let lastTouchY = 0;
+    let touchVelocity = 0;
+
     const handleTouchStart = (e: Event) => {
       const touchEvent = e as TouchEvent;
       touchStartY = touchEvent.touches[0].clientY;
+      lastTouchY = touchStartY;
+      touchStartTime = performance.now();
+      touchVelocity = 0;
     };
 
     const handleTouchMove = (e: Event) => {
       const touchEvent = e as TouchEvent;
-      touchEndY = touchEvent.touches[0].clientY;
+      const currentY = touchEvent.touches[0].clientY;
+      const deltaY = currentY - lastTouchY;
+      const deltaTime = performance.now() - touchStartTime;
+
+      // Calculate velocity (pixels per millisecond)
+      if (deltaTime > 0) {
+        touchVelocity = deltaY / deltaTime;
+      }
+
+      touchEndY = currentY;
+      lastTouchY = currentY;
     };
 
     const handleTouchEnd = () => {
       const now = performance.now();
       const timeDiff = now - lastScrollTime;
+      const swipeDuration = now - touchStartTime;
 
-      // Prevent rapid consecutive scrolls
-      if (timeDiff < 300) return;
+      // Prevent rapid consecutive scrolls but allow quick flicks
+      if (timeDiff < 300 && Math.abs(touchVelocity) < 0.5) return;
 
       const touchDiff = touchStartY - touchEndY;
-      const threshold = 50; // Minimum swipe distance
+      const threshold = swipeDuration < 300 ? 30 : 50; // Lower threshold for quick swipes
 
-      if (Math.abs(touchDiff) > threshold) {
-        const newPosition =
-          touchDiff > 0
-            ? container.scrollTop + window.innerHeight
-            : container.scrollTop - window.innerHeight;
+      if (Math.abs(touchDiff) > threshold || Math.abs(touchVelocity) > 0.5) {
+        const direction = touchDiff > 0 ? 1 : -1;
+        const velocityFactor = Math.min(
+          Math.abs(touchVelocity * 1000),
+          window.innerHeight / 2
+        );
+        const baseScroll = container.scrollTop + direction * window.innerHeight;
+        const momentumScroll = baseScroll + direction * velocityFactor;
 
-        smoothScroll(container, newPosition);
+        // Use velocity to determine scroll duration
+        const scrollDuration = Math.max(
+          450,
+          800 - Math.abs(touchVelocity * 500)
+        );
+
+        smoothScroll(container, momentumScroll, scrollDuration);
         lastScrollTime = now;
       }
     };

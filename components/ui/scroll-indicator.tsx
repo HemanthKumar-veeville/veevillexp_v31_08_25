@@ -35,22 +35,52 @@ export const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
     target: number,
     duration: number = 800
   ) => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const actualDuration = isMobile ? 450 : duration;
+
     const start = element.scrollTop;
     const distance = target - start;
     const startTime = performance.now();
 
-    const easeInOutQuad = (t: number) => {
-      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    // Enhanced easing function for mobile
+    const easeOutExpo = (t: number) => {
+      return isMobile
+        ? t === 1
+          ? 1
+          : 1 - Math.pow(2, -10 * t) // Exponential ease out for mobile
+        : t < 0.5
+        ? 2 * t * t
+        : -1 + (4 - 2 * t) * t; // Original desktop easing
     };
+
+    let lastTimestamp = startTime;
+    let lastScrollTop = start;
+    let velocity = 0;
 
     const animation = (currentTime: number) => {
       const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const easeProgress = easeInOutQuad(progress);
+      const deltaTime = currentTime - lastTimestamp;
+      const progress = Math.min(timeElapsed / actualDuration, 1);
+      const easeProgress = easeOutExpo(progress);
 
-      element.scrollTop = start + distance * easeProgress;
+      const newScrollTop = start + distance * easeProgress;
 
-      if (timeElapsed < duration) {
+      // Calculate and apply velocity for momentum
+      if (deltaTime > 0) {
+        velocity = (newScrollTop - lastScrollTop) / deltaTime;
+        lastScrollTop = newScrollTop;
+        lastTimestamp = currentTime;
+      }
+
+      element.scrollTop = newScrollTop;
+
+      if (timeElapsed < actualDuration) {
+        requestAnimationFrame(animation);
+      } else if (isMobile && Math.abs(velocity) > 0.1) {
+        // Apply momentum deceleration
+        const deceleration = 0.95;
+        velocity *= deceleration;
+        element.scrollTop += velocity;
         requestAnimationFrame(animation);
       }
     };
