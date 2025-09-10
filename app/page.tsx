@@ -14,7 +14,7 @@ import { TestimonialsSection } from "./sections/TestimonialsSection/Testimonials
 import { WhatShifts } from "./sections/WhatShifts/WhatShifts";
 import { ScrollIndicator } from "@/components/ui/scroll-indicator";
 
-export default function Veevillexp(): React.ReactNode {
+export default function Veevillexp() {
   const [showInstructions, setShowInstructions] = useState(true);
   const sections = [
     "Hero",
@@ -35,51 +35,38 @@ export default function Veevillexp(): React.ReactNode {
     duration: number = 800
   ) => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 450 : duration; // Faster on mobile for responsiveness
+    const actualDuration = isMobile ? 450 : duration;
 
     const start = element.scrollTop;
-    const distance = target - start;
+    const windowHeight = window.innerHeight;
+
+    // Ensure we only move one section at a time
+    const currentSection = Math.round(start / windowHeight);
+    const targetSection = Math.round(target / windowHeight);
+    const direction = targetSection > currentSection ? 1 : -1;
+
+    // Only allow moving to adjacent section
+    const nextSection = currentSection + direction;
+    const constrainedTarget = nextSection * windowHeight;
+
+    const distance = constrainedTarget - start;
     const startTime = performance.now();
 
-    // Enhanced mobile easing with momentum
-    const easeOutExpo = (t: number) => {
-      return isMobile
-        ? t === 1
-          ? 1
-          : 1 - Math.pow(2, -10 * t) // Exponential ease out for mobile
-        : t < 0.5
-        ? 2 * t * t
-        : -1 + (4 - 2 * t) * t; // Original desktop easing
-    };
+    // Simplified easing for more controlled movement
+    const easeOutQuad = (t: number) => t * (2 - t);
 
     let lastTimestamp = startTime;
     let lastScrollTop = start;
-    let velocity = 0;
 
     const animation = (currentTime: number) => {
       const timeElapsed = currentTime - startTime;
-      const deltaTime = currentTime - lastTimestamp;
       const progress = Math.min(timeElapsed / actualDuration, 1);
-      const easeProgress = easeOutExpo(progress);
+      const easeProgress = easeOutQuad(progress);
 
       const newScrollTop = start + distance * easeProgress;
-
-      // Calculate and apply velocity for momentum
-      if (deltaTime > 0) {
-        velocity = (newScrollTop - lastScrollTop) / deltaTime;
-        lastScrollTop = newScrollTop;
-        lastTimestamp = currentTime;
-      }
-
       element.scrollTop = newScrollTop;
 
-      if (timeElapsed < actualDuration) {
-        requestAnimationFrame(animation);
-      } else if (isMobile && Math.abs(velocity) > 0.1) {
-        // Apply momentum deceleration
-        const deceleration = 0.95;
-        velocity *= deceleration;
-        element.scrollTop += velocity;
+      if (progress < 1) {
         requestAnimationFrame(animation);
       }
     };
@@ -113,74 +100,63 @@ export default function Veevillexp(): React.ReactNode {
     };
 
     let touchStartY = 0;
-    let touchEndY = 0;
+    let isScrolling = false;
+    const scrollCooldown = 800; // ms cooldown between scroll actions
     let lastScrollTime = 0;
-
-    let touchStartTime = 0;
-    let lastTouchY = 0;
-    let touchVelocity = 0;
 
     const handleTouchStart = (e: Event) => {
       const touchEvent = e as TouchEvent;
       touchStartY = touchEvent.touches[0].clientY;
-      lastTouchY = touchStartY;
-      touchStartTime = performance.now();
-      touchVelocity = 0;
     };
 
     const handleTouchMove = (e: Event) => {
-      const touchEvent = e as TouchEvent;
-      const currentY = touchEvent.touches[0].clientY;
-      const deltaY = currentY - lastTouchY;
-      const deltaTime = performance.now() - touchStartTime;
-
-      // Calculate velocity (pixels per millisecond)
-      if (deltaTime > 0) {
-        touchVelocity = deltaY / deltaTime;
+      if (isScrolling) {
+        e.preventDefault();
+        return;
       }
 
-      touchEndY = currentY;
-      lastTouchY = currentY;
+      const now = performance.now();
+      if (now - lastScrollTime < scrollCooldown) {
+        e.preventDefault();
+        return;
+      }
+
+      const touchEvent = e as TouchEvent;
+      const currentY = touchEvent.touches[0].clientY;
+      const deltaY = currentY - touchStartY;
+
+      // Only scroll if significant movement
+      if (Math.abs(deltaY) > 50) {
+        isScrolling = true;
+        lastScrollTime = now;
+
+        const direction = deltaY > 0 ? -1 : 1;
+        if (container) {
+          smoothScroll(
+            container,
+            container.scrollTop + window.innerHeight * direction
+          );
+        }
+
+        e.preventDefault();
+      }
     };
 
     const handleTouchEnd = () => {
-      const now = performance.now();
-      const timeDiff = now - lastScrollTime;
-      const swipeDuration = now - touchStartTime;
-
-      // Prevent rapid consecutive scrolls but allow quick flicks
-      if (timeDiff < 300 && Math.abs(touchVelocity) < 0.5) return;
-
-      const touchDiff = touchStartY - touchEndY;
-      const threshold = swipeDuration < 300 ? 30 : 50; // Lower threshold for quick swipes
-
-      if (Math.abs(touchDiff) > threshold || Math.abs(touchVelocity) > 0.5) {
-        const direction = touchDiff > 0 ? 1 : -1;
-        const velocityFactor = Math.min(
-          Math.abs(touchVelocity * 1000),
-          window.innerHeight / 2
-        );
-        const baseScroll = container.scrollTop + direction * window.innerHeight;
-        const momentumScroll = baseScroll + direction * velocityFactor;
-
-        // Use velocity to determine scroll duration
-        const scrollDuration = Math.max(
-          450,
-          800 - Math.abs(touchVelocity * 500)
-        );
-
-        smoothScroll(container, momentumScroll, scrollDuration);
-        lastScrollTime = now;
-      }
+      isScrolling = false;
     };
 
+    // Add event listeners
     window.addEventListener("keydown", handleKeyDown);
     container.addEventListener("touchstart", handleTouchStart, {
       passive: true,
     });
-    container.addEventListener("touchmove", handleTouchMove, { passive: true });
+    container.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
     container.addEventListener("touchend", handleTouchEnd);
 
+    // Cleanup event listeners
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       container.removeEventListener("touchstart", handleTouchStart);
