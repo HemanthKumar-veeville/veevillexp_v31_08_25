@@ -34,28 +34,33 @@ export default function Veevillexp() {
     duration: number = 800
   ) => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 450 : duration;
+    const actualDuration = isMobile ? 600 : duration;
 
     const start = element.scrollTop;
     const windowHeight = window.innerHeight;
     const maxScroll = element.scrollHeight - windowHeight;
 
-    // Get current section and ensure we only move one section at a time
+    // Get current section based on scroll position
     const currentSection = Math.round(start / windowHeight);
 
-    // Calculate the next section based on direction
-    const direction = target > start ? 1 : -1;
-    const nextSection = Math.max(
-      0,
-      Math.min(currentSection + direction, sections.length - 1)
-    );
-    const constrainedTarget = Math.min(nextSection * windowHeight, maxScroll);
+    // Calculate target section based on scroll position
+    const targetSection = Math.round(target / windowHeight);
 
-    // If we're already at the target section or trying to scroll beyond bounds, don't scroll
+    // Only allow scrolling to adjacent sections
+    if (Math.abs(targetSection - currentSection) > 1) {
+      // If trying to scroll more than one section, constrain to adjacent section
+      const direction = targetSection > currentSection ? 1 : -1;
+      target = (currentSection + direction) * windowHeight;
+    }
+
+    // Constrain target within bounds
+    const constrainedTarget = Math.max(0, Math.min(target, maxScroll));
+
+    // If we're already at the target section or at bounds, don't scroll
     if (
-      currentSection === nextSection ||
-      (direction < 0 && currentSection === 0) ||
-      (direction > 0 && currentSection === sections.length - 1)
+      start === constrainedTarget ||
+      constrainedTarget < 0 ||
+      constrainedTarget > maxScroll
     ) {
       return;
     }
@@ -64,7 +69,10 @@ export default function Veevillexp() {
     const startTime = performance.now();
 
     // Enhanced easing function for smoother movement
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+    const easeOutCubic = (t: number) => {
+      const p = 1 - t;
+      return 1 - p * p * p;
+    };
 
     let isAnimating = true;
     let lastScrollTop = start;
@@ -141,10 +149,13 @@ export default function Veevillexp() {
     };
 
     let touchStartY = 0;
+    let touchStartX = 0;
     let touchStartTime = 0;
     let lastDirection = 0;
-    const minSwipeDistance = 50;
-    const maxSwipeTime = 300;
+    let isSwiping = false;
+    const minSwipeDistance = 60; // Increased threshold for more intentional swipes
+    const maxSwipeTime = 400; // Increased time window for more natural swipes
+    const directionLockThreshold = 10; // Threshold to determine vertical vs horizontal swipe
 
     const handleTouchStart = (e: Event) => {
       if (isScrollLocked) {
@@ -153,8 +164,10 @@ export default function Veevillexp() {
       }
       const touchEvent = e as TouchEvent;
       touchStartY = touchEvent.touches[0].clientY;
+      touchStartX = touchEvent.touches[0].clientX;
       touchStartTime = performance.now();
       lastDirection = 0;
+      isSwiping = false;
     };
 
     const handleTouchMove = (e: Event) => {
@@ -165,40 +178,63 @@ export default function Veevillexp() {
 
       const touchEvent = e as TouchEvent;
       const currentY = touchEvent.touches[0].clientY;
+      const currentX = touchEvent.touches[0].clientX;
       const deltaY = currentY - touchStartY;
+      const deltaX = currentX - touchStartX;
       const swipeTime = performance.now() - touchStartTime;
 
-      // Determine scroll direction
-      const currentDirection = Math.sign(deltaY);
-
-      // If direction changed during swipe, prevent scroll
-      if (lastDirection !== 0 && currentDirection !== lastDirection) {
-        e.preventDefault();
-        return;
+      // Determine if the swipe is more horizontal than vertical
+      if (
+        !isSwiping &&
+        Math.abs(deltaX) > Math.abs(deltaY) &&
+        Math.abs(deltaX) > directionLockThreshold
+      ) {
+        return; // Let horizontal scrolls pass through
       }
 
-      lastDirection = currentDirection;
+      // Lock into vertical scrolling
+      if (!isSwiping && Math.abs(deltaY) > directionLockThreshold) {
+        isSwiping = true;
+      }
 
-      // Only allow scroll if swipe is decisive and quick
-      if (Math.abs(deltaY) >= minSwipeDistance && swipeTime <= maxSwipeTime) {
+      if (isSwiping) {
         e.preventDefault();
-        setIsScrollLocked(true);
-        const direction = deltaY > 0 ? -1 : 1;
 
-        if (container) {
-          smoothScroll(
-            container,
-            container.scrollTop + window.innerHeight * direction
-          );
+        // Determine scroll direction
+        const currentDirection = Math.sign(deltaY);
+
+        // If direction changed during swipe, ignore this movement
+        if (lastDirection !== 0 && currentDirection !== lastDirection) {
+          return;
         }
 
-        // Release scroll lock after animation
-        setTimeout(() => setIsScrollLocked(false), 1000);
+        lastDirection = currentDirection;
+
+        // Calculate swipe intensity based on distance and time
+        const swipeIntensity = Math.abs(deltaY) / swipeTime;
+
+        // Only trigger scroll if swipe is decisive and within time window
+        if (Math.abs(deltaY) >= minSwipeDistance && swipeTime <= maxSwipeTime) {
+          setIsScrollLocked(true);
+          const direction = deltaY > 0 ? -1 : 1;
+
+          if (container) {
+            // Calculate target based on current scroll position
+            const currentScroll = container.scrollTop;
+            const targetScroll = currentScroll + window.innerHeight * direction;
+
+            smoothScroll(container, targetScroll);
+          }
+
+          // Release scroll lock after animation completes
+          setTimeout(() => setIsScrollLocked(false), 800);
+        }
       }
     };
 
     const handleTouchEnd = () => {
       lastDirection = 0;
+      isSwiping = false;
     };
 
     // Handle mouse wheel scrolling
@@ -208,18 +244,23 @@ export default function Veevillexp() {
       if (isScrollLocked) return;
 
       const wheelEvent = e as WheelEvent;
-      // Only care about the direction, not the intensity
-      const direction = Math.sign(wheelEvent.deltaY);
+      const isTouchPad = Math.abs(wheelEvent.deltaY) < 50;
 
+      const direction = Math.sign(wheelEvent.deltaY);
       if (direction !== 0) {
         setIsScrollLocked(true);
-        // Simply pass the current scroll position plus/minus one viewport height
-        // smoothScroll will handle constraining to adjacent section
+
+        // Calculate target based on current scroll position
+        const currentScroll = container.scrollTop;
+        const targetScroll = currentScroll + window.innerHeight * direction;
+
         smoothScroll(
           container,
-          container.scrollTop + window.innerHeight * direction
+          targetScroll,
+          isTouchPad ? 800 : 600 // Slower for touchpad, faster for mouse wheel
         );
-        setTimeout(() => setIsScrollLocked(false), 800); // Slightly reduced for better responsiveness
+
+        setTimeout(() => setIsScrollLocked(false), isTouchPad ? 1000 : 800);
       }
     };
 
