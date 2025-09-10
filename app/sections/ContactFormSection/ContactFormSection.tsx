@@ -7,8 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   UpdatedHeading,
   UpdatedHeadingTablet,
+  FooterText,
 } from "@/components/ui/typography";
-import { FooterSection } from "../FooterSection/FooterSection";
+import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 interface FormData {
   firstName: string;
@@ -27,6 +28,54 @@ interface FormErrors {
   teamSize?: string;
   message?: string;
 }
+
+const Footer: React.FC = () => {
+  return (
+    <footer className="w-full max-w-[1280px] mx-auto px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6 md:gap-8">
+      {/* Footer Text */}
+      <div className="w-full sm:w-auto">
+        <FooterText className="text-center sm:text-left text-[11px] xs:text-xs sm:text-sm md:text-base leading-tight sm:leading-normal">
+          <span className="tracking-[-0.08px] whitespace-nowrap">
+            Contact Information: experiences/veeville |{" "}
+          </span>
+          <a
+            href="mailto:experiences@veeville.com"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="tracking-[-0.08px] underline inline-block hover:text-[#2d2d2d] transition-colors duration-200 break-all xs:break-normal"
+          >
+            experiences@veeville.com
+          </a>
+        </FooterText>
+      </div>
+
+      {/* Social Icons */}
+      <div className="flex items-center gap-4 sm:gap-3">
+        {/* <button
+          onClick={() =>
+            window.open("https://www.instagram.com/veevillexp/", "_blank")
+          }
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          aria-label="Visit our Instagram"
+        >
+          <FaInstagram className="text-[#465666] w-5 h-5 sm:w-5 sm:h-5" />
+        </button> */}
+        <button
+          onClick={() =>
+            window.open(
+              "https://www.linkedin.com/company/experiences-by-veeville/about/?viewAsMember=true",
+              "_blank"
+            )
+          }
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+          aria-label="Visit our LinkedIn"
+        >
+          <FaLinkedinIn className="text-[#465666] w-5 h-5 sm:w-5 sm:h-5" />
+        </button>
+      </div>
+    </footer>
+  );
+};
 
 export const ContactFormSection: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -88,7 +137,6 @@ export const ContactFormSection: React.FC = () => {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // POSTS to /api/contact -> Next.js route -> Apps Script -> Google Sheet + Email
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -163,169 +211,15 @@ export const ContactFormSection: React.FC = () => {
   return (
     <>
       {/* Mobile / Tablet */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-start h-[100dvh] min-h-[100dvh] space-y-6 sm:space-y-8 md:space-y-10 overflow-y-auto">
-        <div className="w-full pt-8 sm:pt-12 md:pt-16">
-          <UpdatedHeadingTablet>Get in Touch</UpdatedHeadingTablet>
-        </div>
-
-        {submitSuccess && (
-          <div className="w-full p-4 sm:p-6 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-700 text-center font-medium text-sm sm:text-base">
-              Thank you! Your message has been sent successfully. We'll get back
-              to you soon.
-            </p>
-          </div>
-        )}
-
-        {submitError && (
-          <div className="w-full p-4 sm:p-6 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-700 text-center font-medium text-sm sm:text-base">
-              {submitError}
-            </p>
-          </div>
-        )}
-
-        <form
-          onSubmit={handleSubmit}
-          className="w-full space-y-6 sm:space-y-8 flex-1 pb-8"
-        >
-          <div className="space-y-6 sm:space-y-8">
-            <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                First Name *
-              </label>
-              <Input
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
-                onBlur={() => handleInputBlur("firstName")}
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
-                placeholder="Enter your first name"
-              />
-            </div>
-
-            <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                Last Name *
-              </label>
-              <Input
-                value={formData.lastName}
-                onChange={(e) => handleInputChange("lastName", e.target.value)}
-                onBlur={() => handleInputBlur("lastName")}
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
-                placeholder="Enter your last name"
-              />
-            </div>
-
-            <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                Email *
-              </label>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                onBlur={() => handleInputBlur("email")}
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
-                placeholder="Enter your email address"
-              />
-            </div>
-
-            <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                Organization *
-              </label>
-              <Input
-                value={formData.organization}
-                onChange={(e) =>
-                  handleInputChange("organization", e.target.value)
-                }
-                onBlur={() => handleInputBlur("organization")}
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
-                placeholder="Enter your organization"
-              />
-            </div>
-
-            <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                Approximate Team Size *
-              </label>
-              <Input
-                value={formData.teamSize}
-                onChange={(e) => handleInputChange("teamSize", e.target.value)}
-                onBlur={() => handleInputBlur("teamSize")}
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
-                placeholder="e.g., 10-50 employees"
-              />
-            </div>
-
-            <div className="min-h-[90px] sm:min-h-[100px] flex flex-col">
-              <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
-                What challenge or opportunity brings you here? *
-              </label>
-              <Textarea
-                value={formData.message}
-                onChange={(e) => handleInputChange("message", e.target.value)}
-                onBlur={() => handleInputBlur("message")}
-                placeholder="Tell us about your challenge or opportunity..."
-                className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia resize-none min-h-[60px] sm:min-h-[80px]"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4 sm:gap-6">
-            <div className="flex justify-start">
-              <Button
-                type="submit"
-                disabled={!isFormValid() || isSubmitting}
-                className={`bg-[#1c1c1c] text-white rounded-lg px-6 sm:px-8 py-3 sm:py-4 font-helvetica font-semibold text-[16px] sm:text-[18px] md:text-[20px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
-                  !isFormValid() || isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Sending...</span>
-                  </div>
-                ) : (
-                  "Send Message"
-                )}
-              </Button>
-            </div>
-
-            {getErrorMessages().length > 0 && (
-              <div className="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
-                <ul className="list-disc list-inside space-y-1">
-                  {getErrorMessages().map((error, index) => (
-                    <li
-                      key={index}
-                      className="text-red-700 text-xs sm:text-sm font-sofia"
-                    >
-                      {error}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </form>
-
-        <div className="w-full">
-          <FooterSection />
-        </div>
-      </div>
-
-      {/* Desktop */}
-      <div className="hidden w-full lg:py-16 lg:px-[52px] lg:max-w-[1280px] lg:mx-auto lg:flex lg:flex-col lg:items-start lg:justify-start lg:gap-16">
-        <div className="w-full">
-          <div className="mb-8 sm:mb-12">
-            <UpdatedHeading>Get in Touch</UpdatedHeading>
+      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between h-[100dvh] min-h-[100dvh] overflow-y-auto">
+        <div className="w-full flex-1 flex flex-col space-y-6 sm:space-y-8 md:space-y-10 overflow-y-auto">
+          <div className="w-full pt-8 sm:pt-12 md:pt-16">
+            <UpdatedHeadingTablet>Get in Touch</UpdatedHeadingTablet>
           </div>
 
           {submitSuccess && (
-            <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-700 text-center font-medium">
+            <div className="w-full p-4 sm:p-6 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-700 text-center font-medium text-sm sm:text-base">
                 Thank you! Your message has been sent successfully. We'll get
                 back to you soon.
               </p>
@@ -333,8 +227,8 @@ export const ContactFormSection: React.FC = () => {
           )}
 
           {submitError && (
-            <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-center font-medium">
+            <div className="w-full p-4 sm:p-6 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-center font-medium text-sm sm:text-base">
                 {submitError}
               </p>
             </div>
@@ -342,11 +236,11 @@ export const ContactFormSection: React.FC = () => {
 
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12"
+            className="w-full space-y-6 sm:space-y-8"
           >
-            <div className="space-y-6">
-              <div className="min-h-[80px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+            <div className="space-y-6 sm:space-y-8">
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
                   First Name *
                 </label>
                 <Input
@@ -355,29 +249,13 @@ export const ContactFormSection: React.FC = () => {
                     handleInputChange("firstName", e.target.value)
                   }
                   onBlur={() => handleInputBlur("firstName")}
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
                   placeholder="Enter your first name"
                 />
               </div>
 
-              <div className="min-h-[80px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
-                  Email *
-                </label>
-                <Input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  onBlur={() => handleInputBlur("email")}
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
-                  placeholder="Enter your email address"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="min-h-[80px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
                   Last Name *
                 </label>
                 <Input
@@ -386,13 +264,27 @@ export const ContactFormSection: React.FC = () => {
                     handleInputChange("lastName", e.target.value)
                   }
                   onBlur={() => handleInputBlur("lastName")}
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
                   placeholder="Enter your last name"
                 />
               </div>
 
-              <div className="min-h-[80px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
+                  Email *
+                </label>
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  onBlur={() => handleInputBlur("email")}
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
+                  placeholder="Enter your email address"
+                />
+              </div>
+
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
                   Organization *
                 </label>
                 <Input
@@ -401,15 +293,13 @@ export const ContactFormSection: React.FC = () => {
                     handleInputChange("organization", e.target.value)
                   }
                   onBlur={() => handleInputBlur("organization")}
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
                   placeholder="Enter your organization"
                 />
               </div>
-            </div>
 
-            <div className="md:col-span-2 space-y-6">
-              <div className="min-h-[80px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
                   Approximate Team Size *
                 </label>
                 <Input
@@ -418,25 +308,197 @@ export const ContactFormSection: React.FC = () => {
                     handleInputChange("teamSize", e.target.value)
                   }
                   onBlur={() => handleInputBlur("teamSize")}
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
                   placeholder="e.g., 10-50 employees"
                 />
               </div>
 
-              <div className="min-h-[100px] flex flex-col">
-                <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+              <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <label className="font-helvetica text-[#1c1c1c] text-[16px] sm:text-[18px] md:text-[20px] font-medium mb-2 sm:mb-3">
                   What challenge or opportunity brings you here? *
                 </label>
-                <Textarea
+                <Input
                   value={formData.message}
                   onChange={(e) => handleInputChange("message", e.target.value)}
                   onBlur={() => handleInputBlur("message")}
                   placeholder="Tell us about your challenge or opportunity..."
-                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia resize-none min-h-[80px]"
+                  className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 sm:py-3 text-sm sm:text-base font-sofia"
                 />
               </div>
+            </div>
 
-              <div className="flex justify-start items-center gap-4">
+            <div className="flex flex-col gap-4 sm:gap-6">
+              <div className="flex justify-start">
+                <Button
+                  type="submit"
+                  disabled={!isFormValid() || isSubmitting}
+                  className={`bg-[#1c1c1c] text-white rounded-lg px-6 sm:px-8 py-3 sm:py-4 font-helvetica font-semibold text-[16px] sm:text-[18px] md:text-[20px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
+                    !isFormValid() || isSubmitting
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Sending...</span>
+                    </div>
+                  ) : (
+                    "Send Message"
+                  )}
+                </Button>
+              </div>
+
+              {getErrorMessages().length > 0 && (
+                <div className="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <ul className="list-disc list-inside space-y-1">
+                    {getErrorMessages().map((error, index) => (
+                      <li
+                        key={index}
+                        className="text-red-700 text-xs sm:text-sm font-sofia"
+                      >
+                        {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </form>
+        </div>
+
+        <div className="w-full mt-6">
+          <Footer />
+        </div>
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden w-full h-[100dvh] min-h-[100dvh] lg:flex lg:flex-col lg:items-start lg:justify-between">
+        <div className="w-full max-w-[1280px] mx-auto lg:py-16 lg:px-[52px] flex-1 overflow-y-auto">
+          <div className="w-full">
+            <div className="mb-8 sm:mb-12">
+              <UpdatedHeading>Get in Touch</UpdatedHeading>
+            </div>
+
+            {submitSuccess && (
+              <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-700 text-center font-medium">
+                  Thank you! Your message has been sent successfully. We'll get
+                  back to you soon.
+                </p>
+              </div>
+            )}
+
+            {submitError && (
+              <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-center font-medium">
+                  {submitError}
+                </p>
+              </div>
+            )}
+
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12"
+            >
+              <div className="space-y-6">
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    First Name *
+                  </label>
+                  <Input
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      handleInputChange("firstName", e.target.value)
+                    }
+                    onBlur={() => handleInputBlur("firstName")}
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                    placeholder="Enter your first name"
+                  />
+                </div>
+
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    Email *
+                  </label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    onBlur={() => handleInputBlur("email")}
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                    placeholder="Enter your email address"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    Last Name *
+                  </label>
+                  <Input
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      handleInputChange("lastName", e.target.value)
+                    }
+                    onBlur={() => handleInputBlur("lastName")}
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                    placeholder="Enter your last name"
+                  />
+                </div>
+
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    Organization *
+                  </label>
+                  <Input
+                    value={formData.organization}
+                    onChange={(e) =>
+                      handleInputChange("organization", e.target.value)
+                    }
+                    onBlur={() => handleInputBlur("organization")}
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                    placeholder="Enter your organization"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    Approximate Team Size *
+                  </label>
+                  <Input
+                    value={formData.teamSize}
+                    onChange={(e) =>
+                      handleInputChange("teamSize", e.target.value)
+                    }
+                    onBlur={() => handleInputBlur("teamSize")}
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia"
+                    placeholder="e.g., 10-50 employees"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="min-h-[80px] flex flex-col">
+                  <label className="font-helvetica text-[#1c1c1c] text-[20px] font-medium mb-3">
+                    What challenge or opportunity brings you here? *
+                  </label>
+                  <Input
+                    value={formData.message}
+                    onChange={(e) =>
+                      handleInputChange("message", e.target.value)
+                    }
+                    onBlur={() => handleInputBlur("message")}
+                    placeholder="Tell us about your challenge or opportunity..."
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-3 text-base font-sofia resize-none h-[38px] overflow-y-hidden"
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2 flex justify-start items-center gap-4">
                 <Button
                   type="submit"
                   disabled={!isFormValid() || isSubmitting}
@@ -471,10 +533,13 @@ export const ContactFormSection: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-        <FooterSection />
+
+        <div className="w-full max-w-[1280px] mx-auto">
+          <Footer />
+        </div>
       </div>
     </>
   );

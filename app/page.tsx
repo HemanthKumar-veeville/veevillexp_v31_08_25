@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { ClientsSection } from "./sections/ClientsSection/ClientsSection";
 import { ContactFormSection } from "./sections/ContactFormSection/ContactFormSection";
 import { ExperienceSection } from "./sections/ExperienceSection/ExperienceSection";
-import { FooterSection } from "./sections/FooterSection/FooterSection";
 import { HeroSection } from "./sections/HeroSection/HeroSection";
 import { HighFiveSection } from "./sections/HighFiveSection/HighFiveSection";
 import { IntroductionSection } from "./sections/IntroductionSection/IntroductionSection";

@@ -31,8 +31,8 @@ export default function CustomCursor() {
   const overClickableRef = useRef(false);
 
   const posRef = useRef({ x: 0, y: 0 });
-  const rafCursorRef = useRef<number>();
-  const rafAnimRef = useRef<number>();
+  const rafCursorRef = useRef<number | undefined>(undefined);
+  const rafAnimRef = useRef<number | undefined>(undefined);
 
   const cursorRef = useRef<HTMLDivElement | null>(null);
 
@@ -93,12 +93,13 @@ export default function CustomCursor() {
     const el = cursorRef.current;
     if (!el) return;
 
-    // offset depends on whether image is loaded
-    const offset = imgLoadedRef.current ? 32 : 10; // half of 64px/20px
+    // Custom offsets for x and y to position click point at pencil tip
+    const xOffset = imgLoadedRef.current ? 18 : 10; // half of width
+    const yOffset = imgLoadedRef.current ? 10 : 10; // Increased y-offset to move click point to pencil tip
     const scale = overClickableRef.current ? 1.2 : 1;
 
-    el.style.transform = `translate3d(${x - offset}px, ${
-      y - offset
+    el.style.transform = `translate3d(${x - xOffset}px, ${
+      y - yOffset
     }px, 0) scale(${scale})`;
   }, []);
 
@@ -222,12 +223,18 @@ export default function CustomCursor() {
     const onPointerMove = (e: PointerEvent) => {
       const { clientX: x, clientY: y, pointerType } = e;
       posRef.current = { x, y };
-      setVisible(true);
+
+      // Only show cursor if not over a clickable element
+      if (!overClickableRef.current) {
+        setVisible(true);
+      }
 
       // Imperative transform update (no re-render)
       if (rafCursorRef.current) cancelAnimationFrame(rafCursorRef.current);
       rafCursorRef.current = requestAnimationFrame(() => {
-        updateCursorVisual(x, y);
+        if (!overClickableRef.current) {
+          updateCursorVisual(x, y);
+        }
 
         // Particles: keep creating on all pointers (mouse/touch), like your original
         createParticle(x, y, "trail");
@@ -243,21 +250,28 @@ export default function CustomCursor() {
       const clickable = !!(
         el?.tagName.toLowerCase() === "button" ||
         el?.tagName.toLowerCase() === "a" ||
+        el?.tagName.toLowerCase() === "input" ||
+        el?.tagName.toLowerCase() === "textarea" ||
         el?.closest("button") ||
         el?.closest("a") ||
+        el?.closest("input") ||
+        el?.closest("textarea") ||
         el?.getAttribute("role") === "button" ||
+        el?.getAttribute("role") === "textbox" ||
         el?.classList.contains("clickable")
       );
       overClickableRef.current = clickable;
 
-      // scale bump + sparkles
+      // Hide cursor and create sparkles when over clickable elements
       const { clientX: x, clientY: y } = e;
-      updateCursorVisual(x, y);
-
       if (clickable) {
+        setVisible(false);
         for (let i = 0; i < 3; i++) {
           setTimeout(() => createParticle(x, y, "sparkle"), i * 50);
         }
+      } else {
+        setVisible(true);
+        updateCursorVisual(x, y);
       }
     };
 
