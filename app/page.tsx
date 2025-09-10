@@ -31,10 +31,10 @@ export default function Veevillexp() {
   const smoothScroll = (
     element: Element,
     target: number,
-    duration: number = 800
+    duration: number = 500 // Reduced base duration for snappier movement
   ) => {
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 450 : duration;
+    const actualDuration = isMobile ? 400 : duration;
 
     const start = element.scrollTop;
     const windowHeight = window.innerHeight;
@@ -61,42 +61,32 @@ export default function Veevillexp() {
     }
 
     const distance = constrainedTarget - start;
+
+    // If the distance is very small, snap directly
+    if (Math.abs(distance) < 10) {
+      element.scrollTop = constrainedTarget;
+      return;
+    }
+
     const startTime = performance.now();
 
-    // Enhanced easing function for smoother movement
-    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-    let isAnimating = true;
-    let lastScrollTop = start;
-    let lastTime = startTime;
+    // Using a custom easing function for smoother acceleration and deceleration
+    const easeInOutQuint = (t: number) =>
+      t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t;
 
     const animation = (currentTime: number) => {
-      if (!isAnimating) return;
-
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / actualDuration, 1);
-      const easeProgress = easeOutCubic(progress);
+      const easeProgress = easeInOutQuint(progress);
 
       const newScrollTop = start + distance * easeProgress;
-
-      // Prevent overshooting
-      const finalScrollTop = Math.max(
-        0,
-        Math.min(newScrollTop, element.scrollHeight - windowHeight)
-      );
-      element.scrollTop = finalScrollTop;
-
-      // If we're very close to the target, snap to it
-      if (Math.abs(finalScrollTop - constrainedTarget) < 1) {
-        element.scrollTop = constrainedTarget;
-        isAnimating = false;
-        return;
-      }
+      element.scrollTop = Math.round(newScrollTop);
 
       if (progress < 1) {
         requestAnimationFrame(animation);
       } else {
-        isAnimating = false;
+        // Ensure we land exactly on the target
+        element.scrollTop = constrainedTarget;
       }
     };
 
@@ -125,7 +115,7 @@ export default function Veevillexp() {
             container,
             container.scrollTop + window.innerHeight * direction
           );
-          setTimeout(() => setIsScrollLocked(false), 1000);
+          setTimeout(() => setIsScrollLocked(false), 500);
           break;
         case "Home":
         case "End":
@@ -135,7 +125,7 @@ export default function Veevillexp() {
             container,
             event.key === "Home" ? 0 : container.scrollHeight
           );
-          setTimeout(() => setIsScrollLocked(false), 1000);
+          setTimeout(() => setIsScrollLocked(false), 500);
           break;
       }
     };
