@@ -95,23 +95,5 @@ export const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
     }
   };
 
-  return (
-    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block">
-      <div className="flex flex-col space-y-2">
-        {sections.map((section, index) => (
-          <button
-            key={section}
-            onClick={() => scrollToSection(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              index === currentSection
-                ? "bg-[#f21e90] scale-125"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
-            title={section}
-            aria-label={`Go to ${section} section`}
-          />
-        ))}
-      </div>
-    </div>
-  );
+  return null;
 };
