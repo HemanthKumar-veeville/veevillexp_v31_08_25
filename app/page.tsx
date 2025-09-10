@@ -29,45 +29,118 @@ export default function Veevillexp(): React.ReactNode {
     "Contact & Footer",
   ];
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const container = document.querySelector(".snap-y");
-      if (!container) return;
+  const smoothScroll = (
+    element: Element,
+    target: number,
+    duration: number = 800
+  ) => {
+    // Use shorter duration on mobile
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const actualDuration = isMobile ? 600 : duration;
 
+    const start = element.scrollTop;
+    const distance = target - start;
+    const startTime = performance.now();
+
+    // Mobile-optimized easing function
+    const easeInOutQuad = (t: number) => {
+      return isMobile
+        ? t < 0.5
+          ? 4 * t * t * t
+          : 1 - Math.pow(-2 * t + 2, 3) / 2 // More responsive for touch
+        : t < 0.5
+        ? 2 * t * t
+        : -1 + (4 - 2 * t) * t; // Original desktop easing
+    };
+
+    const animation = (currentTime: number) => {
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / actualDuration, 1);
+      const easeProgress = easeInOutQuad(progress);
+
+      element.scrollTop = start + distance * easeProgress;
+
+      if (timeElapsed < actualDuration) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
+  useEffect(() => {
+    const container = document.querySelector(".snap-y");
+    if (!container) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowDown":
           event.preventDefault();
-          container.scrollBy({
-            top: window.innerHeight,
-            behavior: "smooth",
-          });
+          smoothScroll(container, container.scrollTop + window.innerHeight);
           break;
         case "ArrowUp":
           event.preventDefault();
-          container.scrollBy({
-            top: -window.innerHeight,
-            behavior: "smooth",
-          });
+          smoothScroll(container, container.scrollTop - window.innerHeight);
           break;
         case "Home":
           event.preventDefault();
-          container.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
+          smoothScroll(container, 0);
           break;
         case "End":
           event.preventDefault();
-          container.scrollTo({
-            top: container.scrollHeight,
-            behavior: "smooth",
-          });
+          smoothScroll(container, container.scrollHeight);
           break;
       }
     };
 
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let lastScrollTime = 0;
+
+    const handleTouchStart = (e: Event) => {
+      const touchEvent = e as TouchEvent;
+      touchStartY = touchEvent.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: Event) => {
+      const touchEvent = e as TouchEvent;
+      touchEndY = touchEvent.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
+      const now = performance.now();
+      const timeDiff = now - lastScrollTime;
+
+      // Prevent rapid consecutive scrolls
+      if (timeDiff < 300) return;
+
+      const touchDiff = touchStartY - touchEndY;
+      const threshold = 50; // Minimum swipe distance
+
+      if (Math.abs(touchDiff) > threshold) {
+        const newPosition =
+          touchDiff > 0
+            ? container.scrollTop + window.innerHeight
+            : container.scrollTop - window.innerHeight;
+
+        smoothScroll(container, newPosition);
+        lastScrollTime = now;
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    container.addEventListener("touchmove", handleTouchMove, { passive: true });
+    container.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
   }, []);
 
   // Hide instructions after 5 seconds

@@ -30,13 +30,38 @@ export const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
     }
   }, [sections.length]);
 
+  const smoothScroll = (
+    element: Element,
+    target: number,
+    duration: number = 800
+  ) => {
+    const start = element.scrollTop;
+    const distance = target - start;
+    const startTime = performance.now();
+
+    const easeInOutQuad = (t: number) => {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    const animation = (currentTime: number) => {
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const easeProgress = easeInOutQuad(progress);
+
+      element.scrollTop = start + distance * easeProgress;
+
+      if (timeElapsed < duration) {
+        requestAnimationFrame(animation);
+      }
+    };
+
+    requestAnimationFrame(animation);
+  };
+
   const scrollToSection = (index: number) => {
     const container = document.querySelector(".snap-y");
     if (container) {
-      container.scrollTo({
-        top: index * window.innerHeight,
-        behavior: "smooth",
-      });
+      smoothScroll(container, index * window.innerHeight);
     }
   };
 
