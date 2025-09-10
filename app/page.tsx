@@ -16,6 +16,7 @@ import { ScrollIndicator } from "@/components/ui/scroll-indicator";
 
 export default function Veevillexp() {
   const [showInstructions, setShowInstructions] = useState(true);
+  const [isScrollLocked, setIsScrollLocked] = useState(false);
   const sections = [
     "Hero",
     "Play",
@@ -34,15 +35,18 @@ export default function Veevillexp() {
     target: number,
     duration: number = 800
   ) => {
+    if (isScrollLocked) return; // Prevent multiple scroll animations
+    setIsScrollLocked(true);
+
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 450 : duration;
+    const actualDuration = isMobile ? 600 : duration; // Increased mobile duration for smoother scroll
 
     const start = element.scrollTop;
     const windowHeight = window.innerHeight;
 
     // Ensure we only move one section at a time
-    const currentSection = Math.round(start / windowHeight);
-    const targetSection = Math.round(target / windowHeight);
+    const currentSection = Math.floor(start / windowHeight);
+    const targetSection = Math.floor(target / windowHeight);
     const direction = targetSection > currentSection ? 1 : -1;
 
     // Only allow moving to adjacent section
@@ -52,22 +56,41 @@ export default function Veevillexp() {
     const distance = constrainedTarget - start;
     const startTime = performance.now();
 
-    // Simplified easing for more controlled movement
-    const easeOutQuad = (t: number) => t * (2 - t);
+    // Enhanced easing function for smoother movement
+    const easeOutCubic = (t: number) => {
+      const t1 = t - 1;
+      return t1 * t1 * t1 + 1;
+    };
 
     let lastTimestamp = startTime;
-    let lastScrollTop = start;
+    let lastPosition = start;
 
     const animation = (currentTime: number) => {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / actualDuration, 1);
-      const easeProgress = easeOutQuad(progress);
+      const easeProgress = easeOutCubic(progress);
 
       const newScrollTop = start + distance * easeProgress;
+
+      // Prevent overshooting
+      if (
+        (direction > 0 && newScrollTop > constrainedTarget) ||
+        (direction < 0 && newScrollTop < constrainedTarget)
+      ) {
+        element.scrollTop = constrainedTarget;
+        setIsScrollLocked(false);
+        return;
+      }
+
       element.scrollTop = newScrollTop;
+      lastPosition = newScrollTop;
 
       if (progress < 1) {
         requestAnimationFrame(animation);
+      } else {
+        // Ensure we end exactly on a section boundary
+        element.scrollTop = constrainedTarget;
+        setIsScrollLocked(false);
       }
     };
 
@@ -99,38 +122,75 @@ export default function Veevillexp() {
       }
     };
 
-    let touchStartY = 0;
-    let isScrolling = false;
-    const scrollCooldown = 800; // ms cooldown between scroll actions
-    let lastScrollTime = 0;
+    const touchRef = React.useRef({
+      startY: 0,
+      startTime: 0,
+      lastScrollTime: 0,
+      lastDirection: 0,
+      consecutiveScrolls: 0,
+    });
+
+    const scrollCooldown = 1000; // Increased cooldown between scroll actions
 
     const handleTouchStart = (e: Event) => {
       const touchEvent = e as TouchEvent;
-      touchStartY = touchEvent.touches[0].clientY;
+      touchRef.current = {
+        ...touchRef.current,
+        startY: touchEvent.touches[0].clientY,
+        startTime: performance.now(),
+        consecutiveScrolls: 0,
+      };
     };
 
     const handleTouchMove = (e: Event) => {
-      if (isScrolling) {
+      if (isScrollLocked) {
         e.preventDefault();
         return;
       }
 
       const now = performance.now();
-      if (now - lastScrollTime < scrollCooldown) {
+      const timeSinceStart = now - touchRef.current.startTime;
+
+      // Prevent scroll if too soon after last scroll
+      if (now - touchRef.current.lastScrollTime < scrollCooldown) {
         e.preventDefault();
         return;
       }
 
       const touchEvent = e as TouchEvent;
       const currentY = touchEvent.touches[0].clientY;
-      const deltaY = currentY - touchStartY;
+      const deltaY = currentY - touchRef.current.startY;
+      const velocity = Math.abs(deltaY) / timeSinceStart;
 
-      // Only scroll if significant movement
-      if (Math.abs(deltaY) > 50) {
-        isScrolling = true;
-        lastScrollTime = now;
+      // Determine scroll direction
+      const direction = deltaY > 0 ? -1 : 1;
 
-        const direction = deltaY > 0 ? -1 : 1;
+      // Only scroll if movement is significant and not too fast
+      if (Math.abs(deltaY) > 50 && velocity < 2.5) {
+        // Check if trying to scroll in opposite direction too quickly
+        if (
+          direction !== touchRef.current.lastDirection &&
+          now - touchRef.current.lastScrollTime < scrollCooldown * 1.5
+        ) {
+          e.preventDefault();
+          return;
+        }
+
+        // Prevent rapid consecutive scrolls in same direction
+        if (direction === touchRef.current.lastDirection) {
+          touchRef.current.consecutiveScrolls++;
+          if (touchRef.current.consecutiveScrolls > 2) {
+            e.preventDefault();
+            return;
+          }
+        }
+
+        touchRef.current = {
+          ...touchRef.current,
+          lastScrollTime: now,
+          lastDirection: direction,
+        };
+
         if (container) {
           smoothScroll(
             container,
@@ -139,11 +199,23 @@ export default function Veevillexp() {
         }
 
         e.preventDefault();
+        touchRef.current.startY = currentY; // Reset touch start for next movement
       }
     };
 
     const handleTouchEnd = () => {
-      isScrolling = false;
+      const now = performance.now();
+      const timeSinceStart = now - touchRef.current.startTime;
+
+      // If the touch ended very quickly, it might be a flick/swipe
+      // In this case, we want to ensure the scroll completes properly
+      if (timeSinceStart < 300) {
+        setTimeout(() => {
+          setIsScrollLocked(false);
+        }, 500);
+      } else {
+        setIsScrollLocked(false);
+      }
     };
 
     // Add event listeners
