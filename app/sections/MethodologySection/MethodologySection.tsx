@@ -42,7 +42,9 @@ const methodologyData = [
 export const MethodologySection = (): React.JSX.Element => {
   const [showSlideBadge, setShowSlideBadge] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const desktopSectionRef = useRef<HTMLElement>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -112,12 +114,66 @@ export const MethodologySection = (): React.JSX.Element => {
     };
   }, [hasInteracted]);
 
+  // Intersection Observer for desktop section animations
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Section is entering view - start animations
+            setIsVisible(true);
+          } else {
+            // Section is leaving view - reset animations instantly
+            setIsVisible(false);
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "0px 0px -10% 0px",
+      }
+    );
+
+    if (desktopSectionRef.current) {
+      observer.observe(desktopSectionRef.current);
+    }
+
+    return () => {
+      if (desktopSectionRef.current) {
+        observer.unobserve(desktopSectionRef.current);
+      }
+    };
+  }, []);
+
   React.useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
+
+  // Animation classes for sequential animation
+  const getAnimationClasses = (index: number) => {
+    if (!isVisible) {
+      // Complete blank state - no transition
+      return "opacity-0 translate-y-[-60px] scale-90";
+    }
+    // Ultra-slow, ultra-smooth animation when visible
+    return "transition-all duration-[2500ms] ease-[cubic-bezier(0.16,1,0.3,1)] opacity-100 translate-y-0 scale-100";
+  };
+
+  const getAnimationDelay = (index: number) => {
+    if (!isVisible) {
+      // No delay when resetting
+      return {
+        transitionDelay: "0ms",
+      };
+    }
+    // Much longer staggered delay for ultra-smooth sequential effect
+    return {
+      transitionDelay: `${index * 600}ms`,
+    };
+  };
 
   return (
     <>
@@ -226,17 +282,30 @@ export const MethodologySection = (): React.JSX.Element => {
       </section>
 
       {/* Desktop Section - Completely Separate and Untouched */}
-      <section className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:pt-[90px] lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
+      <section 
+        ref={desktopSectionRef}
+        className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:pt-[90px] lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center"
+      >
         <div className="w-full mx-auto relative">
           {/* Title */}
-          <UpdatedHeading className="mb-[-64px]">
+          <UpdatedHeading 
+            className={`mb-[-64px] transition-all duration-[2000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isVisible 
+                ? "opacity-100 translate-y-0" 
+                : "opacity-0 translate-y-[-30px]"
+            }`}
+            style={isVisible ? { transitionDelay: "200ms" } : { transitionDelay: "0ms" }}
+          >
             The premise of play
           </UpdatedHeading>
 
           {/* Methodology Items */}
           <div className="relative w-full h-[700px]">
             {/* Item 1 - Zero Slide-decks */}
-            <div className="absolute inset-[12%_69%_66.21%_0.26%]">
+            <div 
+              className={`absolute inset-[12%_69%_66.21%_0.26%] ${getAnimationClasses(0)}`}
+              style={getAnimationDelay(0)}
+            >
               <LargeNumber className="mb-2">01</LargeNumber>
               <Heading3 className="mb-8">Zero slide-decks</Heading3>
               <UpdatedMethodologyDescription className="max-w-[255px]">
@@ -249,7 +318,10 @@ export const MethodologySection = (): React.JSX.Element => {
             </div>
 
             {/* Item 2 - Zero Jargon */}
-            <div className="absolute inset-[12%_34.1%_66.21%_35.16%]">
+            <div 
+              className={`absolute inset-[12%_34.1%_66.21%_35.16%] ${getAnimationClasses(1)}`}
+              style={getAnimationDelay(1)}
+            >
               <LargeNumber className="mb-2">02</LargeNumber>
               <Heading3 className="mb-8">Zero jargon</Heading3>
               <UpdatedMethodologyDescription className="max-w-[236px]">
@@ -262,7 +334,10 @@ export const MethodologySection = (): React.JSX.Element => {
             </div>
 
             {/* Item 3 - 100% Surprises */}
-            <div className="absolute inset-[12%_1.86%_66.21%_67.4%]">
+            <div 
+              className={`absolute inset-[12%_1.86%_66.21%_67.4%] ${getAnimationClasses(2)}`}
+              style={getAnimationDelay(2)}
+            >
               <LargeNumber className="mb-2">03</LargeNumber>
               <Heading3 className="mb-8">100% surprises</Heading3>
               <UpdatedMethodologyDescription className="max-w-[236px]">
@@ -273,7 +348,10 @@ export const MethodologySection = (): React.JSX.Element => {
 
             {/* Images */}
             {/* Image for Item 1 - Zero Slide-decks */}
-            <div className="absolute left-[8rem] bottom-[6rem] w-[250px] h-[237px]">
+            <div 
+              className={`absolute left-[8rem] bottom-[6rem] w-[250px] h-[237px] ${getAnimationClasses(0)}`}
+              style={getAnimationDelay(0)}
+            >
               <img
                 className="block w-full h-full object-contain"
                 alt="Methodology illustration 1"
@@ -281,7 +359,10 @@ export const MethodologySection = (): React.JSX.Element => {
               />
             </div>
             {/* Image for Item 2 - Zero Jargon */}
-            <div className="absolute left-[32rem] bottom-[6rem] w-[253px] h-[213px]">
+            <div 
+              className={`absolute left-[32rem] bottom-[6rem] w-[253px] h-[213px] ${getAnimationClasses(1)}`}
+              style={getAnimationDelay(1)}
+            >
               <img
                 className="block w-full h-full object-contain"
                 alt="Methodology illustration 2"
@@ -289,7 +370,10 @@ export const MethodologySection = (): React.JSX.Element => {
               />
             </div>
             {/* Image for Item 3 - 100% Surprises */}
-            <div className="absolute left-[58rem] bottom-[6rem] w-[247px] h-[273px]">
+            <div 
+              className={`absolute left-[58rem] bottom-[6rem] w-[247px] h-[273px] ${getAnimationClasses(2)}`}
+              style={getAnimationDelay(2)}
+            >
               <img
                 className="block w-full h-full object-contain mt-[32px]"
                 alt="Methodology illustration 3"

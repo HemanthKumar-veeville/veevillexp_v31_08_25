@@ -7,8 +7,11 @@ import {
   UpdatedHeadingTablet,
   UpdatedDescriptionTablet,
 } from "@/components/ui/typography";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const TestimonialsSection = (): React.JSX.Element => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  
   // All logos for marquee - duplicated for seamless loop
   const allLogos = [
     {
@@ -163,9 +166,12 @@ export const TestimonialsSection = (): React.JSX.Element => {
       </div>
 
       {/* Desktop Layout (visible only on lg and up) - Completely unchanged */}
-      <section className="hidden lg:flex w-full relative pt-16 px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden py-auto flex-col items-start justify-start">
+      <section ref={sectionRef} className="hidden lg:flex w-full relative pt-16 px-10 lg:px-14 max-w-[1280px] mx-auto overflow-hidden py-auto flex-col items-start justify-start">
         <div className="">
-          <div className="text-left mb-2">
+          <div 
+            className={`text-left mb-2 ${getTitleAnimationClasses()}`}
+            style={getTitleAnimationDelay()}
+          >
             <UpdatedHeading className="mb-8">
               Ready to rediscover wonder?
             </UpdatedHeading>
@@ -175,7 +181,10 @@ export const TestimonialsSection = (): React.JSX.Element => {
               through extraordinary experiences
             </UpdatedDescription>
           </div>
-          <div className="flex flex-col items-start gap-1 mb-2">
+          <div 
+            className={`flex flex-col items-start gap-1 mb-2 ${getAnimationClasses(0)}`}
+            style={getAnimationDelay(0)}
+          >
             <div className="flex items-center gap-3">
               <div className="relative w-[26px] h-[21px]">
                 <img
@@ -214,7 +223,10 @@ export const TestimonialsSection = (): React.JSX.Element => {
             </div>
           </div>
           {/* Desktop Layout - All logos in single row */}
-          <div className="flex flex-row flex-wrap gap-16 mb-8 justify-start items-center">
+          <div 
+            className={`flex flex-row flex-wrap gap-16 mb-8 justify-start items-center ${getAnimationClasses(1)}`}
+            style={getAnimationDelay(1)}
+          >
             {allLogos.map((logo, index) => (
               <img
                 key={`company-logo-desktop-${index}`}
@@ -225,7 +237,10 @@ export const TestimonialsSection = (): React.JSX.Element => {
             ))}
           </div>
 
-          <div className="w-full max-w-[80rem] h-auto absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2">
+          <div 
+            className={`w-full max-w-[80rem] h-auto absolute bottom-[-4.5rem] left-1/2 -translate-x-1/2 ${getAnimationClasses(2)}`}
+            style={getAnimationDelay(2)}
+          >
             <img
               className="w-full h-auto"
               alt="Testimonials"

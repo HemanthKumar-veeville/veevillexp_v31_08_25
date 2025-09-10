@@ -10,6 +10,7 @@ import {
   FooterText,
 } from "@/components/ui/typography";
 import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 interface FormData {
   firstName: string;
@@ -78,6 +79,8 @@ const Footer: React.FC = () => {
 };
 
 export const ContactFormSection: React.FC = () => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -209,11 +212,14 @@ export const ContactFormSection: React.FC = () => {
   };
 
   return (
-    <>
+    <section ref={sectionRef}>
       {/* Mobile / Tablet */}
       <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between h-[100dvh] min-h-[100dvh] overflow-y-auto">
         <div className="w-full flex-1 flex flex-col space-y-6 sm:space-y-8 md:space-y-10 overflow-y-auto">
-          <div className="w-full pt-8 sm:pt-12 md:pt-16">
+          <div 
+            className={`w-full pt-8 sm:pt-12 md:pt-16 ${getTitleAnimationClasses()}`}
+            style={getTitleAnimationDelay()}
+          >
             <UpdatedHeadingTablet>Get in Touch</UpdatedHeadingTablet>
           </div>
 
@@ -236,7 +242,8 @@ export const ContactFormSection: React.FC = () => {
 
           <form
             onSubmit={handleSubmit}
-            className="w-full space-y-6 sm:space-y-8"
+            className={`w-full space-y-6 sm:space-y-8 ${getAnimationClasses(0)}`}
+            style={getAnimationDelay(0)}
           >
             <div className="space-y-6 sm:space-y-8">
               <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
@@ -367,7 +374,10 @@ export const ContactFormSection: React.FC = () => {
           </form>
         </div>
 
-        <div className="w-full mt-6">
+        <div 
+          className={`w-full mt-6 ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           <Footer />
         </div>
       </div>
@@ -376,7 +386,10 @@ export const ContactFormSection: React.FC = () => {
       <div className="hidden w-full h-[100dvh] min-h-[100dvh] lg:flex lg:flex-col lg:items-start lg:justify-between">
         <div className="w-full max-w-[1280px] mx-auto lg:py-16 lg:px-[52px] flex-1 overflow-y-auto">
           <div className="w-full">
-            <div className="mb-8 sm:mb-12">
+            <div 
+              className={`mb-8 sm:mb-12 ${getTitleAnimationClasses()}`}
+              style={getTitleAnimationDelay()}
+            >
               <UpdatedHeading>Get in Touch</UpdatedHeading>
             </div>
 
@@ -399,7 +412,8 @@ export const ContactFormSection: React.FC = () => {
 
             <form
               onSubmit={handleSubmit}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12"
+              className={`grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 ${getAnimationClasses(0)}`}
+              style={getAnimationDelay(0)}
             >
               <div className="space-y-6">
                 <div className="min-h-[80px] flex flex-col">
@@ -537,10 +551,13 @@ export const ContactFormSection: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-[1280px] mx-auto">
+        <div 
+          className={`w-full max-w-[1280px] mx-auto ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           <Footer />
         </div>
       </div>
-    </>
+    </section>
   );
 };

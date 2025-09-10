@@ -5,19 +5,28 @@ import {
   UpdatedHeadingTablet,
   UpdatedDescriptionTablet,
 } from "@/components/ui/typography";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const HighFiveSection = (): React.JSX.Element => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+
   return (
-    <>
+    <section ref={sectionRef}>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
       <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] overflow-y-auto space-y-4 sm:space-y-6 md:space-y-8 py-6 sm:py-8 md:py-10">
         {/* Main Heading - Mobile with tablet typography */}
-        <div className="text-left w-[300px] sm:w-[400px] md:w-full">
+        <div 
+          className={`text-left w-[300px] sm:w-[400px] md:w-full ${getTitleAnimationClasses()}`}
+          style={getTitleAnimationDelay()}
+        >
           <UpdatedHeadingTablet>The high-five methodology</UpdatedHeadingTablet>
         </div>
 
         {/* Body Text - Mobile with tablet typography */}
-        <div className="text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%]">
+        <div 
+          className={`text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(0)}`}
+          style={getAnimationDelay(0)}
+        >
           <UpdatedDescriptionTablet className="space-y-3">
             <p className="mb-0">
               When you consciously unwrap
@@ -53,7 +62,8 @@ export const HighFiveSection = (): React.JSX.Element => {
 
         {/* Image - Mobile */}
         <img
-          className="w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain"
+          className={`w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
           alt="Group"
           src="/img/group-1000001879.png"
         />
@@ -62,46 +72,62 @@ export const HighFiveSection = (): React.JSX.Element => {
       {/* Desktop Layout (visible only on lg and up) */}
       <div className="hidden lg:flex lg:flex-col lg:items-start lg:justify-center w-full py-[90px] px-[52px] max-w-[1280px] mx-auto">
         <div className="max-w-7xl">
-          <UpdatedHeading className="mb-8">
+          <UpdatedHeading 
+            className={`mb-8 ${getTitleAnimationClasses()}`}
+            style={getTitleAnimationDelay()}
+          >
             The high-five methodology
           </UpdatedHeading>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-8">
-              <UpdatedDescription className="w-[524px]">
-                <p className="leading-[27.5px] mb-4">
-                  When you consciously unwrap
-                  <br />
-                  the wrapper of play,
-                  <br />
-                  the underpinnings of the framework
-                  <br />
-                  become clear as day.
-                </p>
-                <p className="leading-[27.3px]">
-                  You can enter Kolb&apos;s learning cycle,
-                  <br />
-                  where you choose,
-                  <br />
-                  play as a &quot;state of flow&quot;
-                  <br />
-                  is hardly breaking news.
-                  <br />
-                  Glutamate and GABA might spark &amp; shape your brain.
-                  <br />
-                  When learning becomes fun, you will not feel the strain.
-                </p>
-              </UpdatedDescription>
-              <UpdatedDescription className="w-[524px]">
-                <span className="leading-[27.3px]">
-                  Curious to know what this means? Don&#39;t google.
-                  <br />
-                  Talk to us. We never rhyme without reason!
-                </span>
-              </UpdatedDescription>
+              <div 
+                className={`w-[524px] ${getAnimationClasses(0)}`}
+                style={getAnimationDelay(0)}
+              >
+                <UpdatedDescription>
+                  <p className="leading-[27.5px] mb-4">
+                    When you consciously unwrap
+                    <br />
+                    the wrapper of play,
+                    <br />
+                    the underpinnings of the framework
+                    <br />
+                    become clear as day.
+                  </p>
+                  <p className="leading-[27.3px]">
+                    You can enter Kolb&apos;s learning cycle,
+                    <br />
+                    where you choose,
+                    <br />
+                    play as a &quot;state of flow&quot;
+                    <br />
+                    is hardly breaking news.
+                    <br />
+                    Glutamate and GABA might spark &amp; shape your brain.
+                    <br />
+                    When learning becomes fun, you will not feel the strain.
+                  </p>
+                </UpdatedDescription>
+              </div>
+              <div 
+                className={`w-[524px] ${getAnimationClasses(1)}`}
+                style={getAnimationDelay(1)}
+              >
+                <UpdatedDescription>
+                  <span className="leading-[27.3px]">
+                    Curious to know what this means? Don&#39;t google.
+                    <br />
+                    Talk to us. We never rhyme without reason!
+                  </span>
+                </UpdatedDescription>
+              </div>
             </div>
 
-            <div className="lg:col-span-1 flex justify-center lg:justify-end">
+            <div 
+              className={`lg:col-span-1 flex justify-center lg:justify-end ${getAnimationClasses(2)}`}
+              style={getAnimationDelay(2)}
+            >
               <img
                 className="w-[349px] h-[315px] object-contain"
                 alt="Group"
@@ -111,6 +137,6 @@ export const HighFiveSection = (): React.JSX.Element => {
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 };

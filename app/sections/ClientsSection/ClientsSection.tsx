@@ -11,6 +11,7 @@ import {
   UpdatedHeadingMobile,
   UpdatedHeadingTablet,
 } from "@/components/ui/typography";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 const testimonialsData = [
   {
@@ -36,6 +37,7 @@ export const ClientsSection = (): React.JSX.Element => {
   const [showSlideBadge, setShowSlideBadge] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const { sectionRef: animationRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -223,15 +225,21 @@ export const ClientsSection = (): React.JSX.Element => {
       </section>
 
       {/* Desktop Section - Completely Separate and Untouched */}
-      <section className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
+      <section ref={animationRef} className="hidden lg:w-full lg:px-14 lg:relative lg:max-w-[1280px] lg:mx-auto lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
         <div className="max-w-[1344px] mx-auto">
           {/* Desktop Heading */}
-          <div className="block">
+          <div 
+            className={`block ${getTitleAnimationClasses()}`}
+            style={getTitleAnimationDelay()}
+          >
             <UpdatedHeading className="mb-8">Testimonials</UpdatedHeading>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div className="space-y-12">
+            <div 
+              className={`space-y-12 ${getAnimationClasses(0)}`}
+              style={getAnimationDelay(0)}
+            >
               {testimonialsData.map((testimonial, index) => (
                 <Card
                   key={index}
@@ -273,7 +281,10 @@ export const ClientsSection = (): React.JSX.Element => {
               ))}
             </div>
 
-            <div className="flex-shrink-0 flex items-end h-full">
+            <div 
+              className={`flex-shrink-0 flex items-end h-full ${getAnimationClasses(1)}`}
+              style={getAnimationDelay(1)}
+            >
               <img
                 className="w-full h-auto max-w-[40rem] min-w-[39rem] object-contain md:mb-[-80px] lg:mb-[-100px]"
                 alt="Group"

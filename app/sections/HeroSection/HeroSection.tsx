@@ -1,13 +1,22 @@
 import { BrandLabel } from "@/components/ui/typography";
 import React from "react";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const HeroSection: React.FC = () => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+
   return (
-    <section className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 md:pt-[90px] pt-[30px] max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center">
+    <section 
+      ref={sectionRef}
+      className="relative w-full px-4 sm:px-6 md:px-10 lg:px-14 md:pt-[90px] pt-[30px] max-w-[1280px] mx-auto md:py-auto md:flex md:flex-col md:items-start md:justify-center"
+    >
       {/* Mobile Layout */}
       <div className="block lg:hidden">
         <div className="flex flex-col items-center space-y-4 sm:space-y-6 md:space-y-8 min-h-[25rem] sm:min-h-[28rem] md:min-h-[30rem] px-4">
-          <div className="flex flex-col items-start justify-start">
+          <div 
+            className={`flex flex-col items-start justify-start ${getAnimationClasses(0)}`}
+            style={getAnimationDelay(0)}
+          >
             {/* Exp By Logo */}
             <img
               className="w-[90dvw] sm:w-[70dvw] h-auto object-contain"
@@ -30,7 +39,8 @@ export const HeroSection: React.FC = () => {
 
           {/* Hero Mobile Image */}
           <img
-            className="h-[60dvh] w-auto object-contain absolute bottom-0 right-0"
+            className={`h-[60dvh] w-auto object-contain absolute bottom-0 right-0 ${getAnimationClasses(1)}`}
+            style={getAnimationDelay(1)}
             alt="Hero Mobile"
             src="/img/group-1000001860.png"
           />
@@ -41,7 +51,10 @@ export const HeroSection: React.FC = () => {
       <div className="hidden lg:grid lg:grid-cols-2 lg:gap-8">
         <div className="flex flex-col items-start justify-start gap-y-32">
           {/* Logo Images */}
-          <div className="flex flex-col items-start space-y-4">
+          <div 
+            className={`flex flex-col items-start space-y-4 ${getAnimationClasses(0)}`}
+            style={getAnimationDelay(0)}
+          >
             {/* Exp By Logo */}
             <img
               className="w-[684px] h-auto object-contain"
@@ -57,7 +70,10 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Pablo Quote */}
-          <div>
+          <div 
+            className={getAnimationClasses(1)}
+            style={getAnimationDelay(1)}
+          >
             <BrandLabel className="w-[360px]">
               it took me four years to <br />
               paint like raphael,
@@ -73,7 +89,10 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* Right Side - Full Hero Image */}
-        <div className="flex flex-col items-center justify-center mt-[-4rem] mr-[-4rem]">
+        <div 
+          className={`flex flex-col items-center justify-center mt-[-4rem] mr-[-4rem] ${getAnimationClasses(2)}`}
+          style={getAnimationDelay(2)}
+        >
           <img
             className="w-full h-auto max-h-[95dvh] object-contain"
             alt="Hero Image"

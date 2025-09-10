@@ -9,8 +9,10 @@ import {
   UpdatedHeadingTablet,
   UpdatedDescriptionTablet,
 } from "@/components/ui/typography";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const IntroductionSection = (): React.JSX.Element => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
   const categories = [
     {
       label: "Leadership",
@@ -27,18 +29,24 @@ export const IntroductionSection = (): React.JSX.Element => {
   ];
 
   return (
-    <>
+    <section ref={sectionRef}>
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
       <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] min-h-[100dvh] space-y-8 sm:space-y-10 md:space-y-12">
         {/* Main Heading - Mobile with tablet typography */}
-        <div className="text-left w-[300px] sm:w-[400px] md:w-[500px]">
+        <div 
+          className={`text-left w-[300px] sm:w-[400px] md:w-[500px] ${getTitleAnimationClasses()}`}
+          style={getTitleAnimationDelay()}
+        >
           <UpdatedHeadingTablet>
             Crafted for the minds that matter
           </UpdatedHeadingTablet>
         </div>
 
         {/* Body Text - Mobile with tablet typography */}
-        <div className="text-center max-w-[90%] sm:max-w-[80%] md:max-w-[70%]">
+        <div 
+          className={`text-center max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(0)}`}
+          style={getAnimationDelay(0)}
+        >
           <UpdatedDescriptionTablet className="space-y-3">
             <p className="mb-0">
               We've got different tools in our box for all levels of the
@@ -53,7 +61,10 @@ export const IntroductionSection = (): React.JSX.Element => {
         </div>
 
         {/* Categories - Mobile */}
-        <div className="flex flex-col gap-3 items-start justify-center">
+        <div 
+          className={`flex flex-col gap-3 items-start justify-center ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           {categories.map((category, index) => (
             <div key={index} className="flex items-center justify-center gap-2">
               <img
@@ -69,7 +80,10 @@ export const IntroductionSection = (): React.JSX.Element => {
         </div>
 
         {/* Image - Mobile */}
-        <div className="flex justify-center items-center">
+        <div 
+          className={`flex justify-center items-center ${getAnimationClasses(2)}`}
+          style={getAnimationDelay(2)}
+        >
           <img
             className="w-auto max-w-[90%] sm:max-w-[80%] md:max-w-[70%] h-auto object-contain"
             alt="Layer"
@@ -83,19 +97,27 @@ export const IntroductionSection = (): React.JSX.Element => {
         <div className="grid grid-cols-1 lg:px-[52px]">
           <div className="flex-1">
             <UpdatedHeading
-              style={{ lineHeight: "normal" }}
-              className="leading-tight mb-8"
+              className={`leading-tight mb-8 ${getTitleAnimationClasses()}`}
+              style={{ lineHeight: "normal", ...getTitleAnimationDelay() }}
             >
               Crafted for the minds that matter
             </UpdatedHeading>
 
             <div className="space-y-4">
-              <UpdatedDescription className="">
-                We've got different tools in our box for all levels of the
-                organization. Play should be for everyone.
-              </UpdatedDescription>
+              <div 
+                className={`${getAnimationClasses(0)}`}
+                style={getAnimationDelay(0)}
+              >
+                <UpdatedDescription>
+                  We've got different tools in our box for all levels of the
+                  organization. Play should be for everyone.
+                </UpdatedDescription>
+              </div>
 
-              <div className="flex gap-64 ">
+              <div 
+                className={`flex gap-64 ${getAnimationClasses(1)}`}
+                style={getAnimationDelay(1)}
+              >
                 {categories.map((category, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <img
@@ -110,14 +132,22 @@ export const IntroductionSection = (): React.JSX.Element => {
                 ))}
               </div>
 
-              <UpdatedDescription>
-                Impactful implementations across companies of all sizes and
-                industry verticals
-              </UpdatedDescription>
+              <div 
+                className={`${getAnimationClasses(2)}`}
+                style={getAnimationDelay(2)}
+              >
+                <UpdatedDescription>
+                  Impactful implementations across companies of all sizes and
+                  industry verticals
+                </UpdatedDescription>
+              </div>
             </div>
           </div>
 
-          <div className="flex-shrink-0 flex justify-end items-end">
+          <div 
+            className={`flex-shrink-0 flex justify-end items-end ${getAnimationClasses(3)}`}
+            style={getAnimationDelay(3)}
+          >
             <img
               className="w-full max-w-[762px] h-auto object-contain"
               alt="Layer"
@@ -126,6 +156,6 @@ export const IntroductionSection = (): React.JSX.Element => {
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 };

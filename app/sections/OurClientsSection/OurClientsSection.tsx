@@ -5,6 +5,7 @@ import {
   UpdatedHeading,
   UpdatedHeadingTablet,
 } from "@/components/ui/typography";
+import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 const clientLogos = [
   {
@@ -197,16 +198,24 @@ const mobileClientLogos = [
 
 // Mobile Layout Component
 const MobileLayout: React.FC = () => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  
   return (
-    <section className="w-full py-16 px-4 sm:hidden mx-auto flex flex-col justify-center items-start">
+    <section ref={sectionRef} className="w-full py-16 px-4 sm:hidden mx-auto flex flex-col justify-center items-start">
       {/* Mobile Heading */}
-      <div className="mb-8 sm:mb-12">
+      <div 
+        className={`mb-8 sm:mb-12 ${getTitleAnimationClasses()}`}
+        style={getTitleAnimationDelay()}
+      >
         <UpdatedHeadingTablet>Our clients</UpdatedHeadingTablet>
       </div>
 
       <div className="space-y-6 mb-8">
         {/* 1st row: First 3 logos */}
-        <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-3 gap-4 items-center justify-items-center ${getAnimationClasses(0)}`}
+          style={getAnimationDelay(0)}
+        >
           {mobileClientLogos.slice(0, 3).map((logo, index) => (
             <img
               key={`mobile-client-logo-row1-${index}`}
@@ -218,7 +227,10 @@ const MobileLayout: React.FC = () => {
         </div>
 
         {/* 2nd row: Next 4 logos */}
-        <div className="grid grid-cols-4 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-4 gap-4 items-center justify-items-center ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           {mobileClientLogos.slice(3, 7).map((logo, index) => (
             <img
               key={`mobile-client-logo-row2-${index}`}
@@ -230,7 +242,10 @@ const MobileLayout: React.FC = () => {
         </div>
 
         {/* 3rd row: Remaining 5 logos */}
-        <div className="grid grid-cols-5 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-5 gap-4 items-center justify-items-center ${getAnimationClasses(2)}`}
+          style={getAnimationDelay(2)}
+        >
           {mobileClientLogos.slice(7, 12).map((logo, index) => (
             <img
               key={`mobile-client-logo-row3-${index}`}
@@ -247,17 +262,25 @@ const MobileLayout: React.FC = () => {
 
 // Tablet Layout Component
 const TabletLayout: React.FC = () => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  
   return (
-    <section className="hidden sm:flex w-full py-16 px-4 lg:hidden mx-auto flex-col justify-center items-start">
+    <section ref={sectionRef} className="hidden sm:flex w-full py-16 px-4 lg:hidden mx-auto flex-col justify-center items-start">
       {/* Tablet Heading */}
-      <div className="mb-8 sm:mb-12">
+      <div 
+        className={`mb-8 sm:mb-12 ${getTitleAnimationClasses()}`}
+        style={getTitleAnimationDelay()}
+      >
         <UpdatedHeadingTablet>Our clients</UpdatedHeadingTablet>
       </div>
 
       {/* Mobile Client Logos */}
       <div className="space-y-12 mb-8">
         {/* 1st row: First 3 logos */}
-        <div className="grid grid-cols-2 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-2 gap-4 items-center justify-items-center ${getAnimationClasses(0)}`}
+          style={getAnimationDelay(0)}
+        >
           {tabletClientLogos.slice(0, 2).map((logo, index) => (
             <img
               key={`mobile-client-logo-row1-${index}`}
@@ -269,7 +292,10 @@ const TabletLayout: React.FC = () => {
         </div>
 
         {/* 2nd row: Next 4 logos */}
-        <div className="grid grid-cols-2 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-2 gap-4 items-center justify-items-center ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           {tabletClientLogos.slice(2, 4).map((logo, index) => (
             <img
               key={`mobile-client-logo-row2-${index}`}
@@ -281,7 +307,10 @@ const TabletLayout: React.FC = () => {
         </div>
 
         {/* 3rd row: Remaining 5 logos */}
-        <div className="grid grid-cols-2 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-2 gap-4 items-center justify-items-center ${getAnimationClasses(2)}`}
+          style={getAnimationDelay(2)}
+        >
           {tabletClientLogos.slice(4, 6).map((logo, index) => (
             <img
               key={`mobile-client-logo-row3-${index}`}
@@ -292,7 +321,10 @@ const TabletLayout: React.FC = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-3 gap-4 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-3 gap-4 items-center justify-items-center ${getAnimationClasses(3)}`}
+          style={getAnimationDelay(3)}
+        >
           {tabletClientLogos.slice(6, 9).map((logo, index) => (
             <img
               key={`mobile-client-logo-row3-${index}`}
@@ -309,17 +341,25 @@ const TabletLayout: React.FC = () => {
 
 // Desktop Layout Component
 const DesktopLayout: React.FC = () => {
+  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  
   return (
-    <section className="lg:w-full lg:py-16 lg:px-14 lg:max-w-[1280px] lg:mx-auto hidden lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
+    <section ref={sectionRef} className="lg:w-full lg:py-16 lg:px-14 lg:max-w-[1280px] lg:mx-auto hidden lg:py-auto lg:flex lg:flex-col lg:items-start lg:justify-center">
       {/* Desktop Heading */}
-      <div className="mb-8">
+      <div 
+        className={`mb-8 ${getTitleAnimationClasses()}`}
+        style={getTitleAnimationDelay()}
+      >
         <UpdatedHeading>Our clients</UpdatedHeading>
       </div>
 
       {/* Desktop Client Logos */}
       <div className="space-y-8 mb-8 ml-[-80px]">
         {/* 1st row: First 3 logos */}
-        <div className="grid grid-cols-3 gap-8 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-3 gap-8 items-center justify-items-center ${getAnimationClasses(0)}`}
+          style={getAnimationDelay(0)}
+        >
           {clientLogos.slice(0, 3).map((logo, index) => (
             <img
               key={`client-logo-row1-${index}`}
@@ -331,7 +371,10 @@ const DesktopLayout: React.FC = () => {
         </div>
 
         {/* 2nd row: Next 4 logos */}
-        <div className="grid grid-cols-4 gap-8 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-4 gap-8 items-center justify-items-center ${getAnimationClasses(1)}`}
+          style={getAnimationDelay(1)}
+        >
           {clientLogos.slice(3, 7).map((logo, index) => (
             <img
               key={`client-logo-row2-${index}`}
@@ -343,7 +386,10 @@ const DesktopLayout: React.FC = () => {
         </div>
 
         {/* 3rd row: Remaining 5 logos */}
-        <div className="grid grid-cols-5 gap-8 items-center justify-items-center">
+        <div 
+          className={`grid grid-cols-5 gap-8 items-center justify-items-center ${getAnimationClasses(2)}`}
+          style={getAnimationDelay(2)}
+        >
           {clientLogos.slice(7, 12).map((logo, index) => (
             <img
               key={`client-logo-row3-${index}`}
