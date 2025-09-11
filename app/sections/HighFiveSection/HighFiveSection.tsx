@@ -60,13 +60,14 @@ export const HighFiveSection = (): React.JSX.Element => {
               <br />
               Glutamate and GABA might spark &amp; shape your brain.
               <br />
-              When learning becomes fun, you will not feel the strain.
+              When learning becomes fun, <br />
+              you will not feel the strain.
             </p>
             <p className="mb-0">&nbsp;</p>
             <p className="mb-0">
-              Curious to know what this means? Don&#39;t google.
-              <br />
-              Talk to us. We never rhyme without reason!
+              Curious to know what this means? <br />
+              Don&#39;t google. Talk to us. <br />
+              We never rhyme without reason!
             </p>
           </UpdatedDescriptionTablet>
         </div>
