@@ -8,14 +8,23 @@ import {
 import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const HighFiveSection = (): React.JSX.Element => {
-  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  const {
+    sectionRef,
+    getAnimationClasses,
+    getAnimationDelay,
+    getTitleAnimationClasses,
+    getTitleAnimationDelay,
+  } = useSectionAnimation();
 
   return (
-    <section ref={sectionRef}>
+    <section
+      ref={sectionRef}
+      className="flex flex-col justify-center items-center"
+    >
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
       <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] overflow-y-auto space-y-4 sm:space-y-6 md:space-y-8 py-6 sm:py-8 md:py-10">
         {/* Main Heading - Mobile with tablet typography */}
-        <div 
+        <div
           className={`text-left w-[300px] sm:w-[400px] md:w-full ${getTitleAnimationClasses()}`}
           style={getTitleAnimationDelay()}
         >
@@ -23,8 +32,10 @@ export const HighFiveSection = (): React.JSX.Element => {
         </div>
 
         {/* Body Text - Mobile with tablet typography */}
-        <div 
-          className={`text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(0)}`}
+        <div
+          className={`text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(
+            0
+          )}`}
           style={getAnimationDelay(0)}
         >
           <UpdatedDescriptionTablet className="space-y-3">
@@ -62,7 +73,9 @@ export const HighFiveSection = (): React.JSX.Element => {
 
         {/* Image - Mobile */}
         <img
-          className={`w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain ${getAnimationClasses(1)}`}
+          className={`w-auto max-w-[90%] h-[30dvh] sm:h-[35dvh] md:h-[40dvh] object-contain ${getAnimationClasses(
+            1
+          )}`}
           style={getAnimationDelay(1)}
           alt="Group"
           src="/img/group-1000001879.png"
@@ -70,9 +83,9 @@ export const HighFiveSection = (): React.JSX.Element => {
       </div>
 
       {/* Desktop Layout (visible only on lg and up) */}
-      <div className="hidden lg:flex lg:flex-col lg:items-start lg:justify-center w-full py-[90px] px-[52px] max-w-[1280px] mx-auto">
+      <div className="hidden lg:flex lg:flex-col lg:items-start lg:justify-center w-full py-auto px-[52px] max-w-[1280px] mx-auto">
         <div className="max-w-7xl">
-          <UpdatedHeading 
+          <UpdatedHeading
             className={`mb-8 ${getTitleAnimationClasses()}`}
             style={getTitleAnimationDelay()}
           >
@@ -81,7 +94,7 @@ export const HighFiveSection = (): React.JSX.Element => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             <div className="lg:col-span-2 space-y-8">
-              <div 
+              <div
                 className={`w-[524px] ${getAnimationClasses(0)}`}
                 style={getAnimationDelay(0)}
               >
@@ -110,7 +123,7 @@ export const HighFiveSection = (): React.JSX.Element => {
                   </p>
                 </UpdatedDescription>
               </div>
-              <div 
+              <div
                 className={`w-[524px] ${getAnimationClasses(1)}`}
                 style={getAnimationDelay(1)}
               >
@@ -124,8 +137,10 @@ export const HighFiveSection = (): React.JSX.Element => {
               </div>
             </div>
 
-            <div 
-              className={`lg:col-span-1 flex justify-center lg:justify-end ${getAnimationClasses(2)}`}
+            <div
+              className={`lg:col-span-1 flex justify-center lg:justify-end ${getAnimationClasses(
+                2
+              )}`}
               style={getAnimationDelay(2)}
             >
               <img

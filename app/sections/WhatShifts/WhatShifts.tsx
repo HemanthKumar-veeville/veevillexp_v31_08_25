@@ -9,14 +9,23 @@ import {
 import { useSectionAnimation } from "@/lib/useSectionAnimation";
 
 export const WhatShifts = (): React.JSX.Element => {
-  const { sectionRef, getAnimationClasses, getAnimationDelay, getTitleAnimationClasses, getTitleAnimationDelay } = useSectionAnimation();
+  const {
+    sectionRef,
+    getAnimationClasses,
+    getAnimationDelay,
+    getTitleAnimationClasses,
+    getTitleAnimationDelay,
+  } = useSectionAnimation();
 
   return (
-    <section ref={sectionRef}>
+    <section
+      ref={sectionRef}
+      className="flex flex-col justify-center items-center"
+    >
       {/* Mobile Layout (visible only on mobile and tablet up to lg) */}
       <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-center h-[100dvh] overflow-y-auto space-y-4 sm:space-y-6 md:space-y-8 py-6 sm:py-8 md:py-10">
         {/* Main Heading - Mobile with tablet typography */}
-        <div 
+        <div
           className={`text-left w-[300px] sm:w-[400px] md:w-full ${getTitleAnimationClasses()}`}
           style={getTitleAnimationDelay()}
         >
@@ -26,8 +35,10 @@ export const WhatShifts = (): React.JSX.Element => {
         </div>
 
         {/* Body Text - Mobile with tablet typography */}
-        <div 
-          className={`text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(0)}`}
+        <div
+          className={`text-left max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(
+            0
+          )}`}
           style={getAnimationDelay(0)}
         >
           <UpdatedDescriptionTablet className="space-y-3">
@@ -45,8 +56,10 @@ export const WhatShifts = (): React.JSX.Element => {
             <p>Think like a 5 year-old. Lead like a grown up!</p>
           </UpdatedDescriptionTablet>
         </div>
-        <div 
-          className={`flex flex-row justify-center items-center gap-4 w-full ${getAnimationClasses(1)}`}
+        <div
+          className={`flex flex-row justify-center items-center gap-4 w-full ${getAnimationClasses(
+            1
+          )}`}
           style={getAnimationDelay(1)}
         >
           <img
@@ -71,14 +84,14 @@ export const WhatShifts = (): React.JSX.Element => {
       {/* Desktop Layout (visible only on lg and up) */}
       <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-screen-xl mx-auto px-[52px] py-[90px]">
         <div className="flex flex-col justify-start w-[47rem]">
-          <UpdatedHeading 
+          <UpdatedHeading
             className={`mb-8 ${getTitleAnimationClasses()}`}
             style={getTitleAnimationDelay()}
           >
             The change becomes visible
           </UpdatedHeading>
 
-          <div 
+          <div
             className={`w-[524px] ${getAnimationClasses(0)}`}
             style={getAnimationDelay(0)}
           >
@@ -95,8 +108,10 @@ export const WhatShifts = (): React.JSX.Element => {
             </UpdatedDescription>
           </div>
 
-          <div 
-            className={`w-[520px] flex flex-col justify-center mt-8 ${getAnimationClasses(1)}`}
+          <div
+            className={`w-[520px] flex flex-col justify-center mt-8 ${getAnimationClasses(
+              1
+            )}`}
             style={getAnimationDelay(1)}
           >
             <BrandLabel>
@@ -108,7 +123,7 @@ export const WhatShifts = (): React.JSX.Element => {
           </div>
         </div>
 
-        <div 
+        <div
           className={`flex justify-end ${getAnimationClasses(2)}`}
           style={getAnimationDelay(2)}
         >
