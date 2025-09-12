@@ -75,10 +75,26 @@ export default function Veevillexp() {
   };
 
   const [isScrollLocked, setIsScrollLocked] = useState(false);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   useEffect(() => {
     const container = document.querySelector(".snap-y");
     if (!container) return;
+
+    // Function to get current section index based on scroll position
+    const getCurrentSection = () => {
+      const scrollTop = container.scrollTop;
+      const windowHeight = window.innerHeight;
+      return Math.round(scrollTop / windowHeight);
+    };
+
+    // Function to update current section index
+    const updateCurrentSection = () => {
+      setCurrentSectionIndex(getCurrentSection());
+    };
+
+    // Add scroll event listener to update current section
+    container.addEventListener("scroll", updateCurrentSection);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isScrollLocked) {
@@ -91,12 +107,14 @@ export default function Veevillexp() {
         case "ArrowUp":
           event.preventDefault();
           const direction = event.key === "ArrowDown" ? 1 : -1;
-          setIsScrollLocked(true);
-          smoothScroll(
-            container,
-            container.scrollTop + window.innerHeight * direction
-          );
-          setTimeout(() => setIsScrollLocked(false), 1000);
+          const targetIndex = currentSectionIndex + direction;
+
+          // Check section boundaries
+          if (targetIndex >= 0 && targetIndex < sections.length) {
+            setIsScrollLocked(true);
+            smoothScroll(container, targetIndex * window.innerHeight);
+            setTimeout(() => setIsScrollLocked(false), 1000);
+          }
           break;
         case "Home":
         case "End":
@@ -115,17 +133,19 @@ export default function Veevillexp() {
     let touchStartTime = 0;
     let isScrolling = false;
     let scrollTimeout: NodeJS.Timeout;
+    let lastTouchTime = 0;
 
-    // Optimized thresholds
-    const SWIPE_THRESHOLD = 50;
-    const SWIPE_TIME_LIMIT = 300;
+    // Adjusted thresholds for better control
+    const SWIPE_THRESHOLD = 75; // Increased from 50
+    const SWIPE_TIME_LIMIT = 200; // Reduced from 300
+    const TOUCH_COOLDOWN = 800; // Minimum time between touch events
 
     const clearScrollLock = () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         setIsScrollLocked(false);
         isScrolling = false;
-      }, 400); // Reduced from 1000ms
+      }, 800); // Increased for better control
     };
 
     const handleTouchStart = (e: Event) => {
@@ -142,9 +162,15 @@ export default function Veevillexp() {
         return;
       }
 
+      const now = performance.now();
+      if (now - lastTouchTime < TOUCH_COOLDOWN) {
+        e.preventDefault();
+        return;
+      }
+
       const touch = (e as TouchEvent).touches[0];
       const deltaY = touchStartY - touch.clientY;
-      const swipeTime = performance.now() - touchStartTime;
+      const swipeTime = now - touchStartTime;
 
       // Process swipe only if it meets our criteria
       if (
@@ -152,15 +178,18 @@ export default function Veevillexp() {
         swipeTime <= SWIPE_TIME_LIMIT
       ) {
         e.preventDefault();
-        isScrolling = true;
-        setIsScrollLocked(true);
-
         const direction = deltaY > 0 ? 1 : -1;
-        const currentScroll = container.scrollTop;
-        const targetScroll = currentScroll + window.innerHeight * direction;
+        const targetIndex = currentSectionIndex + direction;
 
-        smoothScroll(container, targetScroll);
-        clearScrollLock();
+        // Check section boundaries
+        if (targetIndex >= 0 && targetIndex < sections.length) {
+          isScrolling = true;
+          setIsScrollLocked(true);
+          lastTouchTime = now;
+
+          smoothScroll(container, targetIndex * window.innerHeight);
+          clearScrollLock();
+        }
       }
     };
 
@@ -187,14 +216,23 @@ export default function Veevillexp() {
       const direction = Math.sign(wheelEvent.deltaY);
 
       if (direction !== 0) {
-        isScrolling = true;
-        setIsScrollLocked(true);
+        const targetIndex = currentSectionIndex + direction;
 
-        const currentScroll = container.scrollTop;
-        const targetScroll = currentScroll + window.innerHeight * direction;
+        // Check section boundaries
+        if (targetIndex >= 0 && targetIndex < sections.length) {
+          isScrolling = true;
+          setIsScrollLocked(true);
 
-        smoothScroll(container, targetScroll, 500); // Consistent, faster duration
-        clearScrollLock();
+          smoothScroll(container, targetIndex * window.innerHeight, 500);
+          clearScrollLock();
+        }
+      }
+    };
+
+    // Prevent default scroll behavior
+    const preventDefaultScroll = (e: Event) => {
+      if (isScrollLocked || isScrolling) {
+        e.preventDefault();
       }
     };
 
@@ -211,6 +249,11 @@ export default function Veevillexp() {
       passive: false,
     });
 
+    // Prevent momentum scrolling
+    container.addEventListener("scroll", preventDefaultScroll, {
+      passive: false,
+    });
+
     // Cleanup event listeners
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
@@ -218,6 +261,8 @@ export default function Veevillexp() {
       container.removeEventListener("touchmove", handleTouchMove);
       container.removeEventListener("touchend", handleTouchEnd);
       container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener("scroll", preventDefaultScroll);
+      container.removeEventListener("scroll", updateCurrentSection);
     };
   }, []);
 
