@@ -30,44 +30,73 @@ export default function Veevillexp() {
   const smoothScroll = (
     element: Element,
     target: number,
-    duration: number = 600 // Reduced default duration
+    duration: number = 800
   ) => {
     const start = element.scrollTop;
     const windowHeight = window.innerHeight;
     const maxScroll = element.scrollHeight - windowHeight;
+
+    // Get current section based on scroll position
+    const currentSection = Math.round(start / windowHeight);
+
+    // Calculate target section based on scroll position
+    const targetSection = Math.round(target / windowHeight);
+
+    // Only allow scrolling to adjacent sections
+    if (Math.abs(targetSection - currentSection) > 1) {
+      const direction = targetSection > currentSection ? 1 : -1;
+      target = (currentSection + direction) * windowHeight;
+    }
+
+    // Constrain target within bounds
     const constrainedTarget = Math.max(0, Math.min(target, maxScroll));
 
-    // Early exit if already at target
-    if (start === constrainedTarget) return;
+    // If we're already at the target section or at bounds, don't scroll
+    if (
+      start === constrainedTarget ||
+      constrainedTarget < 0 ||
+      constrainedTarget > maxScroll
+    ) {
+      return;
+    }
 
     const distance = constrainedTarget - start;
     const startTime = performance.now();
 
-    // Optimized easing function for mobile
-    const ease = (t: number) => {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    // Desktop easing function (cubic)
+    const easeOutCubic = (t: number) => {
+      const p = 1 - t;
+      return 1 - p * p * p;
     };
 
-    let lastTimestamp = startTime;
-    let lastPosition = start;
+    let isAnimating = true;
 
     const animation = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = ease(progress);
+      if (!isAnimating) return;
 
-      // Calculate new position
-      const newPosition = start + distance * easeProgress;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const easeProgress = easeOutCubic(progress);
 
-      // Apply position
-      element.scrollTop = newPosition;
+      const newScrollTop = start + distance * easeProgress;
+      const finalScrollTop = Math.max(
+        0,
+        Math.min(newScrollTop, element.scrollHeight - windowHeight)
+      );
 
-      // Continue animation if not complete
+      element.scrollTop = finalScrollTop;
+
+      // Snap to target when very close
+      if (Math.abs(finalScrollTop - constrainedTarget) < 1) {
+        element.scrollTop = constrainedTarget;
+        isAnimating = false;
+        return;
+      }
+
       if (progress < 1) {
         requestAnimationFrame(animation);
       } else {
-        // Ensure we land exactly on target
-        element.scrollTop = constrainedTarget;
+        isAnimating = false;
       }
     };
 
@@ -75,26 +104,10 @@ export default function Veevillexp() {
   };
 
   const [isScrollLocked, setIsScrollLocked] = useState(false);
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   useEffect(() => {
     const container = document.querySelector(".snap-y");
     if (!container) return;
-
-    // Function to get current section index based on scroll position
-    const getCurrentSection = () => {
-      const scrollTop = container.scrollTop;
-      const windowHeight = window.innerHeight;
-      return Math.round(scrollTop / windowHeight);
-    };
-
-    // Function to update current section index
-    const updateCurrentSection = () => {
-      setCurrentSectionIndex(getCurrentSection());
-    };
-
-    // Add scroll event listener to update current section
-    container.addEventListener("scroll", updateCurrentSection);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isScrollLocked) {
@@ -107,14 +120,12 @@ export default function Veevillexp() {
         case "ArrowUp":
           event.preventDefault();
           const direction = event.key === "ArrowDown" ? 1 : -1;
-          const targetIndex = currentSectionIndex + direction;
-
-          // Check section boundaries
-          if (targetIndex >= 0 && targetIndex < sections.length) {
-            setIsScrollLocked(true);
-            smoothScroll(container, targetIndex * window.innerHeight);
-            setTimeout(() => setIsScrollLocked(false), 1000);
-          }
+          setIsScrollLocked(true);
+          smoothScroll(
+            container,
+            container.scrollTop + window.innerHeight * direction
+          );
+          setTimeout(() => setIsScrollLocked(false), 1000);
           break;
         case "Home":
         case "End":
@@ -130,109 +141,118 @@ export default function Veevillexp() {
     };
 
     let touchStartY = 0;
+    let touchStartX = 0;
     let touchStartTime = 0;
-    let isScrolling = false;
-    let scrollTimeout: NodeJS.Timeout;
-    let lastTouchTime = 0;
-
-    // Adjusted thresholds for better control
-    const SWIPE_THRESHOLD = 75; // Increased from 50
-    const SWIPE_TIME_LIMIT = 200; // Reduced from 300
-    const TOUCH_COOLDOWN = 800; // Minimum time between touch events
-
-    const clearScrollLock = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        setIsScrollLocked(false);
-        isScrolling = false;
-      }, 800); // Increased for better control
-    };
+    let lastDirection = 0;
+    let isSwiping = false;
+    const minSwipeDistance = 60; // Increased threshold for more intentional swipes
+    const maxSwipeTime = 400; // Increased time window for more natural swipes
+    const directionLockThreshold = 10; // Threshold to determine vertical vs horizontal swipe
 
     const handleTouchStart = (e: Event) => {
-      if (isScrollLocked) return;
-
-      const touch = (e as TouchEvent).touches[0];
-      touchStartY = touch.clientY;
+      if (isScrollLocked) {
+        e.preventDefault();
+        return;
+      }
+      const touchEvent = e as TouchEvent;
+      touchStartY = touchEvent.touches[0].clientY;
+      touchStartX = touchEvent.touches[0].clientX;
       touchStartTime = performance.now();
+      lastDirection = 0;
+      isSwiping = false;
     };
 
     const handleTouchMove = (e: Event) => {
-      if (isScrollLocked || isScrolling) {
+      if (isScrollLocked) {
         e.preventDefault();
         return;
       }
 
-      const now = performance.now();
-      if (now - lastTouchTime < TOUCH_COOLDOWN) {
-        e.preventDefault();
-        return;
-      }
+      const touchEvent = e as TouchEvent;
+      const currentY = touchEvent.touches[0].clientY;
+      const currentX = touchEvent.touches[0].clientX;
+      const deltaY = currentY - touchStartY;
+      const deltaX = currentX - touchStartX;
+      const swipeTime = performance.now() - touchStartTime;
 
-      const touch = (e as TouchEvent).touches[0];
-      const deltaY = touchStartY - touch.clientY;
-      const swipeTime = now - touchStartTime;
-
-      // Process swipe only if it meets our criteria
+      // Determine if the swipe is more horizontal than vertical
       if (
-        Math.abs(deltaY) >= SWIPE_THRESHOLD &&
-        swipeTime <= SWIPE_TIME_LIMIT
+        !isSwiping &&
+        Math.abs(deltaX) > Math.abs(deltaY) &&
+        Math.abs(deltaX) > directionLockThreshold
       ) {
+        return; // Let horizontal scrolls pass through
+      }
+
+      // Lock into vertical scrolling
+      if (!isSwiping && Math.abs(deltaY) > directionLockThreshold) {
+        isSwiping = true;
+      }
+
+      if (isSwiping) {
         e.preventDefault();
-        const direction = deltaY > 0 ? 1 : -1;
-        const targetIndex = currentSectionIndex + direction;
 
-        // Check section boundaries
-        if (targetIndex >= 0 && targetIndex < sections.length) {
-          isScrolling = true;
+        // Determine scroll direction
+        const currentDirection = Math.sign(deltaY);
+
+        // If direction changed during swipe, ignore this movement
+        if (lastDirection !== 0 && currentDirection !== lastDirection) {
+          return;
+        }
+
+        lastDirection = currentDirection;
+
+        // Calculate swipe intensity based on distance and time
+        const swipeIntensity = Math.abs(deltaY) / swipeTime;
+
+        // Only trigger scroll if swipe is decisive and within time window
+        if (Math.abs(deltaY) >= minSwipeDistance && swipeTime <= maxSwipeTime) {
           setIsScrollLocked(true);
-          lastTouchTime = now;
+          const direction = deltaY > 0 ? -1 : 1;
 
-          smoothScroll(container, targetIndex * window.innerHeight);
-          clearScrollLock();
+          if (container) {
+            // Calculate target based on current scroll position
+            const currentScroll = container.scrollTop;
+            const targetScroll = currentScroll + window.innerHeight * direction;
+
+            smoothScroll(container, targetScroll);
+          }
+
+          // Release scroll lock after animation completes
+          setTimeout(() => setIsScrollLocked(false), 1000);
         }
       }
     };
 
     const handleTouchEnd = () => {
-      // Reset touch tracking
-      touchStartY = 0;
-      touchStartTime = 0;
+      lastDirection = 0;
+      isSwiping = false;
     };
 
-    // Optimized wheel handler with debounce
-    let wheelTimeout: NodeJS.Timeout;
-    let lastWheelTime = 0;
-    const WHEEL_DELAY = 100; // Minimum time between wheel events
-
+    // Handle mouse wheel scrolling
     const handleWheel = (e: Event) => {
       e.preventDefault();
-      if (isScrollLocked || isScrolling) return;
 
-      const now = performance.now();
-      if (now - lastWheelTime < WHEEL_DELAY) return;
-      lastWheelTime = now;
+      if (isScrollLocked) return;
 
       const wheelEvent = e as WheelEvent;
+      const isTouchPad = Math.abs(wheelEvent.deltaY) < 50;
+
       const direction = Math.sign(wheelEvent.deltaY);
-
       if (direction !== 0) {
-        const targetIndex = currentSectionIndex + direction;
+        setIsScrollLocked(true);
 
-        // Check section boundaries
-        if (targetIndex >= 0 && targetIndex < sections.length) {
-          isScrolling = true;
-          setIsScrollLocked(true);
+        // Calculate target based on current scroll position
+        const currentScroll = container.scrollTop;
+        const targetScroll = currentScroll + window.innerHeight * direction;
 
-          smoothScroll(container, targetIndex * window.innerHeight, 500);
-          clearScrollLock();
-        }
-      }
-    };
+        smoothScroll(
+          container,
+          targetScroll,
+          isTouchPad ? 800 : 600 // Slower for touchpad, faster for mouse wheel
+        );
 
-    // Prevent default scroll behavior
-    const preventDefaultScroll = (e: Event) => {
-      if (isScrollLocked || isScrolling) {
-        e.preventDefault();
+        setTimeout(() => setIsScrollLocked(false), isTouchPad ? 1000 : 800);
       }
     };
 
@@ -249,11 +269,6 @@ export default function Veevillexp() {
       passive: false,
     });
 
-    // Prevent momentum scrolling
-    container.addEventListener("scroll", preventDefaultScroll, {
-      passive: false,
-    });
-
     // Cleanup event listeners
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
@@ -261,8 +276,6 @@ export default function Veevillexp() {
       container.removeEventListener("touchmove", handleTouchMove);
       container.removeEventListener("touchend", handleTouchEnd);
       container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener("scroll", preventDefaultScroll);
-      container.removeEventListener("scroll", updateCurrentSection);
     };
   }, []);
 
