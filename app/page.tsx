@@ -180,20 +180,30 @@ export default function Veevillexp() {
     return () => clearTimeout(timer);
   }, []);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
   return (
-    <motion.div
+    <div
       ref={containerRef}
       className="h-screen overflow-y-auto snap-y snap-mandatory"
       style={{ scrollBehavior: "smooth" }}
     >
       {/* Scroll Instructions Overlay - Hidden on mobile */}
       {showInstructions && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block"
-        >
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block">
           <div className="flex items-center space-x-4">
             <span>Use ↑↓ arrows or scroll to navigate</span>
             <button
@@ -203,108 +213,168 @@ export default function Veevillexp() {
               ×
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Hero Section */}
-      <motion.section
-        className="h-screen snap-start bg-white"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <HeroSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white">
+          <HeroSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <HeroSection />
+        </motion.section>
+      )}
 
       {/* Play Section */}
-      <motion.section
-        className="h-screen snap-start bg-white"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <PlaySection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white">
+          <PlaySection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <PlaySection />
+        </motion.section>
+      )}
 
       {/* Methodology Section */}
-      <motion.section
-        className="h-screen snap-start bg-white"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <MethodologySection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white">
+          <MethodologySection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <MethodologySection />
+        </motion.section>
+      )}
 
       {/* Introduction Section */}
-      <motion.section
-        className="h-screen snap-start bg-white"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <IntroductionSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white">
+          <IntroductionSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <IntroductionSection />
+        </motion.section>
+      )}
 
       {/* What Shifts */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <WhatShifts />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <WhatShifts />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <WhatShifts />
+        </motion.section>
+      )}
 
       {/* High Five Section */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <HighFiveSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <HighFiveSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <HighFiveSection />
+        </motion.section>
+      )}
 
       {/* Our Clients Section */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <OurClientsSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <OurClientsSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <OurClientsSection />
+        </motion.section>
+      )}
 
       {/* Clients Section */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <ClientsSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <ClientsSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <ClientsSection />
+        </motion.section>
+      )}
 
       {/* Testimonials Section */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <TestimonialsSection />
-      </motion.section>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <TestimonialsSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <TestimonialsSection />
+        </motion.section>
+      )}
 
       {/* Contact Form & Footer Section - Combined */}
-      <motion.section
-        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <ContactFormSection />
-      </motion.section>
-    </motion.div>
+      {isMobile ? (
+        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+          <ContactFormSection />
+        </section>
+      ) : (
+        <motion.section
+          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <ContactFormSection />
+        </motion.section>
+      )}
+    </div>
   );
 }
