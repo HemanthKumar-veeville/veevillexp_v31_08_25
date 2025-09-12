@@ -106,25 +106,57 @@ export default function Veevillexp() {
       }
     };
 
-    let touchStartY = 0;
-    let touchStartTime = 0;
+    let startY = 0;
+    let startTime = 0;
+    let lastY = 0;
+    let velocity = 0;
+    let lastTime = 0;
     const minSwipeDistance = 50;
     const maxSwipeTime = 300;
+    const velocityThreshold = 0.5;
+    let isScrolling = false;
+    let isPointerDown = false;
 
-    const handleTouchStart = (e: TouchEvent) => {
+    const handleScrollStart = (y: number) => {
       if (isScrollLocked) return;
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = performance.now();
+      startY = y;
+      lastY = y;
+      startTime = performance.now();
+      lastTime = startTime;
+      velocity = 0;
+      isScrolling = false;
     };
 
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleScrollMove = (y: number) => {
       if (isScrollLocked) return;
 
-      const touchEndY = e.changedTouches[0].clientY;
-      const deltaY = touchEndY - touchStartY;
-      const swipeTime = performance.now() - touchStartTime;
+      const currentTime = performance.now();
+      const deltaY = y - lastY;
+      const deltaTime = currentTime - lastTime;
 
-      if (Math.abs(deltaY) > minSwipeDistance && swipeTime < maxSwipeTime) {
+      if (deltaTime > 0) {
+        velocity = deltaY / deltaTime;
+      }
+
+      lastY = y;
+      lastTime = currentTime;
+
+      if (Math.abs(y - startY) > 10) {
+        isScrolling = true;
+      }
+    };
+
+    const handleScrollEnd = (y: number) => {
+      if (isScrollLocked || !isScrolling) return;
+
+      const deltaY = y - startY;
+      const scrollTime = performance.now() - startTime;
+      const scrollVelocity = Math.abs(velocity);
+
+      if (
+        (Math.abs(deltaY) > minSwipeDistance && scrollTime < maxSwipeTime) ||
+        scrollVelocity > velocityThreshold
+      ) {
         const direction = deltaY > 0 ? -1 : 1;
         const targetSection = currentSection + direction;
 
@@ -134,6 +166,49 @@ export default function Veevillexp() {
           setTimeout(() => setIsScrollLocked(false), 800);
         }
       }
+
+      isScrolling = false;
+      isPointerDown = false;
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      handleScrollStart(e.touches[0].clientY);
+      e.preventDefault();
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      handleScrollMove(e.touches[0].clientY);
+      e.preventDefault();
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      handleScrollEnd(e.changedTouches[0].clientY);
+      e.preventDefault();
+    };
+
+    const handlePointerDown = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      isPointerDown = true;
+      handleScrollStart(e.clientY);
+      e.preventDefault();
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (e.pointerType === "mouse" || !isPointerDown) return;
+      handleScrollMove(e.clientY);
+      e.preventDefault();
+    };
+
+    const handlePointerUp = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      handleScrollEnd(e.clientY);
+      e.preventDefault();
+    };
+
+    const handlePointerCancel = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") return;
+      isPointerDown = false;
+      isScrolling = false;
     };
 
     const handleWheel = (e: WheelEvent) => {
@@ -151,12 +226,37 @@ export default function Veevillexp() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
+
+    // Touch events
     containerRef.current.addEventListener("touchstart", handleTouchStart, {
-      passive: true,
+      passive: false,
+    });
+    containerRef.current.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
     });
     containerRef.current.addEventListener("touchend", handleTouchEnd, {
-      passive: true,
+      passive: false,
     });
+
+    // Pointer events
+    containerRef.current.addEventListener("pointerdown", handlePointerDown, {
+      passive: false,
+    });
+    containerRef.current.addEventListener("pointermove", handlePointerMove, {
+      passive: false,
+    });
+    containerRef.current.addEventListener("pointerup", handlePointerUp, {
+      passive: false,
+    });
+    containerRef.current.addEventListener(
+      "pointercancel",
+      handlePointerCancel,
+      {
+        passive: false,
+      }
+    );
+
+    // Wheel event
     containerRef.current.addEventListener("wheel", handleWheel, {
       passive: false,
     });
@@ -164,11 +264,30 @@ export default function Veevillexp() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       if (containerRef.current) {
+        // Remove touch events
         containerRef.current.removeEventListener(
           "touchstart",
           handleTouchStart
         );
+        containerRef.current.removeEventListener("touchmove", handleTouchMove);
         containerRef.current.removeEventListener("touchend", handleTouchEnd);
+
+        // Remove pointer events
+        containerRef.current.removeEventListener(
+          "pointerdown",
+          handlePointerDown
+        );
+        containerRef.current.removeEventListener(
+          "pointermove",
+          handlePointerMove
+        );
+        containerRef.current.removeEventListener("pointerup", handlePointerUp);
+        containerRef.current.removeEventListener(
+          "pointercancel",
+          handlePointerCancel
+        );
+
+        // Remove wheel event
         containerRef.current.removeEventListener("wheel", handleWheel);
       }
     };
@@ -180,26 +299,11 @@ export default function Veevillexp() {
     return () => clearTimeout(timer);
   }, []);
 
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
-  }, []);
-
   return (
     <div
       ref={containerRef}
-      className="h-screen overflow-y-auto snap-y snap-mandatory"
-      style={{ scrollBehavior: "smooth" }}
+      className="h-screen overflow-y-auto snap-y snap-mandatory touch-pan-y"
+      style={{ scrollBehavior: "smooth", WebkitOverflowScrolling: "touch" }}
     >
       {/* Scroll Instructions Overlay - Hidden on mobile */}
       {showInstructions && (
@@ -217,164 +321,104 @@ export default function Veevillexp() {
       )}
 
       {/* Hero Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white">
-          <HeroSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <HeroSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <HeroSection />
+      </motion.section>
 
       {/* Play Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white">
-          <PlaySection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <PlaySection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <PlaySection />
+      </motion.section>
 
       {/* Methodology Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white">
-          <MethodologySection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <MethodologySection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <MethodologySection />
+      </motion.section>
 
       {/* Introduction Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white">
-          <IntroductionSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <IntroductionSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <IntroductionSection />
+      </motion.section>
 
       {/* What Shifts */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <WhatShifts />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <WhatShifts />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <WhatShifts />
+      </motion.section>
 
       {/* High Five Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <HighFiveSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <HighFiveSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <HighFiveSection />
+      </motion.section>
 
       {/* Our Clients Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <OurClientsSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <OurClientsSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <OurClientsSection />
+      </motion.section>
 
       {/* Clients Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <ClientsSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <ClientsSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <ClientsSection />
+      </motion.section>
 
       {/* Testimonials Section */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <TestimonialsSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <TestimonialsSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <TestimonialsSection />
+      </motion.section>
 
       {/* Contact Form & Footer Section - Combined */}
-      {isMobile ? (
-        <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
-          <ContactFormSection />
-        </section>
-      ) : (
-        <motion.section
-          className="h-screen snap-start bg-white flex flex-col justify-center items-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <ContactFormSection />
-        </motion.section>
-      )}
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <ContactFormSection />
+      </motion.section>
     </div>
   );
 }
