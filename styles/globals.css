@@ -418,35 +418,29 @@ body::-webkit-scrollbar-thumb,
   display: none !important;
 }
 
-/* Snap scroll enhancements */
+/* Optimized snap scroll */
 .snap-y {
   scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
-  touch-action: pan-y pinch-zoom;
-  scroll-timeline: --page-scroll block;
-  transition: scroll-position 800ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
-  will-change: scroll-position;
+  touch-action: pan-y;
+  will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
-  perspective: 1000;
 }
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
   .snap-y {
     scroll-snap-type: y mandatory;
-    transition: scroll-position 450ms cubic-bezier(0.4, 0.0, 0.2, 1);
-    scroll-padding: 1px; /* Helps with iOS momentum scroll */
     -webkit-overflow-scrolling: touch;
   }
   
   /* Optimize paint performance */
   .snap-y > * {
     transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
     will-change: transform;
+    contain: content;
   }
 }
 
