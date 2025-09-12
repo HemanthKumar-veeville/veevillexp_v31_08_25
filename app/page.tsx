@@ -173,7 +173,6 @@ export default function Veevillexp() {
       const currentX = touchEvent.touches[0].clientX;
       const deltaY = currentY - touchStartY;
       const deltaX = currentX - touchStartX;
-      const swipeTime = performance.now() - touchStartTime;
 
       // Determine if the swipe is more horizontal than vertical
       if (
@@ -202,20 +201,25 @@ export default function Veevillexp() {
 
         lastDirection = currentDirection;
 
-        // Calculate swipe intensity based on distance and time
-        const swipeIntensity = Math.abs(deltaY) / swipeTime;
-
-        // Only trigger scroll if swipe is decisive and within time window
-        if (Math.abs(deltaY) >= minSwipeDistance && swipeTime <= maxSwipeTime) {
+        // Only trigger scroll when swipe distance meets threshold
+        if (Math.abs(deltaY) >= minSwipeDistance) {
           setIsScrollLocked(true);
           const direction = deltaY > 0 ? -1 : 1;
 
           if (container) {
-            // Calculate target based on current scroll position
-            const currentScroll = container.scrollTop;
-            const targetScroll = currentScroll + window.innerHeight * direction;
+            // Get current section based on scroll position
+            const currentSection = Math.round(
+              container.scrollTop / window.innerHeight
+            );
 
-            smoothScroll(container, targetScroll);
+            // Move only to adjacent section
+            const targetSection = currentSection + direction;
+            const targetScroll = targetSection * window.innerHeight;
+
+            // Only scroll if target section is within bounds
+            if (targetSection >= 0 && targetSection < sections.length) {
+              smoothScroll(container, targetScroll);
+            }
           }
 
           // Release scroll lock after animation completes
