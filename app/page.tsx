@@ -32,9 +32,6 @@ export default function Veevillexp() {
     target: number,
     duration: number = 800
   ) => {
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const actualDuration = isMobile ? 600 : duration;
-
     const start = element.scrollTop;
     const windowHeight = window.innerHeight;
     const maxScroll = element.scrollHeight - windowHeight;
@@ -47,7 +44,6 @@ export default function Veevillexp() {
 
     // Only allow scrolling to adjacent sections
     if (Math.abs(targetSection - currentSection) > 1) {
-      // If trying to scroll more than one section, constrain to adjacent section
       const direction = targetSection > currentSection ? 1 : -1;
       target = (currentSection + direction) * windowHeight;
     }
@@ -67,33 +63,30 @@ export default function Veevillexp() {
     const distance = constrainedTarget - start;
     const startTime = performance.now();
 
-    // Enhanced easing function for smoother movement
+    // Desktop easing function for smooth movement
     const easeOutCubic = (t: number) => {
       const p = 1 - t;
       return 1 - p * p * p;
     };
 
     let isAnimating = true;
-    let lastScrollTop = start;
-    let lastTime = startTime;
 
     const animation = (currentTime: number) => {
       if (!isAnimating) return;
 
       const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / actualDuration, 1);
+      const progress = Math.min(timeElapsed / duration, 1);
       const easeProgress = easeOutCubic(progress);
 
       const newScrollTop = start + distance * easeProgress;
-
-      // Prevent overshooting
       const finalScrollTop = Math.max(
         0,
         Math.min(newScrollTop, element.scrollHeight - windowHeight)
       );
+
       element.scrollTop = finalScrollTop;
 
-      // If we're very close to the target, snap to it
+      // Snap to target when very close
       if (Math.abs(finalScrollTop - constrainedTarget) < 1) {
         element.scrollTop = constrainedTarget;
         isAnimating = false;
@@ -226,7 +219,7 @@ export default function Veevillexp() {
           }
 
           // Release scroll lock after animation completes
-          setTimeout(() => setIsScrollLocked(false), 800);
+          setTimeout(() => setIsScrollLocked(false), 1000);
         }
       }
     };
