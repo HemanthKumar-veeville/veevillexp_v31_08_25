@@ -64,10 +64,6 @@ export const IntroductionSection = (): React.JSX.Element => {
               organization. Play should be for everyone.
             </p>
             <p className="mb-0">&nbsp;</p>
-            <p>
-              Impactful implementations across companies of all sizes and
-              industry verticals
-            </p>
           </UpdatedDescriptionTablet>
         </div>
 
@@ -92,12 +88,27 @@ export const IntroductionSection = (): React.JSX.Element => {
           ))}
         </div>
 
+        {/* Body Text - Mobile with tablet typography */}
+        <div
+          className={`text-center max-w-[90%] sm:max-w-[80%] md:max-w-[70%] ${getAnimationClasses(
+            0
+          )}`}
+          style={getAnimationDelay(2)}
+        >
+          <UpdatedDescriptionTablet className="space-y-3">
+            <p>
+              Impactful implementations across companies of all sizes and
+              industry verticals
+            </p>
+          </UpdatedDescriptionTablet>
+        </div>
+
         {/* Image - Mobile */}
         <div
           className={`flex justify-center items-center ${getAnimationClasses(
             2
           )}`}
-          style={getAnimationDelay(2)}
+          style={getAnimationDelay(3)}
         >
           <img
             className="w-auto max-w-[90%] sm:max-w-[80%] md:max-w-[70%] h-auto object-contain"
@@ -118,7 +129,7 @@ export const IntroductionSection = (): React.JSX.Element => {
               Crafted for the minds that matter
             </UpdatedHeading>
 
-            <div className="space-y-4">
+            <div className="space-y-8">
               <div
                 className={`${getAnimationClasses(0)}`}
                 style={getAnimationDelay(0)}
@@ -166,7 +177,7 @@ export const IntroductionSection = (): React.JSX.Element => {
             style={getAnimationDelay(3)}
           >
             <img
-              className="w-full max-w-[762px] h-auto object-contain"
+              className="w-auto max-w-[762px] h-[45dvh] object-contain"
               alt="Layer"
               src="/img/layer-1.png"
             />
