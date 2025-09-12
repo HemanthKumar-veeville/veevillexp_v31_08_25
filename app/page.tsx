@@ -1,5 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValueEvent,
+} from "framer-motion";
 import { ClientsSection } from "./sections/ClientsSection/ClientsSection";
 import { ContactFormSection } from "./sections/ContactFormSection/ContactFormSection";
 import { ExperienceSection } from "./sections/ExperienceSection/ExperienceSection";
@@ -14,6 +21,9 @@ import { WhatShifts } from "./sections/WhatShifts/WhatShifts";
 
 export default function Veevillexp() {
   const [showInstructions, setShowInstructions] = useState(true);
+  const [currentSection, setCurrentSection] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll({ container: containerRef });
   const sections = [
     "Hero",
     "Play",
@@ -27,87 +37,49 @@ export default function Veevillexp() {
     "Contact & Footer",
   ];
 
-  const smoothScroll = (
-    element: Element,
-    target: number,
-    duration: number = 800
-  ) => {
-    const start = element.scrollTop;
-    const windowHeight = window.innerHeight;
-    const maxScroll = element.scrollHeight - windowHeight;
-
-    // Get current section based on scroll position
-    const currentSection = Math.round(start / windowHeight);
-
-    // Calculate target section based on scroll position
-    const targetSection = Math.round(target / windowHeight);
-
-    // Only allow scrolling to adjacent sections
-    if (Math.abs(targetSection - currentSection) > 1) {
-      const direction = targetSection > currentSection ? 1 : -1;
-      target = (currentSection + direction) * windowHeight;
-    }
-
-    // Constrain target within bounds
-    const constrainedTarget = Math.max(0, Math.min(target, maxScroll));
-
-    // If we're already at the target section or at bounds, don't scroll
+  const smoothScroll = (targetSection: number) => {
     if (
-      start === constrainedTarget ||
-      constrainedTarget < 0 ||
-      constrainedTarget > maxScroll
+      targetSection >= 0 &&
+      targetSection < sections.length &&
+      containerRef.current
     ) {
-      return;
+      const container = containerRef.current as HTMLElement;
+      const targetScroll = targetSection * window.innerHeight;
+
+      container.scrollTo({
+        top: targetScroll,
+        behavior: "smooth",
+      });
+
+      setCurrentSection(targetSection);
     }
-
-    const distance = constrainedTarget - start;
-    const startTime = performance.now();
-
-    // Desktop easing function (cubic)
-    const easeOutCubic = (t: number) => {
-      const p = 1 - t;
-      return 1 - p * p * p;
-    };
-
-    let isAnimating = true;
-
-    const animation = (currentTime: number) => {
-      if (!isAnimating) return;
-
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const easeProgress = easeOutCubic(progress);
-
-      const newScrollTop = start + distance * easeProgress;
-      const finalScrollTop = Math.max(
-        0,
-        Math.min(newScrollTop, element.scrollHeight - windowHeight)
-      );
-
-      element.scrollTop = finalScrollTop;
-
-      // Snap to target when very close
-      if (Math.abs(finalScrollTop - constrainedTarget) < 1) {
-        element.scrollTop = constrainedTarget;
-        isAnimating = false;
-        return;
-      }
-
-      if (progress < 1) {
-        requestAnimationFrame(animation);
-      } else {
-        isAnimating = false;
-      }
-    };
-
-    requestAnimationFrame(animation);
   };
 
   const [isScrollLocked, setIsScrollLocked] = useState(false);
 
+  // Spring animation for smooth scrolling
+  const springConfig = {
+    stiffness: 100,
+    damping: 30,
+    mass: 1,
+  };
+
+  const smoothY = useSpring(scrollY, springConfig);
+
+  // Update current section based on scroll position
+  useMotionValueEvent(smoothY, "change", (latest: number) => {
+    const newSection = Math.round(latest / window.innerHeight);
+    if (
+      newSection !== currentSection &&
+      newSection >= 0 &&
+      newSection < sections.length
+    ) {
+      setCurrentSection(newSection);
+    }
+  });
+
   useEffect(() => {
-    const container = document.querySelector(".snap-y");
-    if (!container) return;
+    if (!containerRef.current) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isScrollLocked) {
@@ -121,167 +93,86 @@ export default function Veevillexp() {
           event.preventDefault();
           const direction = event.key === "ArrowDown" ? 1 : -1;
           setIsScrollLocked(true);
-          smoothScroll(
-            container,
-            container.scrollTop + window.innerHeight * direction
-          );
-          setTimeout(() => setIsScrollLocked(false), 1000);
+          smoothScroll(currentSection + direction);
+          setTimeout(() => setIsScrollLocked(false), 800);
           break;
         case "Home":
         case "End":
           event.preventDefault();
           setIsScrollLocked(true);
-          smoothScroll(
-            container,
-            event.key === "Home" ? 0 : container.scrollHeight
-          );
-          setTimeout(() => setIsScrollLocked(false), 1000);
+          smoothScroll(event.key === "Home" ? 0 : sections.length - 1);
+          setTimeout(() => setIsScrollLocked(false), 800);
           break;
       }
     };
 
     let touchStartY = 0;
-    let touchStartX = 0;
     let touchStartTime = 0;
-    let lastDirection = 0;
-    let isSwiping = false;
-    const minSwipeDistance = 60; // Increased threshold for more intentional swipes
-    const maxSwipeTime = 400; // Increased time window for more natural swipes
-    const directionLockThreshold = 10; // Threshold to determine vertical vs horizontal swipe
+    const minSwipeDistance = 50;
+    const maxSwipeTime = 300;
 
-    const handleTouchStart = (e: Event) => {
-      if (isScrollLocked) {
-        e.preventDefault();
-        return;
-      }
-      const touchEvent = e as TouchEvent;
-      touchStartY = touchEvent.touches[0].clientY;
-      touchStartX = touchEvent.touches[0].clientX;
+    const handleTouchStart = (e: TouchEvent) => {
+      if (isScrollLocked) return;
+      touchStartY = e.touches[0].clientY;
       touchStartTime = performance.now();
-      lastDirection = 0;
-      isSwiping = false;
     };
 
-    const handleTouchMove = (e: Event) => {
-      if (isScrollLocked) {
-        e.preventDefault();
-        return;
-      }
-
-      const touchEvent = e as TouchEvent;
-      const currentY = touchEvent.touches[0].clientY;
-      const currentX = touchEvent.touches[0].clientX;
-      const deltaY = currentY - touchStartY;
-      const deltaX = currentX - touchStartX;
-
-      // Determine if the swipe is more horizontal than vertical
-      if (
-        !isSwiping &&
-        Math.abs(deltaX) > Math.abs(deltaY) &&
-        Math.abs(deltaX) > directionLockThreshold
-      ) {
-        return; // Let horizontal scrolls pass through
-      }
-
-      // Lock into vertical scrolling
-      if (!isSwiping && Math.abs(deltaY) > directionLockThreshold) {
-        isSwiping = true;
-      }
-
-      if (isSwiping) {
-        e.preventDefault();
-
-        // Determine scroll direction
-        const currentDirection = Math.sign(deltaY);
-
-        // If direction changed during swipe, ignore this movement
-        if (lastDirection !== 0 && currentDirection !== lastDirection) {
-          return;
-        }
-
-        lastDirection = currentDirection;
-
-        // Only trigger scroll when swipe distance meets threshold
-        if (Math.abs(deltaY) >= minSwipeDistance) {
-          setIsScrollLocked(true);
-          const direction = deltaY > 0 ? -1 : 1;
-
-          if (container) {
-            // Get current section based on scroll position
-            const currentSection = Math.round(
-              container.scrollTop / window.innerHeight
-            );
-
-            // Move only to adjacent section
-            const targetSection = currentSection + direction;
-            const targetScroll = targetSection * window.innerHeight;
-
-            // Only scroll if target section is within bounds
-            if (targetSection >= 0 && targetSection < sections.length) {
-              smoothScroll(container, targetScroll);
-            }
-          }
-
-          // Release scroll lock after animation completes
-          setTimeout(() => setIsScrollLocked(false), 1000);
-        }
-      }
-    };
-
-    const handleTouchEnd = () => {
-      lastDirection = 0;
-      isSwiping = false;
-    };
-
-    // Handle mouse wheel scrolling
-    const handleWheel = (e: Event) => {
-      e.preventDefault();
-
+    const handleTouchEnd = (e: TouchEvent) => {
       if (isScrollLocked) return;
 
-      const wheelEvent = e as WheelEvent;
-      const isTouchPad = Math.abs(wheelEvent.deltaY) < 50;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchEndY - touchStartY;
+      const swipeTime = performance.now() - touchStartTime;
 
-      const direction = Math.sign(wheelEvent.deltaY);
-      if (direction !== 0) {
-        setIsScrollLocked(true);
+      if (Math.abs(deltaY) > minSwipeDistance && swipeTime < maxSwipeTime) {
+        const direction = deltaY > 0 ? -1 : 1;
+        const targetSection = currentSection + direction;
 
-        // Calculate target based on current scroll position
-        const currentScroll = container.scrollTop;
-        const targetScroll = currentScroll + window.innerHeight * direction;
-
-        smoothScroll(
-          container,
-          targetScroll,
-          isTouchPad ? 800 : 600 // Slower for touchpad, faster for mouse wheel
-        );
-
-        setTimeout(() => setIsScrollLocked(false), isTouchPad ? 1000 : 800);
+        if (targetSection >= 0 && targetSection < sections.length) {
+          setIsScrollLocked(true);
+          smoothScroll(targetSection);
+          setTimeout(() => setIsScrollLocked(false), 800);
+        }
       }
     };
 
-    // Add event listeners
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (isScrollLocked) return;
+
+      const direction = Math.sign(e.deltaY);
+      const targetSection = currentSection + direction;
+
+      if (targetSection >= 0 && targetSection < sections.length) {
+        setIsScrollLocked(true);
+        smoothScroll(targetSection);
+        setTimeout(() => setIsScrollLocked(false), 800);
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: false,
+    containerRef.current.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
     });
-    container.addEventListener("touchmove", handleTouchMove, {
-      passive: false,
+    containerRef.current.addEventListener("touchend", handleTouchEnd, {
+      passive: true,
     });
-    container.addEventListener("touchend", handleTouchEnd);
-    container.addEventListener("wheel", handleWheel, {
+    containerRef.current.addEventListener("wheel", handleWheel, {
       passive: false,
     });
 
-    // Cleanup event listeners
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
-      container.removeEventListener("wheel", handleWheel);
+      if (containerRef.current) {
+        containerRef.current.removeEventListener(
+          "touchstart",
+          handleTouchStart
+        );
+        containerRef.current.removeEventListener("touchend", handleTouchEnd);
+        containerRef.current.removeEventListener("wheel", handleWheel);
+      }
     };
-  }, []);
+  }, [currentSection, isScrollLocked]);
 
   // Hide instructions after 5 seconds
   useEffect(() => {
@@ -290,10 +181,19 @@ export default function Veevillexp() {
   }, []);
 
   return (
-    <div className="h-screen overflow-y-auto snap-y snap-mandatory">
+    <motion.div
+      ref={containerRef}
+      className="h-screen overflow-y-auto snap-y snap-mandatory"
+      style={{ scrollBehavior: "smooth" }}
+    >
       {/* Scroll Instructions Overlay - Hidden on mobile */}
       {showInstructions && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 text-white px-6 py-3 rounded-lg z-50 text-sm hidden lg:block"
+        >
           <div className="flex items-center space-x-4">
             <span>Use ↑↓ arrows or scroll to navigate</span>
             <button
@@ -303,58 +203,108 @@ export default function Veevillexp() {
               ×
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Hero Section */}
-      <section className="h-screen snap-start bg-white">
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <HeroSection />
-      </section>
+      </motion.section>
 
       {/* Play Section */}
-      <section className="h-screen snap-start bg-white">
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <PlaySection />
-      </section>
+      </motion.section>
 
       {/* Methodology Section */}
-      <section className="h-screen snap-start bg-white">
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <MethodologySection />
-      </section>
+      </motion.section>
 
       {/* Introduction Section */}
-      <section className="h-screen snap-start bg-white">
+      <motion.section
+        className="h-screen snap-start bg-white"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <IntroductionSection />
-      </section>
+      </motion.section>
 
       {/* What Shifts */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <WhatShifts />
-      </section>
+      </motion.section>
 
       {/* High Five Section */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <HighFiveSection />
-      </section>
+      </motion.section>
 
       {/* Our Clients Section */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <OurClientsSection />
-      </section>
+      </motion.section>
 
       {/* Clients Section */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <ClientsSection />
-      </section>
+      </motion.section>
 
       {/* Testimonials Section */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <TestimonialsSection />
-      </section>
+      </motion.section>
 
       {/* Contact Form & Footer Section - Combined */}
-      <section className="h-screen snap-start bg-white flex flex-col justify-center items-center">
+      <motion.section
+        className="h-screen snap-start bg-white flex flex-col justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <ContactFormSection />
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
