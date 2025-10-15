@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -103,6 +103,14 @@ export const ContactFormSection: React.FC = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // --- FIX: force interactivity even if animation classes accidentally include pointer-events-none
+  const [forceInteractive, setForceInteractive] = useState(false);
+  useEffect(() => {
+    // After mount, ensure the form is always interactive.
+    const timer = setTimeout(() => setForceInteractive(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const isFormValid = () =>
@@ -118,39 +126,27 @@ export const ContactFormSection: React.FC = () => {
     name: keyof FormData,
     value: string
   ): string | undefined => {
-    console.log(`Validating ${name} with value:`, value);
     if (!value.trim()) {
-      console.log(`${name} is empty or whitespace`);
       return "This field is required";
     }
     switch (name) {
       case "email":
         if (!emailRegex.test(value)) {
-          console.log(`${name} failed email regex test`);
           return "Please enter a valid email address";
         }
         break;
       case "firstName":
       case "lastName":
         if (value.trim().length < 2) {
-          console.log(`${name} is too short`);
           return "Must be at least 2 characters";
         }
         break;
-      case "message":
-        if (value.trim().length < 10) {
-          console.log(`${name} is too short`);
-          return "Message must be at least 10 characters";
-        }
-        break;
     }
-    console.log(`${name} passed validation`);
     return undefined;
   };
 
   const handleInputChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Validate the field immediately and update errors
     const error = validateField(name, value);
     setErrors((prev) => ({ ...prev, [name]: error }));
     setTouched((prev) => ({ ...prev, [name]: true }));
@@ -182,7 +178,6 @@ export const ContactFormSection: React.FC = () => {
       return;
     }
 
-    // Clear all errors if validation passes
     setErrors({});
     setTouched({});
 
@@ -229,26 +224,29 @@ export const ContactFormSection: React.FC = () => {
   };
 
   const getErrorMessages = () => {
-    console.log("Current errors:", errors);
-    console.log("Touched fields:", touched);
-    console.log("Form data:", formData);
     const hasAnyError = Object.keys(errors).some(
       (key) => errors[key as keyof FormData] && touched[key as keyof FormData]
     );
-    console.log("Has any error:", hasAnyError);
     return hasAnyError
       ? ["Please fill out all required fields correctly before submitting."]
       : [];
   };
 
+  // Utility to append a safe override class string at the end so it wins in CSS order
+  const interactiveOverride = forceInteractive
+    ? " pointer-events-auto touch-manipulation relative z-10"
+    : "";
+
   return (
     <section
       ref={sectionRef}
       className="flex flex-col justify-center items-center"
+      onTouchStart={() => setForceInteractive(true)}
+      onFocusCapture={() => setForceInteractive(true)}
     >
       {/* Mobile / Tablet */}
-      <div className="lg:hidden px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between min-h-screen">
-        <div className="w-full flex-1 flex flex-col space-y-6 sm:space-y-8 md:space-y-10 py-8">
+      <div className="lg:hidden w-full px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between">
+        <div className="w-full flex flex-col space-y-6 sm:space-y-8 md:space-y-10 py-8 md:py-12">
           <div
             className={`w-full ${getTitleAnimationClasses()}`}
             style={getTitleAnimationDelay()}
@@ -277,7 +275,7 @@ export const ContactFormSection: React.FC = () => {
             onSubmit={handleSubmit}
             className={`w-full space-y-6 sm:space-y-8 ${getAnimationClasses(
               0
-            )}`}
+            )}${interactiveOverride}`}
             style={getAnimationDelay(0)}
           >
             <div className="space-y-6 sm:space-y-8">
@@ -359,29 +357,29 @@ export const ContactFormSection: React.FC = () => {
                   />
                 </div>
 
-                <div className="min-h-[70px] sm:min-h-[80px] flex flex-col">
+                <div className="min-h-[120px] sm:min-h-[140px] flex flex-col">
                   <label className="font-helvetica text-[#1c1c1c] text-[14px] sm:text-[16px] md:text-[18px] font-medium mb-2">
                     What challenge or opportunity brings you here? *
                   </label>
-                  <Input
+                  <Textarea
                     value={formData.message}
                     onChange={(e) =>
                       handleInputChange("message", e.target.value)
                     }
                     onBlur={() => handleInputBlur("message")}
                     placeholder="Tell us about your challenge or opportunity..."
-                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 text-sm font-sofia"
+                    className="bg-transparent border-0 border-b-2 border-[#e5e5e5] text-[#1c1c1c] placeholder:text-[#2d2d2d]/60 focus:border-b-[#1c1c1c] focus-visible:ring-0 rounded-none px-0 py-2 text-sm font-sofia min-h-[80px] resize-none"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-start">
+            <div className="flex flex-col gap-4 mt-4">
+              <div className="flex justify-start w-full">
                 <Button
                   type="submit"
                   disabled={!isFormValid() || isSubmitting}
-                  className={`bg-[#1c1c1c] text-white rounded-lg px-6 py-3 font-helvetica font-semibold text-[14px] sm:text-[16px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
+                  className={`w-full sm:w-auto bg-[#1c1c1c] text-white rounded-lg px-6 py-3 font-helvetica font-semibold text-[14px] sm:text-[16px] hover:bg-[#2d2d2d] transition-all duration-200 h-auto ${
                     !isFormValid() || isSubmitting
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -456,7 +454,7 @@ export const ContactFormSection: React.FC = () => {
               onSubmit={handleSubmit}
               className={`grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 ${getAnimationClasses(
                 0
-              )}`}
+              )}${interactiveOverride}`}
               style={getAnimationDelay(0)}
             >
               <div className="space-y-6">
