@@ -106,8 +106,20 @@ export const ContactFormSection: React.FC = () => {
   // --- FIX: force interactivity even if animation classes accidentally include pointer-events-none
   const [forceInteractive, setForceInteractive] = useState(false);
   useEffect(() => {
-    // After mount, ensure the form is always interactive.
     const timer = setTimeout(() => setForceInteractive(true), 100);
+
+    // Defensive fix: if any descendant has computed pointer-events: none, make it interactive
+    const el = sectionRef?.current as HTMLElement | null;
+    if (el) {
+      const all = Array.from(el.querySelectorAll<HTMLElement>("*"));
+      all.forEach((node) => {
+        try {
+          const pe = window.getComputedStyle(node).pointerEvents;
+          if (pe === "none") node.style.pointerEvents = "auto";
+        } catch {}
+      });
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -234,18 +246,24 @@ export const ContactFormSection: React.FC = () => {
 
   // Utility to append a safe override class string at the end so it wins in CSS order
   const interactiveOverride = forceInteractive
-    ? " pointer-events-auto touch-manipulation relative z-10"
+    ? " pointer-events-auto touch-manipulation relative z-[9999] transform-none"
     : "";
 
   return (
     <section
       ref={sectionRef}
       className="flex flex-col justify-center items-center"
+      style={forceInteractive ? { pointerEvents: "auto" } : undefined}
+      onTouchStart={() => setForceInteractive(true)}
+      onFocusCapture={() => setForceInteractive(true)}
+      onClickCapture={() => setForceInteractive(true)}
       onTouchStart={() => setForceInteractive(true)}
       onFocusCapture={() => setForceInteractive(true)}
     >
       {/* Mobile / Tablet */}
-      <div className="lg:hidden w-full px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between">
+      <div
+        className={`lg:hidden w-full px-4 sm:px-6 md:px-8 flex flex-col items-start justify-between${interactiveOverride}`}
+      >
         <div className="w-full flex flex-col space-y-6 sm:space-y-8 md:space-y-10 py-8 md:py-12">
           <div
             className={`w-full ${getTitleAnimationClasses()}`}
