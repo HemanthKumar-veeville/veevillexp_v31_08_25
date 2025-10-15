@@ -118,27 +118,42 @@ export const ContactFormSection: React.FC = () => {
     name: keyof FormData,
     value: string
   ): string | undefined => {
-    if (!value.trim()) return "This field is required";
+    console.log(`Validating ${name} with value:`, value);
+    if (!value.trim()) {
+      console.log(`${name} is empty or whitespace`);
+      return "This field is required";
+    }
     switch (name) {
       case "email":
-        if (!emailRegex.test(value))
+        if (!emailRegex.test(value)) {
+          console.log(`${name} failed email regex test`);
           return "Please enter a valid email address";
+        }
         break;
       case "firstName":
       case "lastName":
-        if (value.trim().length < 2) return "Must be at least 2 characters";
+        if (value.trim().length < 2) {
+          console.log(`${name} is too short`);
+          return "Must be at least 2 characters";
+        }
         break;
       case "message":
-        if (value.trim().length < 10)
+        if (value.trim().length < 10) {
+          console.log(`${name} is too short`);
           return "Message must be at least 10 characters";
+        }
         break;
     }
+    console.log(`${name} passed validation`);
     return undefined;
   };
 
   const handleInputChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
+    // Validate the field immediately and update errors
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+    setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
   const handleInputBlur = (name: keyof FormData) => {
@@ -166,6 +181,10 @@ export const ContactFormSection: React.FC = () => {
       );
       return;
     }
+
+    // Clear all errors if validation passes
+    setErrors({});
+    setTouched({});
 
     setIsSubmitting(true);
     setSubmitError(null);
@@ -210,9 +229,13 @@ export const ContactFormSection: React.FC = () => {
   };
 
   const getErrorMessages = () => {
+    console.log("Current errors:", errors);
+    console.log("Touched fields:", touched);
+    console.log("Form data:", formData);
     const hasAnyError = Object.keys(errors).some(
       (key) => errors[key as keyof FormData] && touched[key as keyof FormData]
     );
+    console.log("Has any error:", hasAnyError);
     return hasAnyError
       ? ["Please fill out all required fields correctly before submitting."]
       : [];
