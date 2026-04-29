@@ -2,6 +2,7 @@ import React from "react";
 import { BrandLabel, Heading1, QuoteText } from "@/components/ui/typography";
 
 export const ExperienceSection = (): React.JSX.Element => {
+  console.log("hii")
   return (
     <section className="w-full px-4 sm:px-6 md:px-10 lg:px-14 max-w-[1280px] mx-auto">
       <div className="w-full">
